@@ -1,0 +1,66 @@
+# ============================================================
+# Deploy Next.js (Static Export) to GitHub Pages
+#
+# Trigger: push to main / 수동 실행 (workflow_dispatch)
+# Flow: checkout → setup node → npm ci → next build → upload artifact → deploy pages
+# Result: https://tacchinimd-dot.github.io/-tacchini-one-demo-/
+# ============================================================
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GitHub Pages 배포에 필요한 권한
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동일 시점 동시 배포 방지 (이미 진행 중인 배포는 그대로 두고 새 요청만 큐잉)
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (next export)
+        env:
+          NODE_ENV: production
+        run: npm run build
+
+      - name: Add .nojekyll (disable Jekyll processing)
+        # GitHub Pages가 _next 폴더 안의 파일을 Jekyll 규칙으로 무시하지 않도록
+        run: touch out/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
