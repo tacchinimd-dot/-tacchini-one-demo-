@@ -75,6 +75,9 @@ scripts/          relativize.mjs (file:// export용 유틸 — 현재 미사용)
 - 도어 진입 → 모듈 클릭 → 콘솔 (Mission Control 패턴)
 - 심층 검증 리포트의 UI 명칭 = **AI-Report** (이전엔 "Apex"였으나 명료성 위해 변경)
   - 단, 내부 파일·코드 식별자는 `apex-report.html` / `APEX_REPORT_URL` / `sync-apex.mjs` 등 유지 (사용자 원본 파일명 보존)
+- 5 Pillars 구체화: **Sergio Tacchini Brandbook 2026** 기반으로 각 Pillar에 sub-pillars 5–6개 추가 (`PILLAR_META.subPillars`)
+  - P4 Body-Lined Silhouette = 브랜드북 p.7 "Active Body Awareness" 명시 정의로 5개 sub-pillar 구체화
+  - ABSOLUTE NO 8 Prohibitions (Brandbook p.10) — 1개라도 위반 시 즉시 Verdict D
 - file:// 정적 export는 hydration 깨짐으로 포기 (메모리에 기록됨)
 - Vercel CLI는 한글 사용자명("AD0707권은희") HTTP header validation으로 차단됨 → GitHub 경유
 

@@ -323,30 +323,72 @@ function UploadStep({ onSubmit }: { onSubmit: () => void }) {
         </div>
 
         <div className="card" style={{ padding: 20 }}>
-          <div className="t-label">{t.inspector.step1_rules}</div>
-          <ul className="mt-3 space-y-2 t-caption" style={{ color: "var(--color-ink-muted-80)" }}>
-            <li className="flex items-start gap-2">
-              <span style={{ color: "var(--color-primary)", fontWeight: 700, minWidth: 16 }}>P1</span>
-              <span>Italian Tennis Heritage</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span style={{ color: "var(--color-primary)", fontWeight: 700, minWidth: 16 }}>P2</span>
-              <span>Elegant Functionalism <em style={{ color: "var(--status-warn)", fontStyle: "normal", fontWeight: 600 }}>(×2)</em></span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span style={{ color: "var(--color-primary)", fontWeight: 700, minWidth: 16 }}>P3</span>
-              <span>Court-to-Social Lifestyle</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span style={{ color: "var(--color-primary)", fontWeight: 700, minWidth: 16 }}>P4</span>
-              <span>Body-Lined Silhouette</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span style={{ color: "var(--color-primary)", fontWeight: 700, minWidth: 16 }}>P5</span>
-              <span>Quiet Performance</span>
-            </li>
-            <li className="pt-2 mt-2" style={{ borderTop: "1px dashed var(--color-hairline)" }}>
-              G1 임계값: <strong style={{ color: "var(--color-ink)" }}>전수 검수</strong> · Brand Director gate
+          <div className="flex items-center justify-between">
+            <div className="t-label">{t.inspector.step1_rules}</div>
+            <span
+              className="t-mono"
+              style={{ fontSize: 10, color: "var(--color-ink-muted-48)" }}
+            >
+              Brandbook 2026
+            </span>
+          </div>
+
+          <ul
+            className="mt-3 space-y-3 t-caption"
+            style={{ color: "var(--color-ink-muted-80)" }}
+          >
+            {(Object.keys(PILLAR_META) as PillarKey[]).map((p) => {
+              const meta = PILLAR_META[p];
+              const isHeavy = p === "P2";
+              return (
+                <li key={p} className="space-y-1">
+                  <div className="flex items-start gap-2">
+                    <span
+                      style={{
+                        color: "var(--color-primary)",
+                        fontWeight: 700,
+                        minWidth: 18,
+                      }}
+                    >
+                      {p}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div style={{ fontWeight: 600, color: "var(--color-ink)" }}>
+                        {meta.en}
+                        {isHeavy && (
+                          <em
+                            style={{
+                              color: "var(--status-warn)",
+                              fontStyle: "normal",
+                              fontWeight: 600,
+                              marginLeft: 6,
+                            }}
+                          >
+                            (×2)
+                          </em>
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: "var(--color-ink-muted-48)",
+                          marginTop: 2,
+                        }}
+                      >
+                        {meta.subPillars.length} sub-rules · {meta.summary}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+            <li
+              className="pt-3 mt-2"
+              style={{ borderTop: "1px dashed var(--color-hairline)" }}
+            >
+              G1 임계값:{" "}
+              <strong style={{ color: "var(--color-ink)" }}>전수 검수</strong> · Brand
+              Director gate
             </li>
           </ul>
         </div>

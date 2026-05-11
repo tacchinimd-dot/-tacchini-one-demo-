@@ -16,15 +16,250 @@ export type Verdict = "A" | "B" | "C" | "D";
 
 export type PillarKey = "P1" | "P2" | "P3" | "P4" | "P5";
 
-export const PILLAR_META: Record<
-  PillarKey,
-  { en: string; ko: string; pass: number }
-> = {
-  P1: { en: "Italian Tennis Heritage", ko: "이탈리안 테니스 헤리티지", pass: 60 },
-  P2: { en: "Elegant Functionalism", ko: "우아한 기능주의 (가중치 2배)", pass: 70 },
-  P3: { en: "Court-to-Social Lifestyle", ko: "코트에서 일상으로", pass: 60 },
-  P4: { en: "Body-Lined Silhouette", ko: "몸이 살아나는 실루엣", pass: 60 },
-  P5: { en: "Quiet Performance", ko: "절제된 퍼포먼스", pass: 60 },
+export interface SubPillar {
+  /** 짧은 코드 (예: "P4.1") */
+  code: string;
+  /** 짧은 타이틀 (한국어, UI에 표시) */
+  title: string;
+  /** 검수 규정 한 줄 (위반 시 메시지에도 활용) */
+  rule: string;
+  /** 브랜드북 페이지 또는 출처 표기 */
+  source?: string;
+}
+
+export interface PillarMeta {
+  en: string;
+  ko: string;
+  pass: number;
+  /** 한 줄 요약 (Step 1 Rules 패널·툴팁용) */
+  summary: string;
+  /** 브랜드북 직접 인용 한 줄 */
+  brandbookQuote?: string;
+  /** 하위 검수 규정 (Sergio Tacchini Brandbook 2026 기반) */
+  subPillars: SubPillar[];
+}
+
+/* ============================================================
+ * PILLAR_META — Sergio Tacchini Brandbook 2026 (Global) 기반
+ *
+ * 출처: \\172.21.1.112\Sergio Tacchini\☆ST. BRAND ARCHIVE\★ST. Brand Book\2026\
+ *      Sergio Tacchini Brandbook_2026.pdf
+ *
+ * 한국 ST Brand Voice Guide v0 (§1·§2·§3) + 글로벌 브랜드북 통합.
+ * 각 Pillar의 subPillars는 검수 시 위반 항목을 정확히 매핑할 때 사용.
+ * ============================================================ */
+export const PILLAR_META: Record<PillarKey, PillarMeta> = {
+  P1: {
+    en: "Italian Tennis Heritage",
+    ko: "이탈리안 테니스 헤리티지",
+    pass: 60,
+    summary: "이탈리안 테니스를 출발점으로, 그러나 노스탤지어가 아닌 재해석으로",
+    brandbookQuote:
+      "The iconic tennis brand that first brought style to the court — heritage reinterpreted into a modern, functional wellness lifestyle.",
+    subPillars: [
+      {
+        code: "P1.1",
+        title: "Tennis-first Origin",
+        rule: "테니스는 ST의 origin · 디자인에 코트 코드(배색·플리츠·카라·테이프) 1개 이상 내재 필수",
+        source: "Brandbook p.1 — We Are",
+      },
+      {
+        code: "P1.2",
+        title: "Beyond Athlete",
+        rule: "Tennis is our origin, but lifestyle is our language — 경쟁/선수 일변도 표현 ❌",
+        source: "Brandbook p.10 — ABSOLUTE NO #7",
+      },
+      {
+        code: "P1.3",
+        title: "Damarindo Signature",
+        rule: "Damarindo stripe(시그니쳐 더블 스트라이프) 같은 헤리티지 라인 그래픽 우선 사용",
+        source: "Brandbook p.9 — Detail",
+      },
+      {
+        code: "P1.4",
+        title: "No Y2K Reliance",
+        rule: "헤리티지는 노스탤지어 ❌ — Y2K 레트로 코스튬으로 차용 금지, 시대성 있는 재해석만",
+        source: "Brandbook p.10 — ABSOLUTE NO #4",
+      },
+      {
+        code: "P1.5",
+        title: "Italian First Layer",
+        rule: "Italian Tennis가 1차 layer / 자국 테니스(Wimbledon·Roland Garros 등)는 2차 layer로만",
+        source: "한국 v0 §1 P1 글로벌화",
+      },
+    ],
+  },
+
+  P2: {
+    en: "Elegant Functionalism",
+    ko: "우아한 기능주의 (가중치 2배)",
+    pass: 70,
+    summary: "Premium Function, Timeless Social Living — 자연스러운 표면 · 숨겨진 기능",
+    brandbookQuote:
+      "Premium functionality defines today's court attitude and extends it into a more active, timeless everyday life — refined social living.",
+    subPillars: [
+      {
+        code: "P2.1",
+        title: "Natural Face / Performance Core",
+        rule: "외관은 natural hand feel · 내구성 · moisture-wicking — pure natural fiber + high-function poly/elastane 구조",
+        source: "Brandbook p.5 — Fabric Rules",
+      },
+      {
+        code: "P2.2",
+        title: "Surface Aesthetics",
+        rule: "No shiny nylon · No high-gloss fabric · Moderate texture + layered knit feel (high-density piqué, tech-knit)",
+        source: "Brandbook p.5 — Surface",
+      },
+      {
+        code: "P2.3",
+        title: "Hidden Performance",
+        rule: "Invisible Tech — 외관은 natural / 내부는 dual-layer sweat-wicking · quick-dry · stretch 기능 숨김",
+        source: "Brandbook p.5 — Hidden Performance",
+      },
+      {
+        code: "P2.4",
+        title: "Composition Std. (CORE별 성분 비율)",
+        rule: "Court Active: Poly 60–85% · Active Athleisure: Poly 40–65% / Cotton 15–40% · Active Classic: Cotton 30–60% · Elastane 항상 3–15%",
+        source: "Brandbook p.6 — Composition Std.",
+      },
+      {
+        code: "P2.5",
+        title: "Mandatory Function",
+        rule: "Wicking · Stretch · Lightweight construction은 모든 CORE 필수 · Active Classic은 Pilling resist · Color fastness 추가",
+        source: "Brandbook p.6 — Surface & Function",
+      },
+      {
+        code: "P2.6",
+        title: "No Style Without Function",
+        rule: "기능 없는 스타일 ❌ — 외형만 화려한 디자인 거부 · 강점은 elegantly functional",
+        source: "Brandbook p.10 — ABSOLUTE NO #5",
+      },
+    ],
+  },
+
+  P3: {
+    en: "Court-to-Social Lifestyle",
+    ko: "코트에서 일상으로",
+    pass: 60,
+    summary: "Bodyfulness + Social Presence — 코트 → 클럽 → 리조트 → 일상으로의 끊김 없는 전환",
+    brandbookQuote:
+      "Athleisure lens — flowing seamlessly from court to social life, expressed as lifestyle wear.",
+    subPillars: [
+      {
+        code: "P3.1",
+        title: "Court Active (Energetic Active)",
+        rule: "Tennis·코트 기반 액티브 — innovative & semi-performance fabric · 코트 안팎의 movement·confidence·shared moments",
+        source: "Brandbook p.2 — Court Active",
+      },
+      {
+        code: "P3.2",
+        title: "Active Athleisure (Performance × Elegance)",
+        rule: "Beyond the studio — premium·functional pieces · 실내 활동 → gathering으로 끊김 없는 전환 · refined social lifestyle",
+        source: "Brandbook p.3 — Active Athleisure",
+      },
+      {
+        code: "P3.3",
+        title: "Active Classic (Functional Heritage)",
+        rule: "Elegant knit + modern athletic sensibility — clean lines · timeless heritage codes",
+        source: "Brandbook p.4 — Active Classic",
+      },
+      {
+        code: "P3.4",
+        title: "Scene Mapping",
+        rule: "모든 디자인은 3-CORE(Court / Athleisure / Classic) 중 1개에 명시 매핑 가능해야 함",
+        source: "한국 v0 §3 3-CORE 라이프스타일",
+      },
+    ],
+  },
+
+  P4: {
+    en: "Body-Lined Silhouette",
+    ko: "몸이 살아나는 실루엣",
+    pass: 60,
+    summary:
+      "Active Body Awareness — 절제된 몸의 윤곽 · social, not sporty · clean lines and controlled fit",
+    brandbookQuote:
+      "The silhouette reveals an active body with restraint — social, not sporty. Clean lines and controlled fit create quiet sensuality and refined confidence, never overt.",
+    subPillars: [
+      {
+        code: "P4.1",
+        title: "Protect & Support · 공간감과 어깨선",
+        rule: "몸과 의복 사이의 적절한 공간감 확보 · wellness lifestyle 윤곽 자연 형성 · properly fitted shoulder line으로 dignified movement 마감",
+        source: "Brandbook p.7 — Protect & Support",
+      },
+      {
+        code: "P4.2",
+        title: "Active-Ready · 동작 자유도",
+        rule: "Tennis swing freedom + bending·sitting 시 동작 깊이 확보 · 첫 착용 시 'dressy yet functional'로 보여야 함",
+        source: "Brandbook p.7 — Active-Ready",
+      },
+      {
+        code: "P4.3",
+        title: "Length Balance · 길이 비례",
+        rule: "스커트 ↔ 팬츠 길이 비례 균형 필수 · 'too short' or 'too loose'로 elegance가 깨지면 위반",
+        source: "Brandbook p.7 — Length Balance",
+      },
+      {
+        code: "P4.4",
+        title: "Not Oversized",
+        rule: "Silhouettes are never excessive · fit은 comfortable yet composed — tailored · balanced · elegant",
+        source: "Brandbook p.10 — ABSOLUTE NO #8 No Oversized",
+      },
+      {
+        code: "P4.5",
+        title: "Restraint, Not Overt",
+        rule: "Quiet sensuality · refined confidence · never overt — Second Skin 압박 ❌ / 과한 노출·deep V·하이슬릿 ❌ / S라인·Hourglass 마케팅 워딩 ❌",
+        source: "Brandbook p.7 + 한국 v0 §3",
+      },
+    ],
+  },
+
+  P5: {
+    en: "Quiet Performance",
+    ko: "절제된 퍼포먼스",
+    pass: 60,
+    summary: "Rational Functionalism · Elegant Active Palette · Refined Restraint",
+    brandbookQuote:
+      "Details matter — not for excess decoration but for purpose. Standard: Simple, Basic, but Functional.",
+    subPillars: [
+      {
+        code: "P5.1",
+        title: "Quiet Luxury Color",
+        rule: "허용 팔레트: Deep Navy · Quiet Light Blue · Ecru(ivory/beige) · Muted Burgundy · Brown · Forest Green — Tone-on-Tone & Refined point-color 표준",
+        source: "Brandbook p.8 — Color Palette",
+      },
+      {
+        code: "P5.2",
+        title: "No Strong/Bright Color",
+        rule: "Neon · bold primaries · 과한 채도 ❌ · refined restraint 우선",
+        source: "Brandbook p.8 — No Strong/Bright",
+      },
+      {
+        code: "P5.3",
+        title: "Refined Decorative",
+        rule: "그래픽·로고·패치 과다 ❌ · 모든 디테일은 'Why is this detail necessary?'에 기능적 답이 있어야 함",
+        source: "Brandbook p.9 — Refined Decorative",
+      },
+      {
+        code: "P5.4",
+        title: "No Logo Mania",
+        rule: "Logo는 decoration이 아닌 purpose · 가슴 중앙 대형 로고 ❌ · 사이드·외측 minimal 배치 / Tone-on-Tone 우선",
+        source: "Brandbook p.10 — ABSOLUTE NO #3",
+      },
+      {
+        code: "P5.5",
+        title: "Premium Artwork — 로고 Application 3종 한정",
+        rule: "(1) Matte Raised Rubber Print · (2) Embossed Embroidery · (3) Clean & Textured Printed — 그 외 application ❌",
+        source: "Brandbook p.9 — Premium Artwork",
+      },
+      {
+        code: "P5.6",
+        title: "Not a Street Brand",
+        rule: "Streetwear trend·hype cycle 추종 ❌ · refined activewear가 foundation",
+        source: "Brandbook p.10 — ABSOLUTE NO #1",
+      },
+    ],
+  },
 };
 
 export interface DesignSubmission {
@@ -107,20 +342,20 @@ export const MOCK_REPORT: InspectorReport = {
     {
       pillar: "P5",
       severity: "high",
-      issue: "Pentagon 로고가 가슴 중앙 120mm로 과다 노출",
-      rule: "P5 Quiet Performance: 로고는 사이드·외측 배치 / Tone-on-Tone 우선 / 그래픽 과다 ❌",
+      issue: "Pentagon 로고가 가슴 중앙 120mm로 과다 노출 (P5.4 No Logo Mania 위반)",
+      rule: "Brandbook p.10 ABSOLUTE NO #3: 'Logos serve purpose, not decoration. Design is guided by intention, not excess branding.' — 가슴 중앙 대형 로고는 Logo Mania로 분류되며 사이드·외측 minimal 배치 + Tone-on-Tone이 표준.",
     },
     {
       pillar: "P2",
       severity: "high",
-      issue: "Heavy Texture (RA5) × Weight Tier D (380g) 결합",
-      rule: "P2 Elegant Functionalism: RA3 Micro Texture가 CORE / RA5는 캐주얼·워크웨어 감성으로 ST 배제 / Weight Tier C (220–300g)이 시그니쳐 손맛 구간",
+      issue: "Heavy Texture French Terry 380g + 표면 High-shine 우려 (P2.2 Surface Aesthetics 위반)",
+      rule: "Brandbook p.5: 'No shiny nylon or high-gloss fabrics. Moderate texture and layered knit feel (high-density piqué, tech-knit).' — RA3 Micro Texture가 CORE / RA5 Heavy Texture는 캐주얼·워크웨어 감성으로 ST 배제. Weight Tier C(220–300g)가 시그니쳐 손맛 구간이며 Active Athleisure CORE의 Cotton 비율 15–40% 가이드도 검토 필요.",
     },
     {
       pillar: "P1",
       severity: "mid",
-      issue: "Italian Tennis Heritage 코드 부재 (배색·플리츠·트랙 디테일 미내재화)",
-      rule: "P1 Italian Tennis Heritage: 배색 / 라인 / 플리츠 / 카라 / 트랙 디테일 중 1개 이상 필수",
+      issue: "Italian Tennis Heritage 코드 부재 — 배색·Damarindo stripe·플리츠·트랙 디테일 모두 미내재화",
+      rule: "Brandbook p.1 We Are + p.9 Detail: 'iconic tennis brand that first brought style to the court' / Damarindo stripe 같은 시그니쳐 라인 그래픽 우선 사용. P1.1 Tennis-first Origin 충족을 위해 배색·플리츠·카라·테이프 중 1개 이상 디자인에 내재화 필요.",
     },
   ],
   closestSignature: {
