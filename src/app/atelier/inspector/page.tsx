@@ -40,7 +40,9 @@ const VERDICT_COLOR: Record<Verdict, { bg: string; fg: string; label: string }> 
   D: { bg: "var(--grade-c)", fg: "#fff", label: "부적합" },
 };
 
-const APEX_REPORT_URL = "/apex-report.html";
+/* GitHub Pages basePath 적용 — production에서 자동으로 "/-tacchini-one-demo-" prefix가 붙음.
+   dev 모드(localhost:3000)에서는 빈 문자열이라 "/apex-report.html" 그대로. */
+const APEX_REPORT_URL = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/apex-report.html`;
 
 export default function InspectorDemo() {
   const [step, setStep] = useState<Step>(1);
