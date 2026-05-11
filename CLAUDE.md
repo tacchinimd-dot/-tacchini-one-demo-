@@ -15,7 +15,7 @@ F&F STE 라이센시 6개사 대상 글로벌 운영 플랫폼 데모. Next.js 1
 | 도어 (시작) | `/` |
 | Operations Console | `/console/` |
 | Inspector 라이브 데모 | `/atelier/inspector/` |
-| Apex 검수 리포트 | `/apex-report.html` |
+| AI-Report (검수 상세 리포트) | `/apex-report.html` (파일명 그대로 — UI에서는 "AI-Report"로 표시) |
 
 ## 배포·자동화 정책 (절대 준수)
 
@@ -73,6 +73,8 @@ scripts/          relativize.mjs (file:// export용 유틸 — 현재 미사용)
 - 플랫폼 허브 = `TACCHINI ONE` / AI 디자인 에이전트 = `ATELIER ONE` 분리
 - 워드마크 'O' = ST 라파챠 원형 심볼 (TacchiniSymbol.tsx)
 - 도어 진입 → 모듈 클릭 → 콘솔 (Mission Control 패턴)
+- 심층 검증 리포트의 UI 명칭 = **AI-Report** (이전엔 "Apex"였으나 명료성 위해 변경)
+  - 단, 내부 파일·코드 식별자는 `apex-report.html` / `APEX_REPORT_URL` / `sync-apex.mjs` 등 유지 (사용자 원본 파일명 보존)
 - file:// 정적 export는 hydration 깨짐으로 포기 (메모리에 기록됨)
 - Vercel CLI는 한글 사용자명("AD0707권은희") HTTP header validation으로 차단됨 → GitHub 경유
 
