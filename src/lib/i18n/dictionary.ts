@@ -175,7 +175,7 @@ export const dictionary = {
       season_next: "NEXT",
 
       pending_label: "HQ 검수 대기",
-      pending_title: "검수 2건",
+      pending_title: "검수 3건",
       pending_view_all: "전체 보기",
       pending_open: "Inspector 데모 열기 →",
 
@@ -467,7 +467,7 @@ export const dictionary = {
       season_next: "NEXT",
 
       pending_label: "Awaiting HQ",
-      pending_title: "2 Reviews",
+      pending_title: "3 Reviews",
       pending_view_all: "View all",
       pending_open: "Open Inspector Demo →",
 

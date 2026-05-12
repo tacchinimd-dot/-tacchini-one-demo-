@@ -218,22 +218,34 @@ function PendingReviews() {
   const { t } = useLang();
   const reviews = [
     {
+      id: "MV-27SS-LM-NET",
+      licensee: "MOVIN",
+      group: "G2",
+      item: "27SS Lifestyle Man · NET line (5 SKU)",
+      verdict: "B",
+      time: "방금",
+      severity: "low",
+      href: "/atelier/inspector/movin",
+    },
+    {
+      id: "MV-27SS-LM-FULL",
+      licensee: "MOVIN",
+      group: "G2",
+      item: "27SS Lifestyle Man · 전체 28 SKU 자동검수 완료",
+      verdict: "C",
+      time: "5분 전",
+      severity: "mid",
+      href: "/atelier/inspector/movin",
+    },
+    {
       id: "SF-26FW-AP-0042",
       licensee: "Sugi France",
       group: "G1",
       item: "Heritage Hooded Jacket",
       verdict: "C",
-      time: "2분 전",
+      time: "30분 전",
       severity: "high",
-    },
-    {
-      id: "BD-26FW-AP-0011",
-      licensee: "BDS",
-      group: "G1",
-      item: "Plisse Track Set",
-      verdict: "B",
-      time: "1시간 전",
-      severity: "low",
+      href: "/atelier/inspector",
     },
   ];
 
@@ -251,13 +263,17 @@ function PendingReviews() {
 
       <ul className="space-y-3">
         {reviews.map((r) => (
-          <li
-            key={r.id}
+          <li key={r.id}>
+          <Link
+            href={r.href}
+            className="block transition-colors hover:bg-gray-50"
             style={{
               padding: 14,
               border: "1px solid var(--color-hairline)",
               borderRadius: "var(--radius-md)",
               background: "var(--color-canvas-soft)",
+              textDecoration: "none",
+              color: "inherit",
             }}
           >
             <div className="flex items-start justify-between">
@@ -312,6 +328,7 @@ function PendingReviews() {
                 {r.verdict}
               </div>
             </div>
+          </Link>
           </li>
         ))}
       </ul>

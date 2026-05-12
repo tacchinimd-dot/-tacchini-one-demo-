@@ -628,11 +628,18 @@ function DoorFooter() {
           </div>
           <div className="grid gap-2">
             <QuickAction
+              href="/atelier/inspector/movin"
+              icon="🔥"
+              title="MOVIN 27SS · 실데이터 검수"
+              body="라이센시 6 PDF · 28 SKU · 자동 등급 산출"
+              accent="var(--color-accent-red)"
+            />
+            <QuickAction
               href="/atelier/inspector"
               icon="✎"
               title={t.door.qa_inspector}
               body={t.door.qa_inspector_body}
-              accent="var(--color-accent-red)"
+              accent="var(--color-accent-gold)"
             />
             <QuickAction
               href="/apex-report.html"
@@ -640,13 +647,6 @@ function DoorFooter() {
               icon="📄"
               title={t.door.qa_apex}
               body={t.door.qa_apex_body}
-              accent="var(--color-accent-gold)"
-            />
-            <QuickAction
-              href="/console"
-              icon="◉"
-              title={t.door.qa_console}
-              body={t.door.qa_console_body}
               accent="var(--color-primary-on-dark)"
             />
           </div>

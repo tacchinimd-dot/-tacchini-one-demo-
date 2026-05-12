@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "sync-apex": "node scripts/sync-apex.mjs",
-    "prebuild": "node scripts/sync-apex.mjs",
+    "sync-movin": "node scripts/build-movin-data.mjs",
+    "prebuild": "node scripts/sync-apex.mjs && node scripts/build-movin-data.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -22,6 +23,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "pdf-parse": "^2.4.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
