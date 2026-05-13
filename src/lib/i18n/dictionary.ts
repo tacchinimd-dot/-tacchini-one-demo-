@@ -420,6 +420,109 @@ export const dictionary = {
       verdict_d_label: "Major Revise",
     },
 
+    /* ===== Studio (AI 디자인 생성) ===== */
+    studio: {
+      header_title: "Atelier Studio",
+      header_subtitle:
+        "AI 디자인 1차 생성 — 트렌드 크롤링 → ST DNA 필터 → 변형 디자인 생성",
+      live_prototype: "LIVE PROTOTYPE",
+      breadcrumb: "Atelier · Studio",
+      total_in_session: (n: number) => `이번 세션 ${n} 디자인 생성`,
+      back_to_inspector: "Inspector로 보내기",
+      reset_flow: "↺ 새 브리프",
+
+      /* Step indicators */
+      step_brief: "1 · Brief",
+      step_source: "2 · Source",
+      step_filter: "3 · DNA Filter",
+      step_curate: "4 · Curate",
+      step_generate: "5 · Generate",
+      step_lineup: "6 · Lineup",
+
+      /* Step 1 — Brief */
+      step1_label: "Step 1 · Brief",
+      step1_title: "시즌 디자인 브리프",
+      step1_body:
+        "이 시즌의 컨텍스트를 정의하세요. AI가 이 브리프를 바탕으로 트렌드를 수집하고 ST DNA에 맞게 정제합니다.",
+      brief_season: "Season",
+      brief_category: "Category",
+      brief_subcategory: "Item",
+      brief_gender: "Target",
+      brief_mood: "Mood Keyword",
+      brief_count: "Reference Count",
+      brief_strictness: "DNA Strictness",
+      brief_boldness: "Variant Boldness",
+      strictness_low: "관대",
+      strictness_high: "엄격",
+      boldness_low: "보수",
+      boldness_high: "실험",
+      start_crawl: "트렌드 크롤링 시작 →",
+
+      /* Step 2 — Source crawl */
+      step2_label: "Step 2 · Source",
+      step2_title: "마켓·트렌드 이미지 수집 중",
+      step2_body: (n: number, sources: number) =>
+        `${sources}개 데이터 소스에서 총 ${n}장 수집 중...`,
+      step2_sources: "데이터 소스",
+      crawled_count: (n: number) => `${n}장 수집 완료`,
+      next_dna: "DNA Filter 진행 →",
+
+      /* Step 3 — DNA Filter */
+      step3_label: "Step 3 · DNA Filter",
+      step3_title: "5 Pillars로 자동 필터링",
+      step3_body: (n: number) =>
+        `${n}장 모두에 5 Pillars 룰을 적용하여 ST 적합 레퍼런스만 선별합니다.`,
+      filter_running: "Filtering...",
+      filter_passed: "ST 통과",
+      filter_rejected: "ST 미달",
+      filter_summary: (passed: number, total: number) =>
+        `${total}장 중 ${passed}장이 ST DNA 통과 (${Math.round((passed / total) * 100)}%)`,
+      next_curate: "레퍼런스 선택 →",
+
+      /* Step 4 — Curate */
+      step4_label: "Step 4 · Curate",
+      step4_title: "레퍼런스 선택 (3장 권장)",
+      step4_body: "AI ★ 추천 우선 정렬. 디자이너가 변형 생성에 사용할 레퍼런스를 선택합니다.",
+      selected_count: (n: number, max: number) => `선택 ${n} / ${max}장`,
+      ai_recommended: "AI 추천",
+      pillar_radar: "Pillar Profile",
+      generate_variants: "변형 디자인 생성 →",
+
+      /* Step 5 — Generate */
+      step5_label: "Step 5 · Generate",
+      step5_title: "AI 변형 디자인 생성 중",
+      step5_body:
+        "선택된 레퍼런스를 ST 기준으로 변형합니다. 각 레퍼런스에서 3가지 변형(보수·균형·실험)이 생성됩니다.",
+      generating: "Generating...",
+      variant_conservative: "Conservative",
+      variant_balanced: "Balanced",
+      variant_experimental: "Experimental",
+      transform_color: "Color",
+      transform_fit: "Fit",
+      transform_logo: "Logo",
+      transform_fabric: "Fabric",
+      transform_heritage: "Heritage",
+      next_lineup: "최종 라인업 보기 →",
+
+      /* Step 6 — Lineup */
+      step6_label: "Step 6 · Lineup",
+      step6_title: "최종 라인업 후보",
+      step6_body:
+        "생성된 디자인을 5 Pillars로 재검수한 결과입니다. A·B 등급은 라인업 후보로 추천됩니다.",
+      lineup_distribution: "등급 분포",
+      lineup_recommend_title: "27FW Polo Capsule — 라인업 추천",
+      lineup_recommend_body:
+        "A·B 등급 디자인을 묶어 시즌 컬렉션을 구성합니다. Inspector로 보내 추가 검수·실물 샘플 단계로 진행하세요.",
+      send_to_inspector: "Inspector로 보내기",
+      save_library: "라이브러리에 저장",
+
+      /* Reset */
+      reset_title: "다시 시작하시겠습니까?",
+      reset_body: "현재 세션의 선택과 생성 결과가 초기화됩니다.",
+      reset_confirm: "초기화",
+      reset_cancel: "취소",
+    },
+
     /* ===== 5 Pillars Guide 페이지 ===== */
     guide: {
       breadcrumb_guide: "Brand Codex · 검수 가이드",
@@ -891,6 +994,108 @@ export const dictionary = {
       verdict_b_label: "Approve w/ Notes",
       verdict_c_label: "Minor Revise",
       verdict_d_label: "Major Revise",
+    },
+
+    /* ===== Studio (AI design generation) ===== */
+    studio: {
+      header_title: "Atelier Studio",
+      header_subtitle:
+        "AI design first-pass — Trend crawl → ST DNA filter → Variant generation",
+      live_prototype: "LIVE PROTOTYPE",
+      breadcrumb: "Atelier · Studio",
+      total_in_session: (n: number) => `${n} designs generated this session`,
+      back_to_inspector: "Send to Inspector",
+      reset_flow: "↺ New brief",
+
+      step_brief: "1 · Brief",
+      step_source: "2 · Source",
+      step_filter: "3 · DNA Filter",
+      step_curate: "4 · Curate",
+      step_generate: "5 · Generate",
+      step_lineup: "6 · Lineup",
+
+      /* Step 1 */
+      step1_label: "Step 1 · Brief",
+      step1_title: "Season Design Brief",
+      step1_body:
+        "Define this season's context. AI will use this brief to crawl trends and refine them to match ST DNA.",
+      brief_season: "Season",
+      brief_category: "Category",
+      brief_subcategory: "Item",
+      brief_gender: "Target",
+      brief_mood: "Mood Keyword",
+      brief_count: "Reference Count",
+      brief_strictness: "DNA Strictness",
+      brief_boldness: "Variant Boldness",
+      strictness_low: "Inclusive",
+      strictness_high: "Strict",
+      boldness_low: "Conservative",
+      boldness_high: "Experimental",
+      start_crawl: "Start Trend Crawl →",
+
+      /* Step 2 */
+      step2_label: "Step 2 · Source",
+      step2_title: "Crawling Market & Trend Images",
+      step2_body: (n: number, sources: number) =>
+        `Collecting ${n} images from ${sources} data sources...`,
+      step2_sources: "Data Sources",
+      crawled_count: (n: number) => `${n} images collected`,
+      next_dna: "Proceed to DNA Filter →",
+
+      /* Step 3 */
+      step3_label: "Step 3 · DNA Filter",
+      step3_title: "Auto-filtering by 5 Pillars",
+      step3_body: (n: number) =>
+        `Applying 5 Pillars rules to all ${n} images to select ST-aligned references.`,
+      filter_running: "Filtering...",
+      filter_passed: "ST Passed",
+      filter_rejected: "ST Rejected",
+      filter_summary: (passed: number, total: number) =>
+        `${passed} of ${total} passed ST DNA filter (${Math.round((passed / total) * 100)}%)`,
+      next_curate: "Pick References →",
+
+      /* Step 4 */
+      step4_label: "Step 4 · Curate",
+      step4_title: "Pick References (3 recommended)",
+      step4_body:
+        "Sorted by AI ★ recommendation. Choose references the designer wants to use for variant generation.",
+      selected_count: (n: number, max: number) => `Selected ${n} / ${max}`,
+      ai_recommended: "AI Recommended",
+      pillar_radar: "Pillar Profile",
+      generate_variants: "Generate Variants →",
+
+      /* Step 5 */
+      step5_label: "Step 5 · Generate",
+      step5_title: "AI Generating Variants",
+      step5_body:
+        "Transforming selected references against ST criteria. Three variants (Conservative · Balanced · Experimental) per reference.",
+      generating: "Generating...",
+      variant_conservative: "Conservative",
+      variant_balanced: "Balanced",
+      variant_experimental: "Experimental",
+      transform_color: "Color",
+      transform_fit: "Fit",
+      transform_logo: "Logo",
+      transform_fabric: "Fabric",
+      transform_heritage: "Heritage",
+      next_lineup: "See Final Lineup →",
+
+      /* Step 6 */
+      step6_label: "Step 6 · Lineup",
+      step6_title: "Final Lineup Candidates",
+      step6_body:
+        "Generated designs re-inspected against 5 Pillars. A/B grades are recommended for the season capsule.",
+      lineup_distribution: "Grade Distribution",
+      lineup_recommend_title: "27FW Polo Capsule — Lineup Recommendation",
+      lineup_recommend_body:
+        "A/B grade designs bundled into a season collection. Send to Inspector for further review and physical sampling.",
+      send_to_inspector: "Send to Inspector",
+      save_library: "Save to Library",
+
+      reset_title: "Start over?",
+      reset_body: "Selections and generated results in this session will be reset.",
+      reset_confirm: "Reset",
+      reset_cancel: "Cancel",
     },
 
     /* ===== 5 Pillars Guide page ===== */
