@@ -18,6 +18,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/console/Sidebar";
+import LoginGate from "@/components/auth/LoginGate";
 import { MOVIN_LINES, MOVIN_OVERALL, type MovinLine, type MovinSKU } from "@/lib/movin-data";
 import { useLang } from "@/lib/i18n/LanguageProvider";
 
@@ -36,7 +37,15 @@ const PILLAR_NAMES: Record<string, string> = {
   P5: "Quiet Performance",
 };
 
-export default function MovinInspector() {
+export default function MovinInspectorRoute() {
+  return (
+    <LoginGate>
+      <MovinInspector />
+    </LoginGate>
+  );
+}
+
+function MovinInspector() {
   const [selectedLine, setSelectedLine] = useState<string | null>(null);
 
   return (
@@ -99,7 +108,7 @@ function HeaderBar({
             Inspector
           </Link>
           <span style={{ opacity: 0.4 }}>›</span>
-          <span style={{ color: "var(--color-ink)" }}>MOVIN · 27SS</span>
+          <span style={{ color: "var(--color-ink)" }}>Sugi France · 27SS</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="t-mono">{MOVIN_OVERALL.totalSKU} SKUs auto-inspected</span>
@@ -109,7 +118,7 @@ function HeaderBar({
       <div className="flex items-center justify-between px-8 py-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="h-display-md">MOVIN · 27SS Lifestyle Man</h1>
+            <h1 className="h-display-md">Sugi France · 27SS Lifestyle Man</h1>
             <span
               style={{
                 fontSize: 10,

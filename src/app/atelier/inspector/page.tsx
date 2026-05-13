@@ -29,6 +29,7 @@ import {
 } from "@/lib/inspector-mock";
 import PillarRadar from "@/components/atelier/PillarRadar";
 import HoodedJacketSVG from "@/components/atelier/HoodedJacketSVG";
+import LoginGate from "@/components/auth/LoginGate";
 import { useLang } from "@/lib/i18n/LanguageProvider";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6;
@@ -44,7 +45,15 @@ const VERDICT_COLOR: Record<Verdict, { bg: string; fg: string; label: string }> 
    dev 모드(localhost:3000)에서는 빈 문자열이라 "/apex-report.html" 그대로. */
 const APEX_REPORT_URL = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/apex-report.html`;
 
-export default function InspectorDemo() {
+export default function InspectorDemoRoute() {
+  return (
+    <LoginGate>
+      <InspectorDemo />
+    </LoginGate>
+  );
+}
+
+function InspectorDemo() {
   const [step, setStep] = useState<Step>(1);
 
   return (

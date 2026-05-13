@@ -143,7 +143,8 @@ export const MOVIN_LINES: MovinLine[] = ${JSON.stringify(lines, null, 2)};
 
 export const MOVIN_OVERALL = ${JSON.stringify(
     {
-      licensee: "MOVIN",
+      licensee: "Sugi France",
+      licenseeNote: "Apparel · G1 라이센시 · 27SS 시즌 패키지 (이전 MOVIN 명칭)",
       season: "27SS",
       category: "Lifestyle Man",
       generatedAt: new Date().toISOString(),

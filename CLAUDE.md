@@ -69,6 +69,22 @@ scripts/          relativize.mjs (file:// export용 유틸 — 현재 미사용)
 - `<a href="/...">` 같은 직접 작성은 production에서 root 경로로 깨짐 — `<Link>` 사용 권장
 - `useEffect` 안의 localStorage 사용은 SSR 안전 (도어의 한·EN 토글 패턴 참고)
 
+## 데모 로그인 (mock auth)
+- 라이브에 LoginGate가 활성화되어 있어 / · /console · /atelier/inspector* 접근 전 로그인 필요
+- 데모 계정:
+  - `roamin / sugifrance27` → Roamin · **Sugi France** Apparel Designer · Licensee 뷰
+  - `kwon / ff2026`         → 권은희 차장 · F&F HQ · ST사업부 (본사 뷰)
+- 영속화: `localStorage("tacchini-one-auth")` — 브라우저별 자동 인계
+- 컴포넌트: `src/components/auth/LoginGate.tsx` + `src/lib/auth/AuthProvider.tsx`
+- 로그아웃: 사이드바 푸터 또는 도어 헤더 우상단 logout 버튼
+
+## MOVIN → Sugi France 통합
+- MOVIN 라이센시가 Sugi France로 통합·개명됨 (사용자 결정 2026-05-13)
+- UI 표시명: 모두 "Sugi France" 로 통일
+- 코드·파일 식별자: `movin-data.ts`, `/atelier/inspector/movin`, `scripts/build-movin-data.mjs` 등은 그대로 유지 (사용자 원본 폴더명 `MOVIN/27SS/SKETCHES SUBMISSION SS27` 보존)
+- 진입점: 도어 Atelier 모듈·콘솔 New Review·Sidebar Inspector 모두 `/atelier/inspector/movin`으로 직접 라우팅 (Sugi France 실데이터)
+- 기존 Sugi France mock 데모(`/atelier/inspector`)는 백업·비교용으로 유지
+
 ## 중요 결정 이력
 - 플랫폼 허브 = `TACCHINI ONE` / AI 디자인 에이전트 = `ATELIER ONE` 분리
 - 워드마크 'O' = ST 라파챠 원형 심볼 (TacchiniSymbol.tsx)

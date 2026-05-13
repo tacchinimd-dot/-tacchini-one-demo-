@@ -11,9 +11,18 @@ import Link from "next/link";
 import Sidebar from "@/components/console/Sidebar";
 import TopBar from "@/components/console/TopBar";
 import KpiCard from "@/components/console/KpiCard";
+import LoginGate from "@/components/auth/LoginGate";
 import { useLang } from "@/lib/i18n/LanguageProvider";
 
-export default function OperationsConsole() {
+export default function OperationsConsoleRoute() {
+  return (
+    <LoginGate>
+      <OperationsConsole />
+    </LoginGate>
+  );
+}
+
+function OperationsConsole() {
   const { t } = useLang();
   return (
     <div className="console-shell">
@@ -29,7 +38,7 @@ export default function OperationsConsole() {
           title={t.console.title}
           subtitle={t.console.subtitle}
           rightActions={
-            <Link href="/atelier/inspector" className="btn btn-primary">
+            <Link href="/atelier/inspector/movin" className="btn btn-primary">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14" /></svg>
               {t.console.cta_new_review}
             </Link>
@@ -218,9 +227,9 @@ function PendingReviews() {
   const { t } = useLang();
   const reviews = [
     {
-      id: "MV-27SS-LM-NET",
-      licensee: "MOVIN",
-      group: "G2",
+      id: "SF-27SS-LM-NET",
+      licensee: "Sugi France",
+      group: "G1",
       item: "27SS Lifestyle Man · NET line (5 SKU)",
       verdict: "B",
       time: "방금",
@@ -228,11 +237,11 @@ function PendingReviews() {
       href: "/atelier/inspector/movin",
     },
     {
-      id: "MV-27SS-LM-FULL",
-      licensee: "MOVIN",
-      group: "G2",
+      id: "SF-27SS-LM-FULL",
+      licensee: "Sugi France",
+      group: "G1",
       item: "27SS Lifestyle Man · 전체 28 SKU 자동검수 완료",
-      verdict: "C",
+      verdict: "B",
       time: "5분 전",
       severity: "mid",
       href: "/atelier/inspector/movin",
@@ -241,7 +250,7 @@ function PendingReviews() {
       id: "SF-26FW-AP-0042",
       licensee: "Sugi France",
       group: "G1",
-      item: "Heritage Hooded Jacket",
+      item: "Heritage Hooded Jacket (이전 시즌 demo)",
       verdict: "C",
       time: "30분 전",
       severity: "high",
@@ -256,7 +265,7 @@ function PendingReviews() {
           <div className="t-label">{t.console.pending_label}</div>
           <h2 className="h-tagline mt-1">{t.console.pending_title}</h2>
         </div>
-        <Link href="/atelier/inspector" className="btn btn-ghost btn-sm">
+        <Link href="/atelier/inspector/movin" className="btn btn-ghost btn-sm">
           {t.console.pending_view_all}
         </Link>
       </div>
@@ -333,7 +342,7 @@ function PendingReviews() {
         ))}
       </ul>
 
-      <Link href="/atelier/inspector" className="btn btn-primary btn-sm mt-4 w-full">
+      <Link href="/atelier/inspector/movin" className="btn btn-primary btn-sm mt-4 w-full">
         {t.console.pending_open}
       </Link>
     </div>
@@ -347,7 +356,7 @@ function AtelierCallout() {
   const { t } = useLang();
   return (
     <Link
-      href="/atelier/inspector"
+      href="/atelier/inspector/movin"
       className="card relative overflow-hidden block"
       style={{
         padding: 24,

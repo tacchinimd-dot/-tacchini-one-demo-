@@ -15,9 +15,19 @@ import Link from "next/link";
 import TacchiniSymbol from "@/components/brand/TacchiniSymbol";
 import ModuleCard from "@/components/door/ModuleCard";
 import LanguageToggle from "@/components/common/LanguageToggle";
+import LoginGate from "@/components/auth/LoginGate";
 import { useLang } from "@/lib/i18n/LanguageProvider";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
-export default function PlatformDoor() {
+export default function PlatformDoorRoute() {
+  return (
+    <LoginGate>
+      <PlatformDoor />
+    </LoginGate>
+  );
+}
+
+function PlatformDoor() {
   return (
     <div
       className="relative min-h-screen overflow-hidden"
@@ -70,6 +80,7 @@ export default function PlatformDoor() {
  * ============================================================ */
 function DoorHeader() {
   const { t, lang } = useLang();
+  const { user, logout } = useAuth();
 
   return (
     <header
@@ -170,7 +181,10 @@ function DoorHeader() {
                 width: 30,
                 height: 30,
                 borderRadius: 9999,
-                background: "linear-gradient(135deg, #5b8fd1, #002C5F)",
+                background:
+                  user?.role === "Licensee"
+                    ? "linear-gradient(135deg, var(--color-accent-red), #7a0019)"
+                    : "linear-gradient(135deg, #5b8fd1, #002C5F)",
                 color: "#fff",
                 display: "inline-flex",
                 alignItems: "center",
@@ -180,16 +194,36 @@ function DoorHeader() {
                 border: "1px solid rgba(255,255,255,0.10)",
               }}
             >
-              {lang === "ko" ? "권" : "EK"}
+              {user?.initials || "?"}
             </div>
             <div className="hidden lg:flex flex-col leading-tight">
               <span style={{ fontSize: 12, fontWeight: 600, color: "#fff" }}>
-                {lang === "ko" ? "권은희 차장" : "Eunhee Kwon"}
+                {user?.displayName || "Guest"}
               </span>
               <span style={{ fontSize: 10, color: "rgba(255,255,255,0.45)" }}>
-                F&amp;F · {lang === "ko" ? "ST사업부" : "ST Business"}
+                {user?.licensee || "—"} · {user?.jobTitle || ""}
               </span>
             </div>
+            <button
+              onClick={logout}
+              title="Logout"
+              aria-label="Logout"
+              style={{
+                marginLeft: 4,
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.62)",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+            </button>
           </div>
         </div>
       </div>
@@ -202,6 +236,7 @@ function DoorHeader() {
  * ============================================================ */
 function DoorHero() {
   const { t, lang } = useLang();
+  const { user } = useAuth();
 
   return (
     <section className="relative mx-auto max-w-[1440px] px-8 pt-16 pb-12">
@@ -230,7 +265,22 @@ function DoorHero() {
                 boxShadow: "0 0 8px #4ade80",
               }}
             />
-            {t.door.welcome} · {lang === "ko" ? "권은희 차장" : "Eunhee Kwon"}
+            {t.door.welcome} · {user?.displayName || "Guest"}
+            {user?.licensee && (
+              <span
+                style={{
+                  marginLeft: 6,
+                  padding: "1px 7px",
+                  borderRadius: 9999,
+                  background: "rgba(255,255,255,0.08)",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  letterSpacing: 0.5,
+                }}
+              >
+                {user.licensee}
+              </span>
+            )}
           </div>
 
           <h1
@@ -417,7 +467,7 @@ function DoorModules() {
           status={{ label: t.common.live, kind: "live" }}
         />
         <ModuleCard
-          href="/atelier/inspector"
+          href="/atelier/inspector/movin"
           code="02 · AI"
           subtitle={t.door.mod_atelier_subtitle}
           title={t.door.mod_atelier_title}
@@ -498,7 +548,7 @@ function DoorModules() {
           status={{ label: t.common.preview, kind: "preview" }}
         />
         <ModuleCard
-          href="/atelier/inspector"
+          href="/atelier/inspector/movin"
           code="06"
           subtitle={t.door.mod_codex_subtitle}
           title={t.door.mod_codex_title}
@@ -531,8 +581,8 @@ function DoorFooter() {
       time: lang === "ko" ? "2분 전" : "2m ago",
       actor: "ATELIER ONE",
       action: t.door.activity_atelier_flagged,
-      target: "SF-26FW-AP-0042 · Verdict C",
-      href: "/atelier/inspector",
+      target: "Sugi France · 27SS 28 SKU · Verdict B",
+      href: "/atelier/inspector/movin",
     },
     {
       time: lang === "ko" ? "47분 전" : "47m ago",
@@ -630,7 +680,7 @@ function DoorFooter() {
             <QuickAction
               href="/atelier/inspector/movin"
               icon="🔥"
-              title="MOVIN 27SS · 실데이터 검수"
+              title="Sugi France 27SS · 실데이터 검수"
               body="라이센시 6 PDF · 28 SKU · 자동 등급 산출"
               accent="var(--color-accent-red)"
             />

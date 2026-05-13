@@ -11,6 +11,7 @@ import Link from "next/link";
 import TacchiniSymbol from "@/components/brand/TacchiniSymbol";
 import LanguageToggle from "@/components/common/LanguageToggle";
 import { useLang } from "@/lib/i18n/LanguageProvider";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 interface NavItem {
   label: string;
@@ -73,6 +74,7 @@ const ICONS = {
 
 export default function Sidebar({ active = "dashboard" }: SidebarProps) {
   const { t, lang } = useLang();
+  const { user, logout } = useAuth();
 
   const groups: NavGroup[] = [
     {
@@ -81,7 +83,7 @@ export default function Sidebar({ active = "dashboard" }: SidebarProps) {
         { label: t.sidebar.nav_dashboard, href: "/console", icon: ICONS.dashboard, active: active === "dashboard" },
         { label: t.sidebar.nav_licensees, href: "/licensees", icon: ICONS.licensees, badge: 6 },
         { label: t.sidebar.nav_royalty, href: "/royalty", icon: ICONS.royalty, badge: "3" },
-        { label: t.sidebar.nav_design, href: "/atelier/inspector", icon: ICONS.design, badge: "2", active: active === "design" },
+        { label: t.sidebar.nav_design, href: "/atelier/inspector/movin", icon: ICONS.design, badge: "2", active: active === "design" },
         { label: t.sidebar.nav_calendar, href: "/calendar", icon: ICONS.calendar },
         { label: t.sidebar.nav_plans, href: "/plans", icon: ICONS.plan },
         { label: t.sidebar.nav_contracts, href: "/contracts", icon: ICONS.contract },
@@ -90,7 +92,7 @@ export default function Sidebar({ active = "dashboard" }: SidebarProps) {
     {
       label: t.sidebar.group_atelier,
       items: [
-        { label: t.sidebar.nav_inspector, href: "/atelier/inspector", icon: ICONS.inspector, active: active === "inspector" },
+        { label: t.sidebar.nav_inspector, href: "/atelier/inspector/movin", icon: ICONS.inspector, active: active === "inspector" },
         { label: t.sidebar.nav_studio, href: "/atelier/studio", icon: ICONS.studio },
         { label: t.sidebar.nav_mirror, href: "/atelier/mirror", icon: ICONS.mirror },
         { label: t.sidebar.nav_codex, href: "/atelier/codex", icon: ICONS.codex },
@@ -168,9 +170,11 @@ export default function Sidebar({ active = "dashboard" }: SidebarProps) {
               ST
             </span>
             <span className="flex flex-col items-start">
-              <span style={{ fontSize: 12, fontWeight: 700 }}>{t.sidebar.tenant_org}</span>
+              <span style={{ fontSize: 12, fontWeight: 700 }}>
+                {user?.licensee || t.sidebar.tenant_org}
+              </span>
               <span style={{ fontSize: 10, color: "var(--sidebar-section-label)", fontWeight: 500 }}>
-                {t.sidebar.tenant_dept}
+                {user?.role === "Licensee" ? "Licensee · STE" : t.sidebar.tenant_dept}
               </span>
             </span>
           </span>
@@ -241,34 +245,76 @@ export default function Sidebar({ active = "dashboard" }: SidebarProps) {
         style={{ borderTop: "1px solid var(--sidebar-divider)" }}
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div
               style={{
                 width: 28,
                 height: 28,
                 borderRadius: 9999,
-                background: "linear-gradient(135deg, #5b8fd1, #002C5F)",
+                background:
+                  user?.role === "Licensee"
+                    ? "linear-gradient(135deg, var(--color-accent-red), #7a0019)"
+                    : "linear-gradient(135deg, #5b8fd1, #002C5F)",
                 color: "#fff",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 11,
                 fontWeight: 700,
+                flexShrink: 0,
               }}
             >
-              {lang === "ko" ? "권" : "EK"}
+              {user?.initials || "?"}
             </div>
-            <div className="flex flex-col leading-tight">
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#fff" }}>
-                {lang === "ko" ? "권은희 차장" : "Eunhee Kwon"}
+            <div className="flex flex-col leading-tight min-w-0">
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "#fff",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {user?.displayName || "Guest"}
               </span>
-              <span style={{ fontSize: 10, color: "var(--sidebar-section-label)" }}>
-                {t.sidebar.user_role}
+              <span
+                style={{
+                  fontSize: 10,
+                  color: "var(--sidebar-section-label)",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {user?.jobTitle || t.sidebar.user_role}
               </span>
             </div>
           </div>
           <LanguageToggle variant="ghost" size="sm" />
         </div>
+
+        {/* Logout 버튼 */}
+        {user && (
+          <button
+            onClick={logout}
+            className="mt-3 w-full flex items-center justify-center gap-2 transition-colors"
+            style={{
+              padding: "7px 10px",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 8,
+              color: "var(--sidebar-link)",
+              fontSize: 11,
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+            Logout
+          </button>
+        )}
         <div
           className="mt-3 t-fine flex items-center justify-between gap-2"
           style={{ color: "var(--sidebar-section-label)", letterSpacing: 1.5 }}
