@@ -308,6 +308,161 @@ export const dictionary = {
       group_g2: "G2 격상/종료",
       group_g3: "G3 장기 운영",
     },
+
+    /* ===== MOVIN Inspector (실데이터 검수) ===== */
+    movin: {
+      breadcrumb_inspector: "Inspector",
+      breadcrumb_licensee: "Sugi France · 27SS",
+      header_title: "Sugi France · 27SS Lifestyle Man",
+      header_subtitle: "라이센시 PDF 6개 자동 파싱 · 5 Pillars 검수 룰 · Brandbook 2026 기반",
+      live_prototype: "LIVE PROTOTYPE",
+      step_upload: "1 · Upload",
+      step_analyzing: "2 · Analyzing",
+      step_result: "3 · Result",
+      total_inspected: (n: number) => `${n} SKUs 자동검수 완료`,
+      guide_button: "검수 기준 보기",
+      back_to_lines: "← 라인 목록",
+      reset_flow: "↺ 다시 업로드",
+
+      /* Step 1 — Upload */
+      step1_label: "Step 1 · Upload",
+      step1_title: "CAD 패키지 업로드",
+      step1_body:
+        "라이센시가 시즌 패키지(라인별 PDF · 각각 여러 SKU 포함)를 업로드하면 ATELIER ONE이 텍스트 추출 → SKU 분리 → 5 Pillars 자동 검수합니다.",
+      drop_main: "CAD · PDF · 이미지 패키지를 끌어다 놓으세요",
+      drop_sub:
+        "지원 포맷: .pdf .png .jpg .ai .psd · 라인당 1개 PDF 권장 · 라이센시당 최대 1 GB",
+      demo_intro: "데모용으로 Sugi France 27SS 실 제출본 사용",
+      start_button: "검수 시작 →",
+      files_label: (n: number) => `제출된 파일 — ${n} PDFs`,
+      file_ready: "Ready",
+      file_sku_unit: "SKUs",
+      submission_label: "Submission",
+      submission_season: "Season",
+      submission_category: "Category",
+      submission_group: "Group",
+      submission_g1: "G1 신규",
+      submission_files: "Files",
+      submission_size: "Total size",
+      submission_skus: "Total SKUs",
+      pdfs_unit: "PDFs",
+      pieces: "개",
+      rules_label: "Auto-Inspection 룰",
+      rules_p1: "Italian Tennis Heritage (5 sub)",
+      rules_p2: "Elegant Functionalism (6 sub · ×2 가중)",
+      rules_p3: "Court-to-Social Lifestyle (4 sub)",
+      rules_p4: "Body-Lined Silhouette (5 sub)",
+      rules_p5: "Quiet Performance (6 sub)",
+      rules_total: "총 26 sub-rules + 8 ABSOLUTE NO · Brandbook 2026 기반",
+
+      /* Step 2 — Analyzing */
+      step2_title: "ATELIER ONE · Auto-Inspecting",
+      step2_subtitle: (skus: number, lines: number) =>
+        `Sugi France 27SS Lifestyle Man · ${skus} SKUs · ${lines} lines`,
+      step2_phase1: (n: number) =>
+        `${n}개 PDF 파싱 중 (T1_ACE · T1_BAGEL · T1_NET · ...)`,
+      step2_phase2: (n: number) =>
+        `${n}개 SKU · 소재 비율 · TCX 컬러 코드 추출`,
+      step2_phase3: "5 Universal Pillars 적용 (26 sub-rules · Brandbook 2026)",
+      step2_phase4: "ABSOLUTE NO 8 검증 · SKU별 Verdict 산출",
+      step2_phase5: "라인 등급 + 라이센시 종합 등급 집계",
+      step2_inprogress: "진행 중",
+
+      /* Step 3 — Result */
+      step3_overall_label: "Licensee Verdict · Submission Summary",
+      step3_overall_caption: (skus: number, lines: number, time: string) =>
+        `${skus} SKUs · ${lines} lines · 검수: ${time}`,
+      stat_avg_score: "평균 등급 점수",
+      stat_a_label: "A · Approve",
+      stat_b_label: "B · Approve w/ Notes",
+      stat_cd_label: "C / D · 수정 필요",
+      verdict_distribution: "Verdict Distribution",
+      lines_label: "6 LINES · 라인을 클릭하면 SKU 상세를 볼 수 있습니다",
+      line_stats_sku: "SKU",
+      line_stats_avg: "평균 점수",
+      line_pillars_inspected: "5 Pillars 검수 완료",
+      line_detail_cta: "SKU 상세 →",
+      sku_score_label: "5 Pillars 점수",
+      sku_fabric: "fabric",
+      sku_colors: "colors",
+      sku_more: (n: number) => `+ ${n}건 더보기`,
+
+      /* Verdict 라벨 */
+      verdict_a_label: "Approve",
+      verdict_b_label: "Approve w/ Notes",
+      verdict_c_label: "Minor Revise",
+      verdict_d_label: "Major Revise",
+    },
+
+    /* ===== 5 Pillars Guide 페이지 ===== */
+    guide: {
+      breadcrumb_guide: "Brand Codex · 검수 가이드",
+      back_to_inspector: "← Inspector로 돌아가기",
+      hero_eyebrow: "AI INSPECTION CRITERIA",
+      hero_title: "5 Universal Pillars",
+      hero_subtitle:
+        "Sergio Tacchini Brandbook 2026 기반 객관 검수 기준. AI가 단계적·정량적으로 평가하는 5개 축.",
+      hero_cta_explore: "5 Pillars 둘러보기",
+      hero_cta_inspector: "라이브 데모 보기",
+
+      why_label: "WHY THESE 5 PILLARS",
+      why_title: "왜 이 5개 축인가?",
+      why_body:
+        "주관적 디자인 평가가 아닌, 60년 헤리티지 + Brandbook 2026의 모든 디자인 원칙을 5축으로 정량화했습니다. 라이센시·HQ·디자이너 누구나 같은 기준으로 같은 결론에 도달합니다.",
+      why_stat_1_value: "26",
+      why_stat_1_label: "Sub-Rules (Pillar 세부 검수 규정)",
+      why_stat_2_value: "8",
+      why_stat_2_label: "ABSOLUTE NO (브랜드북 명시 금지)",
+      why_stat_3_value: "2026",
+      why_stat_3_label: "Brandbook (글로벌 공식 기준)",
+      why_stat_4_value: "100%",
+      why_stat_4_label: "재현 가능성 (같은 디자인 → 같은 결과)",
+
+      pillars_label: "THE 5 PILLARS",
+      pillars_title: "검수의 5개 축",
+      pillar_pass_threshold: "통과 기준",
+      pillar_sub_rules_count: (n: number) => `${n}개 sub-rules`,
+      pillar_weight: "가중치 ×2",
+      pillar_brandbook_quote: "Brandbook 인용",
+      pillar_expand: "세부 규정 보기",
+      pillar_collapse: "접기",
+
+      process_label: "AI INSPECTION PROCESS",
+      process_title: "AI는 이렇게 검수합니다",
+      process_body:
+        "단순 AI 응답이 아닙니다. 각 단계는 명시적·정량적 룰을 거치며, 사람이 검토 가능한 근거를 남깁니다.",
+      process_step1_title: "PDF Parsing",
+      process_step1_body: "라이센시 CAD 패키지에서 SKU·소재·컬러 자동 추출",
+      process_step2_title: "Composition Check",
+      process_step2_body: "P2.4 성분 비율 정량 검증 (Brandbook p.6 표 기준)",
+      process_step3_title: "Color Mapping",
+      process_step3_body: "P5.1 TCX 컬러 → ST 허용 6색 자동 매핑",
+      process_step4_title: "Pillar Scoring",
+      process_step4_body: "5축 × sub-rules 적용 → SKU별 0-100점 산출",
+      process_step5_title: "Verdict + Report",
+      process_step5_body: "Verdict A/B/C/D 등급 → AI-Report 자동 생성",
+
+      objectivity_label: "OBJECTIVITY",
+      objectivity_title: "주관 아닌 객관",
+      obj_card_1_title: "Brandbook 직접 인용",
+      obj_card_1_body:
+        "모든 위반에는 Brandbook 페이지·문장이 함께 표시됩니다. 라이센시가 검증·반론 가능.",
+      obj_card_2_title: "정량 측정 우선",
+      obj_card_2_body:
+        "성분 비율(%), 컬러 HEX/HSV, 사이즈(cm) 등 측정 가능한 값으로 1차 판정.",
+      obj_card_3_title: "그룹별 차등 임계값",
+      obj_card_3_body:
+        "G1(신규)·G2(격상)·G3(장기) 라이센시별로 검수 강도가 다릅니다. 일률 적용 ❌.",
+      obj_card_4_title: "사람 게이트",
+      obj_card_4_body:
+        "AI 신뢰도 낮은 항목은 HQ 디자이너가 최종 판단. AI는 의견만 제시.",
+
+      direction_label: "BRAND DIRECTION",
+      direction_title: "5 Pillars가 만드는 ST의 미래",
+      direction_body:
+        "5축은 단순 검수 도구가 아닌, ST의 글로벌 일관성을 만드는 정합 시스템입니다. 라이센시 6개사가 같은 언어로 같은 브랜드를 만들도록.",
+      direction_cta: "Inspector 라이브 데모",
+    },
   },
 
   en: {
@@ -599,6 +754,161 @@ export const dictionary = {
       group_g1: "G1 New",
       group_g2: "G2 Elevation/End",
       group_g3: "G3 Long-term",
+    },
+
+    /* ===== MOVIN Inspector (live data) ===== */
+    movin: {
+      breadcrumb_inspector: "Inspector",
+      breadcrumb_licensee: "Sugi France · 27SS",
+      header_title: "Sugi France · 27SS Lifestyle Man",
+      header_subtitle:
+        "6 licensee PDFs auto-parsed · 5 Pillars inspection rules · Brandbook 2026 based",
+      live_prototype: "LIVE PROTOTYPE",
+      step_upload: "1 · Upload",
+      step_analyzing: "2 · Analyzing",
+      step_result: "3 · Result",
+      total_inspected: (n: number) => `${n} SKUs auto-inspected`,
+      guide_button: "Inspection Criteria",
+      back_to_lines: "← Back to Lines",
+      reset_flow: "↺ Re-upload",
+
+      /* Step 1 — Upload */
+      step1_label: "Step 1 · Upload",
+      step1_title: "Upload CAD Package",
+      step1_body:
+        "When a licensee uploads a season package (one PDF per line, multiple SKUs each), ATELIER ONE auto-extracts text → splits SKUs → runs 5 Pillars inspection.",
+      drop_main: "Drop CAD · PDF · Image package here",
+      drop_sub:
+        "Supported: .pdf .png .jpg .ai .psd · 1 PDF per line recommended · max 1 GB per licensee",
+      demo_intro: "Demo uses Sugi France's actual 27SS submission",
+      start_button: "Start Inspection →",
+      files_label: (n: number) => `Submitted Files — ${n} PDFs`,
+      file_ready: "Ready",
+      file_sku_unit: "SKUs",
+      submission_label: "Submission",
+      submission_season: "Season",
+      submission_category: "Category",
+      submission_group: "Group",
+      submission_g1: "G1 New",
+      submission_files: "Files",
+      submission_size: "Total size",
+      submission_skus: "Total SKUs",
+      pdfs_unit: "PDFs",
+      pieces: "",
+      rules_label: "Auto-Inspection Rules",
+      rules_p1: "Italian Tennis Heritage (5 sub)",
+      rules_p2: "Elegant Functionalism (6 sub · ×2 weight)",
+      rules_p3: "Court-to-Social Lifestyle (4 sub)",
+      rules_p4: "Body-Lined Silhouette (5 sub)",
+      rules_p5: "Quiet Performance (6 sub)",
+      rules_total: "Total 26 sub-rules + 8 ABSOLUTE NO · Brandbook 2026 based",
+
+      /* Step 2 — Analyzing */
+      step2_title: "ATELIER ONE · Auto-Inspecting",
+      step2_subtitle: (skus: number, lines: number) =>
+        `Sugi France 27SS Lifestyle Man · ${skus} SKUs · ${lines} lines`,
+      step2_phase1: (n: number) =>
+        `Parsing ${n} PDFs (T1_ACE · T1_BAGEL · T1_NET · ...)`,
+      step2_phase2: (n: number) =>
+        `Extracting ${n} SKUs · Fabric composition · TCX colors`,
+      step2_phase3: "Applying 5 Universal Pillars (26 sub-rules · Brandbook 2026)",
+      step2_phase4: "Checking 8 ABSOLUTE NO · Computing per-SKU Verdict",
+      step2_phase5: "Aggregating Line grades + Licensee overall grade",
+      step2_inprogress: "in progress",
+
+      /* Step 3 — Result */
+      step3_overall_label: "Licensee Verdict · Submission Summary",
+      step3_overall_caption: (skus: number, lines: number, time: string) =>
+        `${skus} SKUs · ${lines} lines · Inspected at ${time}`,
+      stat_avg_score: "Average Grade Point",
+      stat_a_label: "A · Approve",
+      stat_b_label: "B · Approve w/ Notes",
+      stat_cd_label: "C / D · Need Revision",
+      verdict_distribution: "Verdict Distribution",
+      lines_label: "6 LINES · Click a line to see SKU details",
+      line_stats_sku: "SKU",
+      line_stats_avg: "Avg score",
+      line_pillars_inspected: "5 Pillars inspected",
+      line_detail_cta: "SKU Detail →",
+      sku_score_label: "5 Pillars Score",
+      sku_fabric: "fabric",
+      sku_colors: "colors",
+      sku_more: (n: number) => `+ ${n} more`,
+
+      verdict_a_label: "Approve",
+      verdict_b_label: "Approve w/ Notes",
+      verdict_c_label: "Minor Revise",
+      verdict_d_label: "Major Revise",
+    },
+
+    /* ===== 5 Pillars Guide page ===== */
+    guide: {
+      breadcrumb_guide: "Brand Codex · Inspection Guide",
+      back_to_inspector: "← Back to Inspector",
+      hero_eyebrow: "AI INSPECTION CRITERIA",
+      hero_title: "5 Universal Pillars",
+      hero_subtitle:
+        "Objective inspection criteria based on Sergio Tacchini Brandbook 2026. AI evaluates 5 axes step-by-step, quantitatively.",
+      hero_cta_explore: "Explore the 5 Pillars",
+      hero_cta_inspector: "See Live Demo",
+
+      why_label: "WHY THESE 5 PILLARS",
+      why_title: "Why these 5 axes?",
+      why_body:
+        "Not subjective design judgment — 60 years of heritage + every design principle in Brandbook 2026, quantified into 5 axes. Licensees, HQ, and designers reach the same conclusion from the same criteria.",
+      why_stat_1_value: "26",
+      why_stat_1_label: "Sub-Rules (Pillar detailed inspection rules)",
+      why_stat_2_value: "8",
+      why_stat_2_label: "ABSOLUTE NO (Brandbook explicit prohibitions)",
+      why_stat_3_value: "2026",
+      why_stat_3_label: "Brandbook (Global official baseline)",
+      why_stat_4_value: "100%",
+      why_stat_4_label: "Reproducibility (same design → same result)",
+
+      pillars_label: "THE 5 PILLARS",
+      pillars_title: "The 5 Inspection Axes",
+      pillar_pass_threshold: "Pass threshold",
+      pillar_sub_rules_count: (n: number) => `${n} sub-rules`,
+      pillar_weight: "Weight ×2",
+      pillar_brandbook_quote: "Brandbook quote",
+      pillar_expand: "View sub-rules",
+      pillar_collapse: "Collapse",
+
+      process_label: "AI INSPECTION PROCESS",
+      process_title: "Here's how AI inspects",
+      process_body:
+        "Not just an AI response — each step passes through explicit, quantitative rules and leaves a human-reviewable trail.",
+      process_step1_title: "PDF Parsing",
+      process_step1_body: "Auto-extract SKUs, fabric, colors from licensee CAD package",
+      process_step2_title: "Composition Check",
+      process_step2_body: "P2.4 composition % quantitative check (Brandbook p.6 table)",
+      process_step3_title: "Color Mapping",
+      process_step3_body: "P5.1 TCX color → auto-map to ST 6 allowed colors",
+      process_step4_title: "Pillar Scoring",
+      process_step4_body: "Apply 5 axes × sub-rules → per-SKU 0-100 score",
+      process_step5_title: "Verdict + Report",
+      process_step5_body: "Verdict A/B/C/D grade → auto-generate AI-Report",
+
+      objectivity_label: "OBJECTIVITY",
+      objectivity_title: "Objective, not subjective",
+      obj_card_1_title: "Direct Brandbook citation",
+      obj_card_1_body:
+        "Every violation includes the Brandbook page and sentence. Licensees can verify and contest.",
+      obj_card_2_title: "Quantitative first",
+      obj_card_2_body:
+        "Composition %, color HEX/HSV, size (cm) — measurable values for first-pass judgment.",
+      obj_card_3_title: "Group-tiered thresholds",
+      obj_card_3_body:
+        "G1 (new) · G2 (elevation) · G3 (long-term) — inspection strictness differs by licensee group. No one-size-fits-all.",
+      obj_card_4_title: "Human gate",
+      obj_card_4_body:
+        "Low-confidence items go to HQ designer for final judgment. AI provides opinion only.",
+
+      direction_label: "BRAND DIRECTION",
+      direction_title: "Where 5 Pillars take ST",
+      direction_body:
+        "More than inspection — a coherence system that builds ST's global consistency. 6 licensees, one language, one brand.",
+      direction_cta: "Inspector Live Demo",
     },
   },
 };

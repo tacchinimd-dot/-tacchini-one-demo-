@@ -101,10 +101,11 @@ function HeaderBar({
   onResetFlow: () => void;
   onBack: () => void;
 }) {
+  const { t } = useLang();
   const stepLabels: Record<DemoStep, string> = {
-    upload: "1 · Upload",
-    analyzing: "2 · Analyzing",
-    result: "3 · Result",
+    upload: t.movin.step_upload,
+    analyzing: t.movin.step_analyzing,
+    result: t.movin.step_result,
   };
 
   return (
@@ -136,10 +137,10 @@ function HeaderBar({
           <span>STE Operations</span>
           <span style={{ opacity: 0.4 }}>›</span>
           <Link href="/atelier/inspector" style={{ color: "var(--color-ink-muted-48)" }}>
-            Inspector
+            {t.movin.breadcrumb_inspector}
           </Link>
           <span style={{ opacity: 0.4 }}>›</span>
-          <span style={{ color: "var(--color-ink)" }}>Sugi France · 27SS</span>
+          <span style={{ color: "var(--color-ink)" }}>{t.movin.breadcrumb_licensee}</span>
         </div>
         <div className="flex items-center gap-3">
           <span
@@ -156,7 +157,7 @@ function HeaderBar({
             {stepLabels[step]}
           </span>
           {step === "result" && (
-            <span className="t-mono">{MOVIN_OVERALL.totalSKU} SKUs auto-inspected</span>
+            <span className="t-mono">{t.movin.total_inspected(MOVIN_OVERALL.totalSKU)}</span>
           )}
         </div>
       </div>
@@ -164,7 +165,7 @@ function HeaderBar({
       <div className="flex items-center justify-between px-8 py-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="h-display-md">Sugi France · 27SS Lifestyle Man</h1>
+            <h1 className="h-display-md">{t.movin.header_title}</h1>
             <span
               style={{
                 fontSize: 10,
@@ -176,38 +177,33 @@ function HeaderBar({
                 letterSpacing: 1,
               }}
             >
-              LIVE PROTOTYPE
+              {t.movin.live_prototype}
             </span>
           </div>
           <p
             className="mt-1"
             style={{ color: "var(--color-ink-muted-48)", fontSize: 13 }}
           >
-            라이센시 PDF 6개 자동 파싱 · 5 Pillars 검수 룰 · Brandbook 2026 기반
+            {t.movin.header_subtitle}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {step === "result" && (
-            <a
-              href={APEX_REPORT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary"
-              title="Open Full AI-Report"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
-              AI-Report 열기
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17 17 7" /><path d="M7 7h10v10" /></svg>
-            </a>
-          )}
+          <Link
+            href="/atelier/codex"
+            className="btn btn-primary"
+            title={t.movin.guide_button}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
+            {t.movin.guide_button}
+          </Link>
           {selectedLine && (
             <button onClick={onBack} className="btn btn-ghost">
-              ← 라인 목록
+              {t.movin.back_to_lines}
             </button>
           )}
           {step !== "upload" && (
             <button onClick={onResetFlow} className="btn btn-ghost">
-              ↺ 다시 업로드
+              {t.movin.reset_flow}
             </button>
           )}
         </div>
@@ -220,6 +216,7 @@ function HeaderBar({
  * STEP 1 — Upload (Sugi France가 제출하는 27SS CAD PDF 패키지)
  * ============================================================ */
 function UploadStep({ onStart }: { onStart: () => void }) {
+  const { t } = useLang();
   const pdfs = MOVIN_LINES.map((l) => ({
     file: l.file,
     line: l.line,
@@ -232,14 +229,13 @@ function UploadStep({ onStart }: { onStart: () => void }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
       <div className="card" style={{ padding: 32 }}>
-        <div className="t-label">Step 1 · Upload</div>
-        <h2 className="h-display-md mt-2">CAD 패키지 업로드</h2>
+        <div className="t-label">{t.movin.step1_label}</div>
+        <h2 className="h-display-md mt-2">{t.movin.step1_title}</h2>
         <p
           className="mt-2"
           style={{ color: "var(--color-ink-muted-80)", fontSize: 14, lineHeight: 1.55 }}
         >
-          라이센시가 시즌 패키지(라인별 PDF · 각각 여러 SKU 포함)를 업로드하면
-          ATELIER ONE이 텍스트 추출 → SKU 분리 → 5 Pillars 자동 검수합니다.
+          {t.movin.step1_body}
         </p>
 
         {/* Upload area */}
@@ -253,13 +249,13 @@ function UploadStep({ onStart }: { onStart: () => void }) {
         >
           <UploadIcon />
           <p className="mt-4" style={{ fontSize: 15, fontWeight: 600 }}>
-            CAD · PDF · 이미지 패키지를 끌어다 놓으세요
+            {t.movin.drop_main}
           </p>
           <p
             className="mt-1.5 t-caption"
             style={{ color: "var(--color-ink-muted-48)" }}
           >
-            지원 포맷: .pdf .png .jpg .ai .psd · 라인당 1개 PDF 권장 · 라이센시당 최대 1 GB
+            {t.movin.drop_sub}
           </p>
           <div
             className="mt-6 mx-auto inline-flex items-center gap-2 px-4 py-2.5"
@@ -270,17 +266,17 @@ function UploadStep({ onStart }: { onStart: () => void }) {
             }}
           >
             <span className="t-caption" style={{ color: "var(--color-ink-muted-48)" }}>
-              데모용으로 Sugi France 27SS 실 제출본 사용
+              {t.movin.demo_intro}
             </span>
             <button onClick={onStart} className="btn btn-primary btn-sm">
-              검수 시작 →
+              {t.movin.start_button}
             </button>
           </div>
         </div>
 
         {/* 업로드된 6 PDF 미리보기 */}
         <div className="mt-6">
-          <div className="t-label mb-3">제출된 파일 — {pdfs.length} PDFs</div>
+          <div className="t-label mb-3">{t.movin.files_label(pdfs.length)}</div>
           <ul className="space-y-2">
             {pdfs.map((p) => (
               <li
@@ -313,7 +309,7 @@ function UploadStep({ onStart }: { onStart: () => void }) {
                     className="t-mono mt-0.5"
                     style={{ fontSize: 10, color: "var(--color-ink-muted-48)" }}
                   >
-                    {p.line} line · {p.skuCount} SKUs · {p.sizeMB.toFixed(1)} MB
+                    {p.line} · {p.skuCount} {t.movin.file_sku_unit} · {p.sizeMB.toFixed(1)} MB
                   </div>
                 </div>
                 <span
@@ -323,7 +319,7 @@ function UploadStep({ onStart }: { onStart: () => void }) {
                     fontWeight: 600,
                   }}
                 >
-                  ✓ Ready
+                  ✓ {t.movin.file_ready}
                 </span>
               </li>
             ))}
@@ -334,7 +330,7 @@ function UploadStep({ onStart }: { onStart: () => void }) {
       {/* Tenant + Inspection Rules */}
       <div className="space-y-4">
         <div className="card" style={{ padding: 20 }}>
-          <div className="t-label">Submission</div>
+          <div className="t-label">{t.movin.submission_label}</div>
           <div className="mt-3 flex items-center gap-3">
             <div
               style={{
@@ -363,10 +359,10 @@ function UploadStep({ onStart }: { onStart: () => void }) {
             </div>
           </div>
           <dl className="mt-4 space-y-1.5 t-caption">
-            <Row k="Season" v="27SS" />
-            <Row k="Category" v="Lifestyle Man" />
+            <Row k={t.movin.submission_season} v="27SS" />
+            <Row k={t.movin.submission_category} v="Lifestyle Man" />
             <Row
-              k="Group"
+              k={t.movin.submission_group}
               v={
                 <span
                   className="pill"
@@ -376,42 +372,45 @@ function UploadStep({ onStart }: { onStart: () => void }) {
                     borderColor: "transparent",
                   }}
                 >
-                  G1 신규
+                  {t.movin.submission_g1}
                 </span>
               }
             />
-            <Row k="Files" v={`${pdfs.length} PDFs`} />
-            <Row k="Total size" v={`${totalSize.toFixed(1)} MB`} />
-            <Row k="Total SKUs" v={`${totalSku} 개`} />
+            <Row k={t.movin.submission_files} v={`${pdfs.length} ${t.movin.pdfs_unit}`} />
+            <Row k={t.movin.submission_size} v={`${totalSize.toFixed(1)} MB`} />
+            <Row
+              k={t.movin.submission_skus}
+              v={`${totalSku}${t.movin.pieces ? " " + t.movin.pieces : ""}`}
+            />
           </dl>
         </div>
 
         <div className="card" style={{ padding: 20 }}>
-          <div className="t-label">Auto-Inspection 룰</div>
+          <div className="t-label">{t.movin.rules_label}</div>
           <ul
             className="mt-3 space-y-2 t-caption"
             style={{ color: "var(--color-ink-muted-80)" }}
           >
             <li>
-              <strong>P1.</strong> Italian Tennis Heritage (5 sub)
+              <strong>P1.</strong> {t.movin.rules_p1}
             </li>
             <li>
-              <strong>P2.</strong> Elegant Functionalism (6 sub · ×2 가중)
+              <strong>P2.</strong> {t.movin.rules_p2}
             </li>
             <li>
-              <strong>P3.</strong> Court-to-Social Lifestyle (4 sub)
+              <strong>P3.</strong> {t.movin.rules_p3}
             </li>
             <li>
-              <strong>P4.</strong> Body-Lined Silhouette (5 sub)
+              <strong>P4.</strong> {t.movin.rules_p4}
             </li>
             <li>
-              <strong>P5.</strong> Quiet Performance (6 sub)
+              <strong>P5.</strong> {t.movin.rules_p5}
             </li>
             <li
               className="pt-2 mt-2"
               style={{ borderTop: "1px dashed var(--color-hairline)" }}
             >
-              총 26 sub-rules + 8 ABSOLUTE NO · Brandbook 2026 기반
+              {t.movin.rules_total}
             </li>
           </ul>
         </div>
@@ -474,13 +473,14 @@ function Row({ k, v }: { k: string; v: React.ReactNode }) {
  * STEP 2 — Analyzing (PDF 파싱 → SKU 추출 → 5 Pillars → 등급 산출)
  * ============================================================ */
 function AnalyzingStep({ onDone }: { onDone: () => void }) {
+  const { t } = useLang();
   const [phase, setPhase] = useState(0);
   const phases = [
-    `Parsing ${MOVIN_LINES.length} PDFs (T1_ACE · T1_BAGEL · T1_NET · ...)`,
-    `Extracting ${MOVIN_OVERALL.totalSKU} SKUs · Fabric Composition · TCX Colors`,
-    "Applying 5 Universal Pillars (26 sub-rules · Brandbook 2026)",
-    "Checking 8 ABSOLUTE NO · Computing per-SKU Verdict",
-    "Aggregating Line Grades + Licensee Overall Grade",
+    t.movin.step2_phase1(MOVIN_LINES.length),
+    t.movin.step2_phase2(MOVIN_OVERALL.totalSKU),
+    t.movin.step2_phase3,
+    t.movin.step2_phase4,
+    t.movin.step2_phase5,
   ];
 
   useEffect(() => {
@@ -537,10 +537,10 @@ function AnalyzingStep({ onDone }: { onDone: () => void }) {
           <PulsingSymbol />
         </div>
         <h2 className="h-display-md" style={{ color: "#fff" }}>
-          ATELIER ONE · Auto-Inspecting
+          {t.movin.step2_title}
         </h2>
         <p className="t-lead mt-3" style={{ color: "rgba(255,255,255,0.78)", fontSize: 15 }}>
-          Sugi France 27SS Lifestyle Man · {MOVIN_OVERALL.totalSKU} SKUs · {MOVIN_LINES.length} lines
+          {t.movin.step2_subtitle(MOVIN_OVERALL.totalSKU, MOVIN_LINES.length)}
         </p>
 
         <ul className="mt-10 text-left space-y-2.5 max-w-[560px] mx-auto">
@@ -587,7 +587,7 @@ function AnalyzingStep({ onDone }: { onDone: () => void }) {
                   className="animate-pulse-soft"
                   style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}
                 >
-                  in progress
+                  {t.movin.step2_inprogress}
                 </span>
               )}
             </li>
@@ -625,7 +625,15 @@ function PulsingSymbol() {
  * 라이센시 종합 카드 (상단)
  * ============================================================ */
 function OverallCard() {
+  const { t, lang } = useLang();
   const v = VERDICT_COLOR[MOVIN_OVERALL.grade];
+  const verdictLabel =
+    {
+      A: t.movin.verdict_a_label,
+      B: t.movin.verdict_b_label,
+      C: t.movin.verdict_c_label,
+      D: t.movin.verdict_d_label,
+    }[MOVIN_OVERALL.grade] || v.label;
   return (
     <div className="card" style={{ padding: 0, overflow: "hidden" }}>
       <div
@@ -664,11 +672,11 @@ function OverallCard() {
                 textTransform: "uppercase",
               }}
             >
-              {v.label}
+              {verdictLabel}
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="t-label">Licensee Verdict · Submission Summary</div>
+            <div className="t-label">{t.movin.step3_overall_label}</div>
             <div
               className="mt-2"
               style={{
@@ -684,26 +692,35 @@ function OverallCard() {
               className="t-mono mt-1"
               style={{ fontSize: 11, color: "var(--color-ink-muted-48)" }}
             >
-              Total {MOVIN_OVERALL.totalSKU} SKUs across {MOVIN_OVERALL.totalLines} lines ·
-              Inspected {new Date(MOVIN_OVERALL.generatedAt).toLocaleString("ko-KR")}
+              {t.movin.step3_overall_caption(
+                MOVIN_OVERALL.totalSKU,
+                MOVIN_OVERALL.totalLines,
+                new Date(MOVIN_OVERALL.generatedAt).toLocaleString(
+                  lang === "ko" ? "ko-KR" : "en-US",
+                ),
+              )}
             </div>
 
             <div className="mt-4 grid gap-3 grid-cols-2 md:grid-cols-4">
-              <Stat label="평균 등급 점수" value={MOVIN_OVERALL.averagePoint.toFixed(2)} suffix="/ 4.0" />
               <Stat
-                label="A · Approve"
+                label={t.movin.stat_avg_score}
+                value={MOVIN_OVERALL.averagePoint.toFixed(2)}
+                suffix="/ 4.0"
+              />
+              <Stat
+                label={t.movin.stat_a_label}
                 value={String(MOVIN_OVERALL.distribution.A)}
                 accent="var(--grade-a)"
                 suffix={`(${pct(MOVIN_OVERALL.distribution.A, MOVIN_OVERALL.totalSKU)}%)`}
               />
               <Stat
-                label="B · Conditional"
+                label={t.movin.stat_b_label}
                 value={String(MOVIN_OVERALL.distribution.B)}
                 accent="var(--color-primary)"
                 suffix={`(${pct(MOVIN_OVERALL.distribution.B, MOVIN_OVERALL.totalSKU)}%)`}
               />
               <Stat
-                label="C / D · Revise·Reject"
+                label={t.movin.stat_cd_label}
                 value={String(
                   MOVIN_OVERALL.distribution.C + MOVIN_OVERALL.distribution.D,
                 )}
@@ -724,12 +741,19 @@ function OverallCard() {
 }
 
 function DistributionBar() {
+  const { t } = useLang();
   const d = MOVIN_OVERALL.distribution;
-  const t = MOVIN_OVERALL.totalSKU;
+  const total = MOVIN_OVERALL.totalSKU;
+  const labelByGrade: Record<string, string> = {
+    A: t.movin.verdict_a_label,
+    B: t.movin.verdict_b_label,
+    C: t.movin.verdict_c_label,
+    D: t.movin.verdict_d_label,
+  };
   return (
     <div className="px-7 pb-5 pt-3">
       <div className="t-label mb-2" style={{ color: "var(--color-ink-muted-48)" }}>
-        Verdict Distribution
+        {t.movin.verdict_distribution}
       </div>
       <div className="flex w-full overflow-hidden" style={{ height: 12, borderRadius: 6 }}>
         {(["A", "B", "C", "D"] as const).map((g) => {
@@ -740,14 +764,14 @@ function DistributionBar() {
               key={g}
               title={`${g}: ${v}`}
               style={{
-                width: `${(v / t) * 100}%`,
+                width: `${(v / total) * 100}%`,
                 background: VERDICT_COLOR[g].bg,
               }}
             />
           );
         })}
       </div>
-      <div className="flex items-center gap-4 mt-2 t-caption">
+      <div className="flex items-center gap-4 mt-2 t-caption flex-wrap">
         {(["A", "B", "C", "D"] as const).map((g) => (
           <span key={g} className="flex items-center gap-1.5">
             <span
@@ -759,7 +783,7 @@ function DistributionBar() {
               }}
             />
             <span style={{ color: "var(--color-ink-muted-48)" }}>
-              {g} · {VERDICT_COLOR[g].label}
+              {g} · {labelByGrade[g]}
             </span>
             <span style={{ color: "var(--color-ink)", fontWeight: 700 }}>{d[g]}</span>
           </span>
@@ -773,10 +797,11 @@ function DistributionBar() {
  * 라인 카드 그리드
  * ============================================================ */
 function LinesGrid({ onSelect }: { onSelect: (line: string) => void }) {
+  const { t } = useLang();
   return (
     <div>
       <div className="t-label mb-3" style={{ color: "var(--color-ink-muted-48)" }}>
-        6 LINES · Click a line to see SKU details
+        {t.movin.lines_label}
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {MOVIN_LINES.map((line) => (
@@ -788,6 +813,7 @@ function LinesGrid({ onSelect }: { onSelect: (line: string) => void }) {
 }
 
 function LineCard({ line, onClick }: { line: MovinLine; onClick: () => void }) {
+  const { t, lang } = useLang();
   const v = VERDICT_COLOR[line.grade];
   return (
     <button
@@ -833,8 +859,14 @@ function LineCard({ line, onClick }: { line: MovinLine; onClick: () => void }) {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 t-caption">
-        <Mini label="SKU" value={`${line.totalSKU}개`} />
-        <Mini label="평균 점수" value={`${line.averagePoint.toFixed(2)} / 4.0`} />
+        <Mini
+          label={t.movin.line_stats_sku}
+          value={`${line.totalSKU}${lang === "ko" ? "개" : ""}`}
+        />
+        <Mini
+          label={t.movin.line_stats_avg}
+          value={`${line.averagePoint.toFixed(2)} / 4.0`}
+        />
       </div>
 
       <div className="mt-3 flex h-2 overflow-hidden rounded-full">
@@ -871,8 +903,12 @@ function LineCard({ line, onClick }: { line: MovinLine; onClick: () => void }) {
         className="mt-4 pt-3 flex items-center justify-between t-caption"
         style={{ borderTop: "1px solid var(--color-divider-soft)" }}
       >
-        <span style={{ color: "var(--color-ink-muted-48)" }}>5 Pillars 검수 완료</span>
-        <span style={{ color: "var(--color-primary)", fontWeight: 600 }}>SKU 상세 →</span>
+        <span style={{ color: "var(--color-ink-muted-48)" }}>
+          {t.movin.line_pillars_inspected}
+        </span>
+        <span style={{ color: "var(--color-primary)", fontWeight: 600 }}>
+          {t.movin.line_detail_cta}
+        </span>
       </div>
     </button>
   );
@@ -882,9 +918,17 @@ function LineCard({ line, onClick }: { line: MovinLine; onClick: () => void }) {
  * 라인 상세 — SKU 카드 리스트
  * ============================================================ */
 function LineDetail({ line, onBack }: { line: string; onBack: () => void }) {
+  const { t, lang } = useLang();
   const data = MOVIN_LINES.find((l) => l.line === line);
   if (!data) return null;
   const v = VERDICT_COLOR[data.grade];
+  const verdictLabel =
+    {
+      A: t.movin.verdict_a_label,
+      B: t.movin.verdict_b_label,
+      C: t.movin.verdict_c_label,
+      D: t.movin.verdict_d_label,
+    }[data.grade] || v.label;
 
   return (
     <div className="space-y-5">
@@ -928,14 +972,14 @@ function LineDetail({ line, onBack }: { line: string; onBack: () => void }) {
               letterSpacing: -0.3,
             }}
           >
-            {data.line} Line — {v.label}
+            {data.line} Line — {verdictLabel}
           </div>
           <div
             className="t-caption mt-1"
             style={{ color: "var(--color-ink-muted-48)" }}
           >
-            {data.gender} · {data.season} · {data.totalSKU} SKUs · 평균{" "}
-            {data.averagePoint.toFixed(2)}/4.0
+            {data.gender} · {data.season} · {data.totalSKU} SKUs ·{" "}
+            {lang === "ko" ? "평균" : "avg"} {data.averagePoint.toFixed(2)}/4.0
           </div>
         </div>
       </div>
@@ -950,6 +994,7 @@ function LineDetail({ line, onBack }: { line: string; onBack: () => void }) {
 }
 
 function SKUCard({ sku }: { sku: MovinSKU }) {
+  const { t } = useLang();
   const v = VERDICT_COLOR[sku.verdict];
   return (
     <div className="card" style={{ padding: 18 }}>
@@ -1050,7 +1095,7 @@ function SKUCard({ sku }: { sku: MovinSKU }) {
         {sku.fabricRaw && (
           <div className="t-caption" style={{ color: "var(--color-ink-muted-80)" }}>
             <span className="t-mono" style={{ color: "var(--color-ink-muted-48)" }}>
-              fabric:
+              {t.movin.sku_fabric}:
             </span>{" "}
             {sku.fabricRaw}
           </div>
@@ -1058,7 +1103,7 @@ function SKUCard({ sku }: { sku: MovinSKU }) {
         {sku.colors.length > 0 && (
           <div className="t-caption flex flex-wrap gap-1.5 items-center">
             <span className="t-mono" style={{ color: "var(--color-ink-muted-48)" }}>
-              colors:
+              {t.movin.sku_colors}:
             </span>
             {sku.colors.map((c) => {
               const cls = sku.colorClassification?.find((cc) => cc.raw === c);
@@ -1132,7 +1177,7 @@ function SKUCard({ sku }: { sku: MovinSKU }) {
           })}
           {sku.violations.length > 3 && (
             <div className="t-caption" style={{ color: "var(--color-ink-muted-48)" }}>
-              + {sku.violations.length - 3} more
+              {t.movin.sku_more(sku.violations.length - 3)}
             </div>
           )}
         </div>
