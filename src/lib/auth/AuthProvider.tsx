@@ -32,10 +32,15 @@ export interface AuthUser {
   jobTitle: string;
 }
 
+export type LoginErrorReason = "no_user" | "bad_code";
+
 interface AuthCtx {
   user: AuthUser | null;
   hydrated: boolean;
-  login: (id: string, code: string) => { ok: true } | { ok: false; reason: string };
+  login: (
+    id: string,
+    code: string,
+  ) => { ok: true } | { ok: false; reason: LoginErrorReason };
   logout: () => void;
 }
 
@@ -98,10 +103,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const normalized = id.trim().toLowerCase();
     const record = DEMO_USERS[normalized];
     if (!record) {
-      return { ok: false as const, reason: "사용자 ID를 찾을 수 없습니다" };
+      return { ok: false as const, reason: "no_user" as LoginErrorReason };
     }
     if (record.code !== code.trim()) {
-      return { ok: false as const, reason: "비밀번호(Code)가 일치하지 않습니다" };
+      return { ok: false as const, reason: "bad_code" as LoginErrorReason };
     }
     setUser(record.user);
     try {

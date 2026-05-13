@@ -309,6 +309,32 @@ export const dictionary = {
       group_g3: "G3 장기 운영",
     },
 
+    /* ===== Login Gate ===== */
+    login: {
+      brand_subtitle: "GLOBAL LICENSEE PLATFORM",
+      hero_line1: "One Voice.",
+      hero_line2: "One Brand.",
+      hero_line3: "Tacchini One.",
+      hero_body:
+        "Sergio Tacchini의 글로벌 라이센시 운영 플랫폼.\n라이센시별 발급된 ID와 Code로 로그인하세요.",
+      demo_badge: "DEMO 환경 · 6/9 컨퍼런스 프리뷰",
+      title: "Sign in",
+      subtitle: "라이센시 ID와 Code를 입력하세요.",
+      field_id: "Licensee ID",
+      field_id_placeholder: "예: roamin",
+      field_code: "Access Code",
+      field_code_placeholder: "•••••••",
+      button_loading: "로그인 중...",
+      button_signin: "로그인",
+      err_no_user: "사용자 ID를 찾을 수 없습니다",
+      err_bad_code: "비밀번호(Code)가 일치하지 않습니다",
+      demo_section: "데모 빠른 로그인",
+      demo_roamin_title: "Roamin · Sugi France",
+      demo_roamin_subtitle: "Apparel Designer · Licensee 뷰",
+      demo_kwon_title: "권은희 차장 · F&F HQ",
+      demo_kwon_subtitle: "ST사업부 · 라이센스 담당 (본사 뷰)",
+    },
+
     /* ===== MOVIN Inspector (실데이터 검수) ===== */
     movin: {
       breadcrumb_inspector: "Inspector",
@@ -754,6 +780,32 @@ export const dictionary = {
       group_g1: "G1 New",
       group_g2: "G2 Elevation/End",
       group_g3: "G3 Long-term",
+    },
+
+    /* ===== Login Gate ===== */
+    login: {
+      brand_subtitle: "GLOBAL LICENSEE PLATFORM",
+      hero_line1: "One Voice.",
+      hero_line2: "One Brand.",
+      hero_line3: "Tacchini One.",
+      hero_body:
+        "Global licensee operating platform for Sergio Tacchini.\nSign in with the ID and Code assigned to your licensee.",
+      demo_badge: "DEMO ENVIRONMENT · 6/9 Conference Preview",
+      title: "Sign in",
+      subtitle: "Enter your Licensee ID and Access Code.",
+      field_id: "Licensee ID",
+      field_id_placeholder: "e.g. roamin",
+      field_code: "Access Code",
+      field_code_placeholder: "•••••••",
+      button_loading: "Signing in...",
+      button_signin: "Sign in",
+      err_no_user: "User ID not found",
+      err_bad_code: "Access Code does not match",
+      demo_section: "Demo Quick Login",
+      demo_roamin_title: "Roamin · Sugi France",
+      demo_roamin_subtitle: "Apparel Designer · Licensee view",
+      demo_kwon_title: "Eunhee Kwon · F&F HQ",
+      demo_kwon_subtitle: "ST Business · License (HQ view)",
     },
 
     /* ===== MOVIN Inspector (live data) ===== */

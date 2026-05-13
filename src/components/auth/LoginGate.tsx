@@ -8,16 +8,24 @@
  * ============================================================ */
 
 import { useState, type ReactNode } from "react";
-import { useAuth } from "@/lib/auth/AuthProvider";
+import { useAuth, type LoginErrorReason } from "@/lib/auth/AuthProvider";
 import TacchiniSymbol from "@/components/brand/TacchiniSymbol";
 import LanguageToggle from "@/components/common/LanguageToggle";
+import { useLang } from "@/lib/i18n/LanguageProvider";
 
 export default function LoginGate({ children }: { children: ReactNode }) {
   const { user, hydrated, login } = useAuth();
+  const { t } = useLang();
   const [id, setId] = useState("");
   const [code, setCode] = useState("");
-  const [error, setError] = useState("");
+  const [errorKey, setErrorKey] = useState<LoginErrorReason | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const errorMessage: string = errorKey
+    ? errorKey === "no_user"
+      ? t.login.err_no_user
+      : t.login.err_bad_code
+    : "";
 
   /* hydration 전엔 빈 화면 (SSR/CSR 일관성) */
   if (!hydrated) {
@@ -39,24 +47,24 @@ export default function LoginGate({ children }: { children: ReactNode }) {
   /* 비인증 → 로그인 화면 */
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
+    setErrorKey(null);
     setLoading(true);
     setTimeout(() => {
       const r = login(id, code);
       setLoading(false);
-      if (!r.ok) setError(r.reason);
-    }, 400); /* 작은 로딩 시뮬레이션 */
+      if (!r.ok) setErrorKey(r.reason);
+    }, 400);
   }
 
   function loginAsDemo(demoId: string, demoCode: string) {
     setId(demoId);
     setCode(demoCode);
-    setError("");
+    setErrorKey(null);
     setLoading(true);
     setTimeout(() => {
       const r = login(demoId, demoCode);
       setLoading(false);
-      if (!r.ok) setError(r.reason);
+      if (!r.ok) setErrorKey(r.reason);
     }, 400);
   }
 
@@ -136,7 +144,7 @@ export default function LoginGate({ children }: { children: ReactNode }) {
                   marginTop: 2,
                 }}
               >
-                GLOBAL LICENSEE PLATFORM
+                {t.login.brand_subtitle}
               </div>
             </div>
           </div>
@@ -150,9 +158,9 @@ export default function LoginGate({ children }: { children: ReactNode }) {
               letterSpacing: -0.025 * 44,
             }}
           >
-            One Voice.
+            {t.login.hero_line1}
             <br />
-            One Brand.
+            {t.login.hero_line2}
             <br />
             <span
               style={{
@@ -163,12 +171,12 @@ export default function LoginGate({ children }: { children: ReactNode }) {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Tacchini One.
+              {t.login.hero_line3}
             </span>
           </h1>
 
           <p
-            className="mt-5"
+            className="mt-5 whitespace-pre-line"
             style={{
               fontSize: 15,
               lineHeight: 1.6,
@@ -176,8 +184,7 @@ export default function LoginGate({ children }: { children: ReactNode }) {
               maxWidth: 460,
             }}
           >
-            Sergio Tacchini의 글로벌 라이센시 운영 플랫폼.
-            라이센시별 발급된 ID와 Code로 로그인하세요.
+            {t.login.hero_body}
           </p>
 
           <div
@@ -203,7 +210,7 @@ export default function LoginGate({ children }: { children: ReactNode }) {
                 boxShadow: "0 0 8px #4ade80",
               }}
             />
-            DEMO ENVIRONMENT · 6/9 Conference Preview
+            {t.login.demo_badge}
           </div>
         </div>
 
@@ -249,32 +256,32 @@ export default function LoginGate({ children }: { children: ReactNode }) {
               color: "#fff",
             }}
           >
-            Sign in
+            {t.login.title}
           </h2>
           <p
             className="mt-2"
             style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}
           >
-            라이센시 ID와 Code를 입력하세요.
+            {t.login.subtitle}
           </p>
 
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
             <Field
-              label="Licensee ID"
+              label={t.login.field_id}
               value={id}
               onChange={setId}
-              placeholder="e.g. roamin"
+              placeholder={t.login.field_id_placeholder}
               autoFocus
             />
             <Field
-              label="Access Code"
+              label={t.login.field_code}
               type="password"
               value={code}
               onChange={setCode}
-              placeholder="•••••••"
+              placeholder={t.login.field_code_placeholder}
             />
 
-            {error && (
+            {errorMessage && (
               <div
                 style={{
                   padding: "10px 12px",
@@ -285,7 +292,7 @@ export default function LoginGate({ children }: { children: ReactNode }) {
                   fontSize: 12,
                 }}
               >
-                {error}
+                {errorMessage}
               </div>
             )}
 
@@ -307,7 +314,7 @@ export default function LoginGate({ children }: { children: ReactNode }) {
                 transition: "all 200ms ease",
               }}
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? t.login.button_loading : t.login.button_signin}
             </button>
           </form>
 
@@ -326,19 +333,19 @@ export default function LoginGate({ children }: { children: ReactNode }) {
                 marginBottom: 10,
               }}
             >
-              Demo Quick Login
+              {t.login.demo_section}
             </div>
             <div className="space-y-2">
               <DemoLoginButton
-                title="Roamin · Sugi France"
-                subtitle="Apparel Designer · Licensee 뷰"
+                title={t.login.demo_roamin_title}
+                subtitle={t.login.demo_roamin_subtitle}
                 onClick={() => loginAsDemo("roamin", "sugifrance27")}
                 disabled={loading}
                 primary
               />
               <DemoLoginButton
-                title="권은희 차장 · F&F HQ"
-                subtitle="ST사업부 · 라이센스 담당 (본사 뷰)"
+                title={t.login.demo_kwon_title}
+                subtitle={t.login.demo_kwon_subtitle}
                 onClick={() => loginAsDemo("kwon", "ff2026")}
                 disabled={loading}
               />
