@@ -23,9 +23,9 @@ import { useLang } from "@/lib/i18n/LanguageProvider";
 
 const VERDICT_COLOR: Record<string, { bg: string; fg: string; label: string }> = {
   A: { bg: "var(--grade-a)", fg: "#fff", label: "Approve" },
-  B: { bg: "var(--color-primary)", fg: "#fff", label: "Conditional" },
-  C: { bg: "var(--grade-b)", fg: "#fff", label: "Revise" },
-  D: { bg: "var(--grade-c)", fg: "#fff", label: "Reject" },
+  B: { bg: "var(--color-primary)", fg: "#fff", label: "Approve w/ Notes" },
+  C: { bg: "var(--grade-b)", fg: "#fff", label: "Minor Revise" },
+  D: { bg: "var(--grade-c)", fg: "#fff", label: "Major Revise" },
 };
 
 const PILLAR_NAMES: Record<string, string> = {
@@ -613,25 +613,26 @@ function SKUCard({ sku }: { sku: MovinSKU }) {
         )}
       </div>
 
-      {/* 위반 항목 */}
+      {/* 위반/권장 항목 — severity별 톤 차별화 */}
       {sku.violations.length > 0 && (
         <div className="mt-3 space-y-1.5">
           {sku.violations.slice(0, 3).map((v, i) => {
-            const sevColor =
-              v.severity === "high"
-                ? "var(--color-brick-red)"
-                : v.severity === "mid"
-                ? "var(--status-warn)"
-                : "var(--color-ink-muted-48)";
+            const sevMap: Record<string, { color: string; label: string; bg: string }> = {
+              high: { color: "var(--color-brick-red)", label: "HIGH", bg: "rgba(220,38,38,0.05)" },
+              mid: { color: "var(--status-warn)", label: "MID", bg: "rgba(217,119,6,0.05)" },
+              low: { color: "var(--color-ink-muted-48)", label: "LOW", bg: "var(--color-canvas-soft)" },
+              info: { color: "var(--status-info)", label: "권장", bg: "rgba(37,99,235,0.05)" },
+            };
+            const sev = sevMap[v.severity] || sevMap.low;
             return (
               <div
                 key={i}
                 className="flex items-start gap-2 t-caption"
                 style={{
                   padding: "6px 8px",
-                  background: "var(--color-canvas-soft)",
+                  background: sev.bg,
                   borderRadius: 6,
-                  borderLeft: `2px solid ${sevColor}`,
+                  borderLeft: `2px solid ${sev.color}`,
                 }}
               >
                 <span
@@ -639,13 +640,14 @@ function SKUCard({ sku }: { sku: MovinSKU }) {
                     fontSize: 9,
                     fontWeight: 800,
                     color: "#fff",
-                    background: sevColor,
+                    background: sev.color,
                     padding: "1px 5px",
                     borderRadius: 3,
                     letterSpacing: 0.5,
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  {v.severity.toUpperCase()}
+                  {sev.label}
                 </span>
                 <span style={{ color: "var(--color-ink-muted-80)", lineHeight: 1.5 }}>
                   {v.issue}

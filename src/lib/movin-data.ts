@@ -2,7 +2,7 @@
  * movin-data.ts — AUTO-GENERATED · DO NOT EDIT BY HAND
  *
  * Source: LIFESTYLE MAN / 6 CAD PDFs
- * Built:  2026-05-12T01:36:58.911Z
+ * Built:  2026-05-13T03:08:15.292Z
  * Lines:  6
  * Total SKUs: 28
  *
@@ -84,7 +84,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 83
@@ -92,12 +92,12 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           }
         ],
         "verdict": "C",
-        "weightedAvg": 72
+        "weightedAvg": 73
       },
       {
         "code": "42019",
@@ -117,21 +117,16 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 70,
+          "P2": 92,
           "P3": 75,
           "P4": 75,
           "P5": 78
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "mid",
-            "issue": "Active Athleisure 기준 합성섬유 합계 40-75% — 실제 88%"
-          },
-          {
-            "rule": "P2.4 Composition Std.",
+            "rule": "P2.4 Composition — 권장 범위 외",
             "severity": "low",
-            "issue": "Active Athleisure는 Cotton(Natural feel) 15-40% 권장 — 실제 0%"
+            "issue": "Active Athleisure 권장: 합성섬유 40-75% / 실제 88% (브랜드북 가이드 — 의무 아님)"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -144,8 +139,8 @@ export const MOVIN_LINES: MovinLine[] = [
             "issue": "Bright/Neon 위험 컬러 1건: ADRENALINE RUSH"
           }
         ],
-        "verdict": "C",
-        "weightedAvg": 70.5,
+        "verdict": "B",
+        "weightedAvg": 77.8,
         "colorClassification": [
           {
             "raw": "GARDENIA",
@@ -193,21 +188,16 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 70,
+          "P2": 92,
           "P3": 75,
           "P4": 75,
           "P5": 78
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "mid",
-            "issue": "Active Athleisure 기준 합성섬유 합계 40-75% — 실제 88%"
-          },
-          {
-            "rule": "P2.4 Composition Std.",
+            "rule": "P2.4 Composition — 권장 범위 외",
             "severity": "low",
-            "issue": "Active Athleisure는 Cotton(Natural feel) 15-40% 권장 — 실제 0%"
+            "issue": "Active Athleisure 권장: 합성섬유 40-75% / 실제 88% (브랜드북 가이드 — 의무 아님)"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -220,8 +210,8 @@ export const MOVIN_LINES: MovinLine[] = [
             "issue": "Bright/Neon 위험 컬러 1건: ADRENALINE RUSH"
           }
         ],
-        "verdict": "C",
-        "weightedAvg": 70.5,
+        "verdict": "B",
+        "weightedAvg": 77.8,
         "colorClassification": [
           {
             "raw": "ADRENALINE RUSH",
@@ -262,7 +252,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Classic",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 93
@@ -270,12 +260,12 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           }
         ],
         "verdict": "C",
-        "weightedAvg": 73.7,
+        "weightedAvg": 74.7,
         "colorClassification": [
           {
             "raw": "NAVY",
@@ -285,12 +275,12 @@ export const MOVIN_LINES: MovinLine[] = [
         ]
       }
     ],
-    "grade": "C",
-    "averagePoint": 2.2,
+    "grade": "B",
+    "averagePoint": 2.6,
     "distribution": {
       "A": 0,
-      "B": 1,
-      "C": 4,
+      "B": 3,
+      "C": 2,
       "D": 0
     },
     "totalSKU": 5
@@ -317,30 +307,30 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 55,
+          "P2": 82,
           "P3": 75,
           "P4": 75,
           "P5": 83
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "mid",
-            "issue": "Active Athleisure 기준 합성섬유 합계 40-75% — 실제 25%"
-          },
-          {
-            "rule": "P2.4 Composition Std.",
-            "severity": "mid",
-            "issue": "Active Athleisure 기준 Cotton 15-50% — 실제 71%"
-          },
-          {
-            "rule": "P2.4 Composition Std.",
+            "rule": "P2.4 Composition — 권장 범위 외",
             "severity": "low",
-            "issue": "Active Athleisure 기준 Elastane 5-15% — 실제 4%"
+            "issue": "Active Athleisure 권장: 합성섬유 40-75% / 실제 25% (브랜드북 가이드 — 의무 아님)"
+          },
+          {
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "low",
+            "issue": "Active Athleisure 권장: Cotton 15-50% / 실제 71%"
+          },
+          {
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "info",
+            "issue": "Active Athleisure 권장: Elastane 5-15% / 실제 4%"
           }
         ],
-        "verdict": "D",
-        "weightedAvg": 66.3
+        "verdict": "B",
+        "weightedAvg": 75.3
       },
       {
         "code": "42016",
@@ -354,7 +344,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 75,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 93
@@ -362,12 +352,12 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           }
         ],
-        "verdict": "C",
-        "weightedAvg": 77,
+        "verdict": "B",
+        "weightedAvg": 78,
         "colorClassification": [
           {
             "raw": "GARDENIA",
@@ -399,30 +389,30 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 55,
+          "P2": 82,
           "P3": 75,
           "P4": 75,
           "P5": 93
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "mid",
-            "issue": "Active Athleisure 기준 합성섬유 합계 40-75% — 실제 25%"
-          },
-          {
-            "rule": "P2.4 Composition Std.",
-            "severity": "mid",
-            "issue": "Active Athleisure 기준 Cotton 15-50% — 실제 71%"
-          },
-          {
-            "rule": "P2.4 Composition Std.",
+            "rule": "P2.4 Composition — 권장 범위 외",
             "severity": "low",
-            "issue": "Active Athleisure 기준 Elastane 5-15% — 실제 4%"
+            "issue": "Active Athleisure 권장: 합성섬유 40-75% / 실제 25% (브랜드북 가이드 — 의무 아님)"
+          },
+          {
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "low",
+            "issue": "Active Athleisure 권장: Cotton 15-50% / 실제 71%"
+          },
+          {
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "info",
+            "issue": "Active Athleisure 권장: Elastane 5-15% / 실제 4%"
           }
         ],
-        "verdict": "D",
-        "weightedAvg": 68,
+        "verdict": "B",
+        "weightedAvg": 77,
         "colorClassification": [
           {
             "raw": "GARDENIA",
@@ -447,13 +437,13 @@ export const MOVIN_LINES: MovinLine[] = [
         ]
       }
     ],
-    "grade": "D",
-    "averagePoint": 0.67,
+    "grade": "B",
+    "averagePoint": 3,
     "distribution": {
       "A": 0,
-      "B": 0,
-      "C": 1,
-      "D": 2
+      "B": 3,
+      "C": 0,
+      "D": 0
     },
     "totalSKU": 3
   },
@@ -485,20 +475,20 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 75,
-          "P2": 90,
+          "P2": 96,
           "P3": 75,
           "P4": 75,
           "P5": 93
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "Active Court 기준 Elastane 5-15% — 실제 0%"
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "info",
+            "issue": "Active Court 권장: Elastane 5-15% / 실제 0%"
           }
         ],
-        "verdict": "B",
-        "weightedAvg": 83,
+        "verdict": "A",
+        "weightedAvg": 85,
         "colorClassification": [
           {
             "raw": "BLACK",
@@ -544,20 +534,20 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 55,
-          "P2": 90,
+          "P2": 96,
           "P3": 75,
           "P4": 75,
           "P5": 83
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "Active Court 기준 Elastane 5-15% — 실제 0%"
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "info",
+            "issue": "Active Court 권장: Elastane 5-15% / 실제 0%"
           }
         ],
         "verdict": "B",
-        "weightedAvg": 78
+        "weightedAvg": 80
       },
       {
         "code": "42027",
@@ -576,7 +566,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 93
@@ -584,12 +574,12 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           }
         ],
         "verdict": "C",
-        "weightedAvg": 73.7,
+        "weightedAvg": 74.7,
         "colorClassification": [
           {
             "raw": "BLACK",
@@ -647,20 +637,20 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 55,
-          "P2": 90,
+          "P2": 96,
           "P3": 75,
           "P4": 75,
           "P5": 93
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "Active Court 기준 Elastane 5-15% — 실제 0%"
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "info",
+            "issue": "Active Court 권장: Elastane 5-15% / 실제 0%"
           }
         ],
         "verdict": "B",
-        "weightedAvg": 79.7,
+        "weightedAvg": 81.7,
         "colorClassification": [
           {
             "raw": "BLACK",
@@ -715,20 +705,20 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 55,
-          "P2": 90,
+          "P2": 96,
           "P3": 75,
           "P4": 75,
           "P5": 93
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "Active Court 기준 Elastane 5-15% — 실제 0%"
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "info",
+            "issue": "Active Court 권장: Elastane 5-15% / 실제 0%"
           }
         ],
         "verdict": "B",
-        "weightedAvg": 79.7,
+        "weightedAvg": 81.7,
         "colorClassification": [
           {
             "raw": "BLACK",
@@ -774,10 +764,10 @@ export const MOVIN_LINES: MovinLine[] = [
       }
     ],
     "grade": "B",
-    "averagePoint": 2.8,
+    "averagePoint": 3,
     "distribution": {
-      "A": 0,
-      "B": 4,
+      "A": 1,
+      "B": 3,
       "C": 1,
       "D": 0
     },
@@ -811,7 +801,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 67
@@ -819,8 +809,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -829,7 +819,7 @@ export const MOVIN_LINES: MovinLine[] = [
           }
         ],
         "verdict": "C",
-        "weightedAvg": 69.3,
+        "weightedAvg": 70.3,
         "colorClassification": [
           {
             "raw": "SPRING BOUQUET",
@@ -894,7 +884,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 75,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 83
@@ -902,12 +892,12 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           }
         ],
-        "verdict": "C",
-        "weightedAvg": 75.3
+        "verdict": "B",
+        "weightedAvg": 76.3
       },
       {
         "code": "42007",
@@ -918,7 +908,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 83
@@ -926,12 +916,12 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           }
         ],
         "verdict": "C",
-        "weightedAvg": 72
+        "weightedAvg": 73
       },
       {
         "code": "42009",
@@ -949,7 +939,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 74
@@ -957,8 +947,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -972,7 +962,7 @@ export const MOVIN_LINES: MovinLine[] = [
           }
         ],
         "verdict": "C",
-        "weightedAvg": 70.5,
+        "weightedAvg": 71.5,
         "colorClassification": [
           {
             "raw": "ADRENALINE RUSH",
@@ -1010,11 +1000,11 @@ export const MOVIN_LINES: MovinLine[] = [
       }
     ],
     "grade": "C",
-    "averagePoint": 2,
+    "averagePoint": 2.25,
     "distribution": {
       "A": 0,
-      "B": 0,
-      "C": 4,
+      "B": 1,
+      "C": 3,
       "D": 0
     },
     "totalSKU": 4
@@ -1041,30 +1031,25 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 60,
+          "P2": 88,
           "P3": 75,
           "P4": 75,
           "P5": 93
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "mid",
-            "issue": "Active Athleisure 기준 합성섬유 합계 40-75% — 실제 0%"
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "low",
+            "issue": "Active Athleisure 권장: 합성섬유 40-75% / 실제 0% (브랜드북 가이드 — 의무 아님)"
           },
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "Active Athleisure 기준 Elastane 5-15% — 실제 3%"
-          },
-          {
-            "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "Active Athleisure는 Cotton(Natural feel) 15-40% 권장 — 실제 0%"
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "info",
+            "issue": "Active Athleisure 권장: Elastane 5-15% / 실제 3%"
           }
         ],
-        "verdict": "C",
-        "weightedAvg": 69.7,
+        "verdict": "B",
+        "weightedAvg": 79,
         "colorClassification": [
           {
             "raw": "GARDENIA",
@@ -1086,30 +1071,25 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 60,
+          "P2": 88,
           "P3": 75,
           "P4": 75,
           "P5": 93
         },
         "violations": [
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "mid",
-            "issue": "Active Athleisure 기준 합성섬유 합계 40-75% — 실제 0%"
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "low",
+            "issue": "Active Athleisure 권장: 합성섬유 40-75% / 실제 0% (브랜드북 가이드 — 의무 아님)"
           },
           {
-            "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "Active Athleisure 기준 Elastane 5-15% — 실제 3%"
-          },
-          {
-            "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "Active Athleisure는 Cotton(Natural feel) 15-40% 권장 — 실제 0%"
+            "rule": "P2.4 Composition — 권장 범위 외",
+            "severity": "info",
+            "issue": "Active Athleisure 권장: Elastane 5-15% / 실제 3%"
           }
         ],
-        "verdict": "C",
-        "weightedAvg": 69.7,
+        "verdict": "B",
+        "weightedAvg": 79,
         "colorClassification": [
           {
             "raw": "GARDENIA",
@@ -1136,7 +1116,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Classic",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 85
@@ -1144,8 +1124,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -1154,7 +1134,7 @@ export const MOVIN_LINES: MovinLine[] = [
           }
         ],
         "verdict": "C",
-        "weightedAvg": 72.3,
+        "weightedAvg": 73.3,
         "colorClassification": [
           {
             "raw": "GARDENIA",
@@ -1212,7 +1192,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 77
@@ -1220,8 +1200,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -1230,7 +1210,7 @@ export const MOVIN_LINES: MovinLine[] = [
           }
         ],
         "verdict": "C",
-        "weightedAvg": 71,
+        "weightedAvg": 72,
         "colorClassification": [
           {
             "raw": "BLACK",
@@ -1257,7 +1237,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 75,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 77
@@ -1265,8 +1245,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -1274,8 +1254,8 @@ export const MOVIN_LINES: MovinLine[] = [
             "issue": "ST 허용 6색군에 매칭되지 않는 컬러: MOJAVE DESERT"
           }
         ],
-        "verdict": "C",
-        "weightedAvg": 74.3,
+        "verdict": "B",
+        "weightedAvg": 75.3,
         "colorClassification": [
           {
             "raw": "BLACK",
@@ -1305,7 +1285,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 80
@@ -1313,8 +1293,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -1323,7 +1303,7 @@ export const MOVIN_LINES: MovinLine[] = [
           }
         ],
         "verdict": "C",
-        "weightedAvg": 71.5,
+        "weightedAvg": 72.5,
         "colorClassification": [
           {
             "raw": "BLACK",
@@ -1355,12 +1335,12 @@ export const MOVIN_LINES: MovinLine[] = [
         ]
       }
     ],
-    "grade": "C",
-    "averagePoint": 2,
+    "grade": "B",
+    "averagePoint": 2.5,
     "distribution": {
       "A": 0,
-      "B": 0,
-      "C": 6,
+      "B": 3,
+      "C": 3,
       "D": 0
     },
     "totalSKU": 6
@@ -1383,7 +1363,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 83
@@ -1391,12 +1371,12 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           }
         ],
         "verdict": "C",
-        "weightedAvg": 72
+        "weightedAvg": 73
       },
       {
         "code": "42003",
@@ -1428,7 +1408,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 65
@@ -1436,8 +1416,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -1451,7 +1431,7 @@ export const MOVIN_LINES: MovinLine[] = [
           }
         ],
         "verdict": "C",
-        "weightedAvg": 69,
+        "weightedAvg": 70,
         "colorClassification": [
           {
             "raw": "BLACK",
@@ -1581,7 +1561,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 85
@@ -1589,8 +1569,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -1599,7 +1579,7 @@ export const MOVIN_LINES: MovinLine[] = [
           }
         ],
         "verdict": "C",
-        "weightedAvg": 72.3,
+        "weightedAvg": 73.3,
         "colorClassification": [
           {
             "raw": "NAVY",
@@ -1639,7 +1619,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Court",
         "pillarScores": {
           "P1": 75,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 87
@@ -1647,8 +1627,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -1656,8 +1636,8 @@ export const MOVIN_LINES: MovinLine[] = [
             "issue": "ST 허용 6색군에 매칭되지 않는 컬러: LAVENDER BLUE"
           }
         ],
-        "verdict": "C",
-        "weightedAvg": 76,
+        "verdict": "B",
+        "weightedAvg": 77,
         "colorClassification": [
           {
             "raw": "NAVY",
@@ -1708,7 +1688,7 @@ export const MOVIN_LINES: MovinLine[] = [
         "inferredCore": "Active Athleisure",
         "pillarScores": {
           "P1": 55,
-          "P2": 72,
+          "P2": 75,
           "P3": 75,
           "P4": 75,
           "P5": 55
@@ -1716,8 +1696,8 @@ export const MOVIN_LINES: MovinLine[] = [
         "violations": [
           {
             "rule": "P2.4 Composition Std.",
-            "severity": "low",
-            "issue": "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요"
+            "severity": "info",
+            "issue": "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장"
           },
           {
             "rule": "P5.1 Quiet Luxury Color",
@@ -1731,7 +1711,7 @@ export const MOVIN_LINES: MovinLine[] = [
           }
         ],
         "verdict": "D",
-        "weightedAvg": 67.3,
+        "weightedAvg": 68.3,
         "colorClassification": [
           {
             "raw": "MAGENTA PURPLE",
@@ -1799,11 +1779,11 @@ export const MOVIN_LINES: MovinLine[] = [
       }
     ],
     "grade": "C",
-    "averagePoint": 1.6,
+    "averagePoint": 1.8,
     "distribution": {
       "A": 0,
-      "B": 0,
-      "C": 4,
+      "B": 1,
+      "C": 3,
       "D": 1
     },
     "totalSKU": 5
@@ -1814,15 +1794,15 @@ export const MOVIN_OVERALL = {
   "licensee": "MOVIN",
   "season": "27SS",
   "category": "Lifestyle Man",
-  "generatedAt": "2026-05-12T01:36:58.913Z",
+  "generatedAt": "2026-05-13T03:08:15.293Z",
   "totalLines": 6,
   "totalSKU": 28,
-  "grade": "C",
-  "averagePoint": 1.96,
+  "grade": "B",
+  "averagePoint": 2.5,
   "distribution": {
-    "A": 0,
-    "B": 5,
-    "C": 20,
-    "D": 3
+    "A": 1,
+    "B": 14,
+    "C": 12,
+    "D": 1
   }
 };

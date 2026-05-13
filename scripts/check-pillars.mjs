@@ -167,52 +167,57 @@ function inferCore(sku) {
 }
 
 /* ============================================================
- * P2.4 Composition Std. — CORE별 성분 비율 룰
- * Brandbook 2026 p.6
+ * P2.4 Composition Std. — CORE별 성분 비율 가이드 (위반 아닌 권장)
+ *
+ * 운영 철학 (사용자 결정):
+ *   - 브랜드북 기준은 가이드라인 / 강제 위반이 아님
+ *   - 100% 자연 섬유 only(예: 100% Cotton)는 "기능성 보강 권장" 코멘트
+ *   - 점수 영향은 최소화 (전체 등급에 큰 영향 X)
+ *   - severity "info"는 페널티 매우 작음 / "low"는 작음 / "mid"는 보통
+ *
+ * Brandbook 2026 p.6 (참고용)
  * ============================================================ */
-const COMPOSITION_RULES = {
+const COMPOSITION_GUIDE = {
   "Active Court": {
-    PA: [0, 100], // Polyamide 허용 (Court 코어는 functional poly가 60-85%)
-    PL: [60, 85], // Polyester(=Functional Polyester) 60-85% (단, PA로 표기되는 경우도 많음)
-    /* 실무 보정 — Court Active 외장은 nylon(PA) 또는 poly(PL) 어느 한쪽이 60-85% 가능 */
-    POLY_TOTAL: [60, 100], // PA + PL 합산
+    POLY_TOTAL: [60, 100], // 권장: 합성섬유 60-85%
     EA: [5, 15],
-    CO: [0, 30], // Cotton 0-20%이 표준이지만 약간 여유
+    CO: [0, 30],
   },
   "Active Athleisure": {
-    POLY_TOTAL: [40, 75], // Poly 40-65% 표준이지만 약간 여유
-    CO: [15, 50], // Cotton 15-40% + 여유
+    POLY_TOTAL: [40, 75],
+    CO: [15, 50],
     EA: [5, 15],
   },
   "Active Classic": {
     POLY_TOTAL: [25, 70],
-    CO: [30, 70], // Cotton 30-60% + 여유
+    CO: [30, 70],
     EA: [3, 12],
   },
 };
 
 function checkComposition(sku, core) {
-  const rule = COMPOSITION_RULES[core];
-  if (!rule) return { score: 60, violations: [], reason: "기준 없음" };
+  const guide = COMPOSITION_GUIDE[core];
+  if (!guide) return { score: 75, violations: [] };
 
   const c = sku.composition;
   const polyTotal = (c.PA || 0) + (c.PL || 0);
   const co = c.CO || 0;
   const ea = c.EA || 0;
+  const naturalOnly = co > 0 && polyTotal === 0 && ea === 0;
+  const cottonOnly = co === 100;
   const sum = polyTotal + co + ea;
 
   const violations = [];
 
-  /* 성분 정보가 PDF에서 추출되지 않은 경우 — 중립 통과 점수
-     (라이센시에 명세 요청 별도 트래킹 — 검수 점수 자체는 페널티 X) */
+  /* 1) 성분 정보 자체가 PDF에서 추출되지 않음 — 중립 통과 (검수 점수 페널티 X) */
   if (sum === 0) {
     return {
-      score: 72,
+      score: 75,
       violations: [
         {
           rule: "P2.4 Composition Std.",
-          severity: "low",
-          issue: "PDF에서 소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 필요",
+          severity: "info",
+          issue: "소재 성분 비율 자동 추출 실패 — 라이센시 명세 시트 별도 확인 권장",
         },
       ],
     };
@@ -220,42 +225,54 @@ function checkComposition(sku, core) {
 
   let score = 100;
 
-  if (rule.POLY_TOTAL && (polyTotal < rule.POLY_TOTAL[0] || polyTotal > rule.POLY_TOTAL[1])) {
-    score -= 20;
+  /* 2) 100% Cotton 또는 자연섬유 only — 기능성 보강 "권장" (페널티 최소) */
+  if (cottonOnly) {
+    score -= 3; // 매우 작은 페널티
     violations.push({
-      rule: "P2.4 Composition Std.",
-      severity: "mid",
-      issue: `${core} 기준 합성섬유 합계 ${rule.POLY_TOTAL[0]}-${rule.POLY_TOTAL[1]}% — 실제 ${polyTotal}%`,
+      rule: "P2.3 / P2.4 — Hidden Performance 보강 권장",
+      severity: "info",
+      issue:
+        "100% Cotton 단일 소재 — 폴리·PU·엘라스테인 등 기능성 파이버 블렌딩 권장 (Brandbook p.5 'Hidden Performance — natural look 외관 + dual-layer 기능 내장')",
     });
+    return { score, violations };
   }
-  if (rule.CO && co > 0 && (co < rule.CO[0] || co > rule.CO[1])) {
-    score -= 15;
+  if (naturalOnly) {
+    score -= 5;
     violations.push({
-      rule: "P2.4 Composition Std.",
-      severity: "mid",
-      issue: `${core} 기준 Cotton ${rule.CO[0]}-${rule.CO[1]}% — 실제 ${co}%`,
+      rule: "P2.3 / P2.4 — Hidden Performance 보강 권장",
+      severity: "info",
+      issue: `자연섬유만 사용 (CO ${co}%) — Wicking·Stretch·Quick-dry 기능 확보를 위해 합성섬유 블렌딩 권장`,
     });
+    return { score, violations };
   }
-  if (rule.EA && (ea < rule.EA[0] || ea > rule.EA[1])) {
-    score -= 10;
+
+  /* 3) 일반 범위 외 — 작은 페널티 + "권장" 톤 (의무 아닌 가이드) */
+  if (guide.POLY_TOTAL && (polyTotal < guide.POLY_TOTAL[0] || polyTotal > guide.POLY_TOTAL[1])) {
+    score -= 8;
     violations.push({
-      rule: "P2.4 Composition Std.",
+      rule: "P2.4 Composition — 권장 범위 외",
       severity: "low",
-      issue: `${core} 기준 Elastane ${rule.EA[0]}-${rule.EA[1]}% — 실제 ${ea}%`,
+      issue: `${core} 권장: 합성섬유 ${guide.POLY_TOTAL[0]}-${guide.POLY_TOTAL[1]}% / 실제 ${polyTotal}% (브랜드북 가이드 — 의무 아님)`,
+    });
+  }
+  if (guide.CO && co > 0 && (co < guide.CO[0] || co > guide.CO[1])) {
+    score -= 6;
+    violations.push({
+      rule: "P2.4 Composition — 권장 범위 외",
+      severity: "low",
+      issue: `${core} 권장: Cotton ${guide.CO[0]}-${guide.CO[1]}% / 실제 ${co}%`,
+    });
+  }
+  if (guide.EA && (ea < guide.EA[0] || ea > guide.EA[1])) {
+    score -= 4;
+    violations.push({
+      rule: "P2.4 Composition — 권장 범위 외",
+      severity: "info",
+      issue: `${core} 권장: Elastane ${guide.EA[0]}-${guide.EA[1]}% / 실제 ${ea}%`,
     });
   }
 
-  /* Active Athleisure 자연 코튼 의무 (Brandbook p.6 "Cotton (Natural feel) 15-40%") */
-  if (core === "Active Athleisure" && co < 15) {
-    score -= 10;
-    violations.push({
-      rule: "P2.4 Composition Std.",
-      severity: "low",
-      issue: "Active Athleisure는 Cotton(Natural feel) 15-40% 권장 — 실제 " + co + "%",
-    });
-  }
-
-  return { score: Math.max(0, score), violations };
+  return { score: Math.max(65, score), violations };
 }
 
 /* ============================================================
@@ -382,7 +399,7 @@ export function checkSKU(sku) {
   else if (weightedAvg >= 75 && pillarScores.P2 >= 75) verdict = "B";
   else if (weightedAvg >= 60 && pillarScores.P2 >= 60) verdict = "C";
 
-  /* ABSOLUTE NO 즉시 D 처리 */
+  /* ABSOLUTE NO 즉시 D 처리 — high severity 위반만 (info / low는 권장이므로 D 트리거 X) */
   if (p52.violations.some((v) => v.severity === "high")) {
     verdict = "D";
   }
