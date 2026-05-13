@@ -15,12 +15,16 @@
  * 6/9 컨퍼런스 라이브 시연용 — 실제 데이터로 작동
  * ============================================================ */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/console/Sidebar";
 import LoginGate from "@/components/auth/LoginGate";
 import { MOVIN_LINES, MOVIN_OVERALL, type MovinLine, type MovinSKU } from "@/lib/movin-data";
 import { useLang } from "@/lib/i18n/LanguageProvider";
+
+const APEX_REPORT_URL = `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/apex-report.html`;
+
+type DemoStep = "upload" | "analyzing" | "result";
 
 const VERDICT_COLOR: Record<string, { bg: string; fg: string; label: string }> = {
   A: { bg: "var(--grade-a)", fg: "#fff", label: "Approve" },
@@ -46,19 +50,36 @@ export default function MovinInspectorRoute() {
 }
 
 function MovinInspector() {
+  const [step, setStep] = useState<DemoStep>("upload");
   const [selectedLine, setSelectedLine] = useState<string | null>(null);
 
   return (
     <div className="console-shell">
       <Sidebar active="inspector" />
       <div className="console-main">
-        <HeaderBar selectedLine={selectedLine} onBack={() => setSelectedLine(null)} />
+        <HeaderBar
+          step={step}
+          selectedLine={selectedLine}
+          onResetFlow={() => {
+            setStep("upload");
+            setSelectedLine(null);
+          }}
+          onBack={() => setSelectedLine(null)}
+        />
         <div className="console-pad space-y-6">
-          <OverallCard />
-          {!selectedLine ? (
-            <LinesGrid onSelect={setSelectedLine} />
-          ) : (
-            <LineDetail line={selectedLine} onBack={() => setSelectedLine(null)} />
+          {step === "upload" && <UploadStep onStart={() => setStep("analyzing")} />}
+          {step === "analyzing" && (
+            <AnalyzingStep onDone={() => setStep("result")} />
+          )}
+          {step === "result" && (
+            <>
+              <OverallCard />
+              {!selectedLine ? (
+                <LinesGrid onSelect={setSelectedLine} />
+              ) : (
+                <LineDetail line={selectedLine} onBack={() => setSelectedLine(null)} />
+              )}
+            </>
           )}
         </div>
       </div>
@@ -70,12 +91,22 @@ function MovinInspector() {
  * Header
  * ============================================================ */
 function HeaderBar({
+  step,
   selectedLine,
+  onResetFlow,
   onBack,
 }: {
+  step: DemoStep;
   selectedLine: string | null;
+  onResetFlow: () => void;
   onBack: () => void;
 }) {
+  const stepLabels: Record<DemoStep, string> = {
+    upload: "1 · Upload",
+    analyzing: "2 · Analyzing",
+    result: "3 · Result",
+  };
+
   return (
     <header
       className="sticky top-0 z-30"
@@ -111,7 +142,22 @@ function HeaderBar({
           <span style={{ color: "var(--color-ink)" }}>Sugi France · 27SS</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="t-mono">{MOVIN_OVERALL.totalSKU} SKUs auto-inspected</span>
+          <span
+            className="t-mono"
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: "var(--color-primary)",
+              background: "rgba(0, 44, 95, 0.08)",
+              padding: "3px 9px",
+              borderRadius: 9999,
+            }}
+          >
+            {stepLabels[step]}
+          </span>
+          {step === "result" && (
+            <span className="t-mono">{MOVIN_OVERALL.totalSKU} SKUs auto-inspected</span>
+          )}
         </div>
       </div>
 
@@ -141,17 +187,437 @@ function HeaderBar({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {step === "result" && (
+            <a
+              href={APEX_REPORT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+              title="Open Full AI-Report"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+              AI-Report 열기
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17 17 7" /><path d="M7 7h10v10" /></svg>
+            </a>
+          )}
           {selectedLine && (
             <button onClick={onBack} className="btn btn-ghost">
               ← 라인 목록
             </button>
           )}
-          <Link href="/atelier/inspector" className="btn btn-ghost">
-            Sugi France 데모로
-          </Link>
+          {step !== "upload" && (
+            <button onClick={onResetFlow} className="btn btn-ghost">
+              ↺ 다시 업로드
+            </button>
+          )}
         </div>
       </div>
     </header>
+  );
+}
+
+/* ============================================================
+ * STEP 1 — Upload (Sugi France가 제출하는 27SS CAD PDF 패키지)
+ * ============================================================ */
+function UploadStep({ onStart }: { onStart: () => void }) {
+  const pdfs = MOVIN_LINES.map((l) => ({
+    file: l.file,
+    line: l.line,
+    sizeMB: l.sizeMB,
+    skuCount: l.skuCount,
+  }));
+  const totalSize = pdfs.reduce((s, p) => s + p.sizeMB, 0);
+  const totalSku = pdfs.reduce((s, p) => s + p.skuCount, 0);
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="card" style={{ padding: 32 }}>
+        <div className="t-label">Step 1 · Upload</div>
+        <h2 className="h-display-md mt-2">CAD 패키지 업로드</h2>
+        <p
+          className="mt-2"
+          style={{ color: "var(--color-ink-muted-80)", fontSize: 14, lineHeight: 1.55 }}
+        >
+          라이센시가 시즌 패키지(라인별 PDF · 각각 여러 SKU 포함)를 업로드하면
+          ATELIER ONE이 텍스트 추출 → SKU 분리 → 5 Pillars 자동 검수합니다.
+        </p>
+
+        {/* Upload area */}
+        <div
+          className="mt-6 p-10 text-center"
+          style={{
+            background: "var(--color-canvas-soft)",
+            border: "2px dashed var(--color-hairline-strong)",
+            borderRadius: "var(--radius-lg)",
+          }}
+        >
+          <UploadIcon />
+          <p className="mt-4" style={{ fontSize: 15, fontWeight: 600 }}>
+            CAD · PDF · 이미지 패키지를 끌어다 놓으세요
+          </p>
+          <p
+            className="mt-1.5 t-caption"
+            style={{ color: "var(--color-ink-muted-48)" }}
+          >
+            지원 포맷: .pdf .png .jpg .ai .psd · 라인당 1개 PDF 권장 · 라이센시당 최대 1 GB
+          </p>
+          <div
+            className="mt-6 mx-auto inline-flex items-center gap-2 px-4 py-2.5"
+            style={{
+              background: "var(--color-canvas)",
+              border: "1px solid var(--color-hairline)",
+              borderRadius: "var(--radius-pill)",
+            }}
+          >
+            <span className="t-caption" style={{ color: "var(--color-ink-muted-48)" }}>
+              데모용으로 Sugi France 27SS 실 제출본 사용
+            </span>
+            <button onClick={onStart} className="btn btn-primary btn-sm">
+              검수 시작 →
+            </button>
+          </div>
+        </div>
+
+        {/* 업로드된 6 PDF 미리보기 */}
+        <div className="mt-6">
+          <div className="t-label mb-3">제출된 파일 — {pdfs.length} PDFs</div>
+          <ul className="space-y-2">
+            {pdfs.map((p) => (
+              <li
+                key={p.file}
+                className="flex items-center gap-3 px-4 py-3"
+                style={{
+                  background: "var(--color-canvas-soft)",
+                  border: "1px solid var(--color-hairline)",
+                  borderRadius: "var(--radius-md)",
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 8,
+                    background: "var(--color-primary)",
+                    color: "#fff",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>{p.file}</div>
+                  <div
+                    className="t-mono mt-0.5"
+                    style={{ fontSize: 10, color: "var(--color-ink-muted-48)" }}
+                  >
+                    {p.line} line · {p.skuCount} SKUs · {p.sizeMB.toFixed(1)} MB
+                  </div>
+                </div>
+                <span
+                  className="t-caption"
+                  style={{
+                    color: "var(--status-ok)",
+                    fontWeight: 600,
+                  }}
+                >
+                  ✓ Ready
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Tenant + Inspection Rules */}
+      <div className="space-y-4">
+        <div className="card" style={{ padding: 20 }}>
+          <div className="t-label">Submission</div>
+          <div className="mt-3 flex items-center gap-3">
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 10,
+                background: "var(--color-accent-red)",
+                color: "#fff",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 800,
+                fontSize: 13,
+              }}
+            >
+              SF
+            </div>
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 700 }}>Sugi France</div>
+              <div
+                className="t-mono"
+                style={{ fontSize: 10, color: "var(--color-ink-muted-48)" }}
+              >
+                STE-SF-27SS-LM
+              </div>
+            </div>
+          </div>
+          <dl className="mt-4 space-y-1.5 t-caption">
+            <Row k="Season" v="27SS" />
+            <Row k="Category" v="Lifestyle Man" />
+            <Row
+              k="Group"
+              v={
+                <span
+                  className="pill"
+                  style={{
+                    color: "var(--color-primary)",
+                    background: "rgba(0,44,95,0.10)",
+                    borderColor: "transparent",
+                  }}
+                >
+                  G1 신규
+                </span>
+              }
+            />
+            <Row k="Files" v={`${pdfs.length} PDFs`} />
+            <Row k="Total size" v={`${totalSize.toFixed(1)} MB`} />
+            <Row k="Total SKUs" v={`${totalSku} 개`} />
+          </dl>
+        </div>
+
+        <div className="card" style={{ padding: 20 }}>
+          <div className="t-label">Auto-Inspection 룰</div>
+          <ul
+            className="mt-3 space-y-2 t-caption"
+            style={{ color: "var(--color-ink-muted-80)" }}
+          >
+            <li>
+              <strong>P1.</strong> Italian Tennis Heritage (5 sub)
+            </li>
+            <li>
+              <strong>P2.</strong> Elegant Functionalism (6 sub · ×2 가중)
+            </li>
+            <li>
+              <strong>P3.</strong> Court-to-Social Lifestyle (4 sub)
+            </li>
+            <li>
+              <strong>P4.</strong> Body-Lined Silhouette (5 sub)
+            </li>
+            <li>
+              <strong>P5.</strong> Quiet Performance (6 sub)
+            </li>
+            <li
+              className="pt-2 mt-2"
+              style={{ borderTop: "1px dashed var(--color-hairline)" }}
+            >
+              총 26 sub-rules + 8 ABSOLUTE NO · Brandbook 2026 기반
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UploadIcon() {
+  return (
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 48 48"
+      fill="none"
+      style={{ display: "inline-block" }}
+    >
+      <path
+        d="M24 8 V32 M14 18 L24 8 L34 18"
+        stroke="var(--color-primary)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <rect
+        x="8"
+        y="34"
+        width="32"
+        height="6"
+        rx="3"
+        stroke="var(--color-primary)"
+        strokeWidth="2"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+function Row({ k, v }: { k: string; v: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <dt style={{ fontSize: 11, color: "var(--color-ink-muted-48)", fontWeight: 500 }}>
+        {k}
+      </dt>
+      <dd
+        style={{
+          fontSize: 12,
+          color: "var(--color-ink)",
+          fontWeight: 600,
+          textAlign: "right",
+        }}
+      >
+        {v}
+      </dd>
+    </div>
+  );
+}
+
+/* ============================================================
+ * STEP 2 — Analyzing (PDF 파싱 → SKU 추출 → 5 Pillars → 등급 산출)
+ * ============================================================ */
+function AnalyzingStep({ onDone }: { onDone: () => void }) {
+  const [phase, setPhase] = useState(0);
+  const phases = [
+    `Parsing ${MOVIN_LINES.length} PDFs (T1_ACE · T1_BAGEL · T1_NET · ...)`,
+    `Extracting ${MOVIN_OVERALL.totalSKU} SKUs · Fabric Composition · TCX Colors`,
+    "Applying 5 Universal Pillars (26 sub-rules · Brandbook 2026)",
+    "Checking 8 ABSOLUTE NO · Computing per-SKU Verdict",
+    "Aggregating Line Grades + Licensee Overall Grade",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhase((p) => {
+        if (p < phases.length - 1) return p + 1;
+        clearInterval(interval);
+        setTimeout(onDone, 700);
+        return p;
+      });
+    }, 700);
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div
+      className="card relative overflow-hidden"
+      style={{
+        padding: 64,
+        background:
+          "linear-gradient(135deg, #001a3a 0%, var(--color-primary) 60%, #0a4585 100%)",
+        color: "#fff",
+        textAlign: "center",
+        minHeight: 480,
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: -50,
+          right: -80,
+          width: 380,
+          height: 380,
+          background: "radial-gradient(circle, rgba(228,0,43,0.22), transparent 65%)",
+          pointerEvents: "none",
+        }}
+      />
+      <span
+        aria-hidden
+        style={{
+          position: "absolute",
+          bottom: -80,
+          left: -50,
+          width: 320,
+          height: 320,
+          background: "radial-gradient(circle, rgba(201,154,58,0.18), transparent 70%)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div className="relative max-w-[720px] mx-auto">
+        <div className="flex justify-center mb-8">
+          <PulsingSymbol />
+        </div>
+        <h2 className="h-display-md" style={{ color: "#fff" }}>
+          ATELIER ONE · Auto-Inspecting
+        </h2>
+        <p className="t-lead mt-3" style={{ color: "rgba(255,255,255,0.78)", fontSize: 15 }}>
+          Sugi France 27SS Lifestyle Man · {MOVIN_OVERALL.totalSKU} SKUs · {MOVIN_LINES.length} lines
+        </p>
+
+        <ul className="mt-10 text-left space-y-2.5 max-w-[560px] mx-auto">
+          {phases.map((p, i) => (
+            <li
+              key={p}
+              className="flex items-center gap-3 px-4 py-3 transition-all"
+              style={{
+                background:
+                  i === phase
+                    ? "rgba(255,255,255,0.10)"
+                    : i < phase
+                    ? "rgba(22,163,74,0.14)"
+                    : "rgba(255,255,255,0.04)",
+                borderRadius: "var(--radius-md)",
+                border:
+                  i === phase
+                    ? "1px solid rgba(255,255,255,0.22)"
+                    : "1px solid rgba(255,255,255,0.06)",
+                opacity: i > phase ? 0.5 : 1,
+              }}
+            >
+              <span
+                className="flex h-6 w-6 items-center justify-center"
+                style={{
+                  borderRadius: 9999,
+                  background:
+                    i < phase
+                      ? "var(--status-ok)"
+                      : i === phase
+                      ? "#fff"
+                      : "rgba(255,255,255,0.08)",
+                  color: i === phase ? "var(--color-primary)" : "#fff",
+                  fontSize: 11,
+                  fontWeight: 800,
+                  flexShrink: 0,
+                }}
+              >
+                {i < phase ? "✓" : i + 1}
+              </span>
+              <span style={{ fontSize: 14, fontWeight: 500, flex: 1 }}>{p}</span>
+              {i === phase && (
+                <span
+                  className="animate-pulse-soft"
+                  style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}
+                >
+                  in progress
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function PulsingSymbol() {
+  return (
+    <div
+      style={{
+        width: 80,
+        height: 80,
+        background: "rgba(255,255,255,0.10)",
+        border: "1px solid rgba(255,255,255,0.20)",
+        borderRadius: 18,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "var(--color-cream-white)",
+        animation: "pulseSoft 1.4s ease-in-out infinite",
+      }}
+    >
+      <svg width="44" height="44" viewBox="0 0 322 323" fill="currentColor">
+        <path d="M 150.05 0.00 L 168.04 0.00 C 173.11 0.39 178.53 0.24 183.28 0.97 Q 263.26 13.24 303.58 83.45 Q 304.61 85.24 305.15 86.77 A 0.84 0.83 80.2 0 1 304.37 87.88 Q 284.59 88.10 265.58 87.99 C 262.89 87.98 262.30 87.49 261.51 85.03 Q 242.80 26.98 184.62 15.12 C 156.31 9.35 120.48 14.53 96.98 32.33 C 74.89 49.07 61.52 76.37 56.74 103.19 A 1.54 1.54 0.0 0 0 58.26 105.00 L 312.98 104.99 A 1.16 1.15 -9.0 0 1 314.08 105.78 Q 326.15 142.39 322.24 180.33 C 319.00 211.87 304.77 243.20 284.53 267.01 C 256.93 299.48 215.44 320.46 172.39 323.00 L 149.14 323.00 Q 99.06 319.13 60.83 288.89 Q 16.03 253.44 3.18 195.93 Q 1.53 188.52 0.13 180.99 A 0.64 0.64 0.0 0 1 0.71 180.24 Q 26.18 178.15 51.72 179.21 A 1.22 1.22 0.0 0 1 52.89 180.43 C 52.77 209.70 59.25 243.66 76.19 268.28 Q 97.15 298.74 134.26 306.51 Q 159.67 311.84 186.50 306.88 C 206.17 303.25 223.50 294.12 237.37 279.74 C 266.64 249.38 271.01 203.98 269.93 164.15 Q 269.87 162.00 267.72 162.00 L 193.25 162.00 A 2.25 2.24 90.0 0 0 191.01 164.25 L 190.99 275.51 Q 190.99 278.00 188.49 278.00 L 133.54 278.00 A 0.54 0.54 0.0 0 1 133.00 277.46 Q 133.01 221.67 133.00 165.75 Q 133.00 164.01 132.55 162.81 Q 132.35 162.29 131.79 162.29 L 0.00 161.94 L 0.00 148.16 Q 7.81 69.06 72.60 25.85 Q 107.12 2.82 150.05 0.00 Z M 151.00 145.63 L 151.00 257.87 A 1.13 1.12 90.0 0 0 152.12 259.00 L 172.00 259.00 A 1.00 0.99 -89.7 0 0 173.00 258.00 L 173.00 145.99 A 1.01 1.01 0.0 0 1 174.01 144.98 L 268.97 145.01 A 1.00 1.00 0.0 0 0 269.97 144.05 Q 270.35 134.05 268.81 124.15 Q 268.63 123.00 267.46 123.00 L 54.75 123.00 A 0.89 0.88 -85.8 0 0 53.88 123.76 Q 52.43 133.89 53.14 144.15 Q 53.19 145.00 54.05 145.00 L 150.38 145.00 A 0.63 0.62 -90.0 0 1 151.00 145.63 Z" />
+      </svg>
+    </div>
   );
 }
 
