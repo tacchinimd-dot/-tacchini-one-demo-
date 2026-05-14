@@ -67,15 +67,68 @@ export interface GeneratedDesign {
 }
 
 /* ============================================================
- * BRIEF · 디폴트 시나리오
+ * BRIEF · 디폴트 시나리오 + 드랍다운 옵션
  * ============================================================ */
-export const STUDIO_BRIEF = {
+export const STUDIO_OPTIONS = {
+  seasons: [
+    "26SS",
+    "26FW",
+    "27SS",
+    "27FW",
+    "28SS",
+    "28FW",
+    "29SS",
+    "29FW",
+    "30SS",
+    "30FW",
+  ] as const,
+  items: [
+    "OUTERWEAR",
+    "PISTE",
+    "DOWN",
+    "PADDING",
+    "SWEATER",
+    "CARDIGAN",
+    "SWEATSHIRTS",
+    "POLO",
+    "T-SHIRTS",
+    "TRAINING TOP",
+    "PANTS",
+    "SHORTS",
+    "SKIRTS",
+    "DRESS",
+    "BRA",
+    "LEGGINGS",
+    "BAG",
+    "CAP",
+    "SOCKS",
+    "ACC",
+  ] as const,
+  targets: ["Men", "Women", "Unisex"] as const,
+  counts: [60, 120, 180, 240, 300] as const,
+};
+
+export type StudioSeason = (typeof STUDIO_OPTIONS.seasons)[number];
+export type StudioItem = (typeof STUDIO_OPTIONS.items)[number];
+export type StudioTarget = (typeof STUDIO_OPTIONS.targets)[number];
+export type StudioCount = (typeof STUDIO_OPTIONS.counts)[number];
+
+export interface StudioBrief {
+  season: StudioSeason;
+  item: StudioItem;
+  target: StudioTarget;
+  referenceCount: StudioCount;
+  moodKeyword: string;
+  dnaStrictness: number;
+  variantBoldness: number;
+}
+
+export const STUDIO_BRIEF: StudioBrief = {
   season: "27FW",
-  category: "Apparel",
-  subcategory: "Polo",
-  gender: "Women",
-  moodKeyword: "Italian Riviera Sunset",
+  item: "POLO",
+  target: "Women",
   referenceCount: 60,
+  moodKeyword: "Italian Riviera Sunset",
   dnaStrictness: 0.7, // 0(관대) ~ 1(엄격)
   variantBoldness: 0.4, // 0(보수) ~ 1(실험)
 };

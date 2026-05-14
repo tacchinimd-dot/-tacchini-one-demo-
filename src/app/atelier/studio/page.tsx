@@ -24,12 +24,14 @@ import {
   STUDIO_TREND_POOL,
   STUDIO_GENERATED,
   STUDIO_BRIEF,
+  STUDIO_OPTIONS,
   STUDIO_SOURCES,
   STUDIO_CURATED_IDS,
   STUDIO_SUMMARY,
   type TrendImage,
   type GeneratedDesign,
   type Verdict,
+  type StudioBrief,
 } from "@/lib/studio-data";
 
 type StudioStep = "brief" | "source" | "filter" | "curate" | "generate" | "lineup";
@@ -52,6 +54,7 @@ export default function StudioRoute() {
 function Studio() {
   const [step, setStep] = useState<StudioStep>("brief");
   const [selectedRefs, setSelectedRefs] = useState<string[]>([]);
+  const [brief, setBrief] = useState<StudioBrief>(STUDIO_BRIEF);
 
   /* Step 4 진입 시 AI 추천 자동 선택 */
   useEffect(() => {
@@ -63,6 +66,7 @@ function Studio() {
   function resetFlow() {
     setStep("brief");
     setSelectedRefs([]);
+    setBrief(STUDIO_BRIEF);
   }
 
   return (
@@ -72,11 +76,14 @@ function Studio() {
         <Header step={step} onReset={resetFlow} />
         <div className="console-pad">
           <div className="animate-fade-in" key={step}>
-            {step === "brief" && <BriefStep onStart={() => setStep("source")} />}
-            {step === "source" && <SourceStep onDone={() => setStep("filter")} />}
-            {step === "filter" && <FilterStep onDone={() => setStep("curate")} />}
+            {step === "brief" && (
+              <BriefStep brief={brief} setBrief={setBrief} onStart={() => setStep("source")} />
+            )}
+            {step === "source" && <SourceStep brief={brief} onDone={() => setStep("filter")} />}
+            {step === "filter" && <FilterStep brief={brief} onDone={() => setStep("curate")} />}
             {step === "curate" && (
               <CurateStep
+                brief={brief}
                 selectedRefs={selectedRefs}
                 onToggle={(id) =>
                   setSelectedRefs((prev) =>
@@ -87,12 +94,71 @@ function Studio() {
               />
             )}
             {step === "generate" && (
-              <GenerateStep onDone={() => setStep("lineup")} />
+              <GenerateStep brief={brief} onDone={() => setStep("lineup")} />
             )}
-            {step === "lineup" && <LineupStep />}
+            {step === "lineup" && <LineupStep brief={brief} />}
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * Filter Chip Strip — 현재 선택된 brief 요약을 모든 step 상단에 표시
+ * ============================================================ */
+function BriefSummary({ brief }: { brief: StudioBrief }) {
+  const { t } = useLang();
+  const chips: { label: string; value: string }[] = [
+    { label: t.studio.brief_season, value: brief.season },
+    { label: t.studio.brief_subcategory, value: brief.item },
+    { label: t.studio.brief_gender, value: brief.target },
+    { label: t.studio.brief_count, value: `${brief.referenceCount}` },
+  ];
+  return (
+    <div
+      className="flex items-center flex-wrap gap-1.5"
+      style={{ marginBottom: 12 }}
+    >
+      {chips.map((c) => (
+        <span
+          key={c.label}
+          style={{
+            fontSize: 10.5,
+            fontWeight: 600,
+            padding: "3px 9px",
+            background: "var(--color-canvas-soft)",
+            border: "1px solid var(--color-hairline)",
+            borderRadius: 9999,
+            color: "var(--color-ink-muted-80)",
+            letterSpacing: 0.3,
+          }}
+        >
+          <span
+            className="t-mono"
+            style={{ color: "var(--color-ink-muted-48)", marginRight: 6, fontSize: 9 }}
+          >
+            {c.label.toUpperCase()}
+          </span>
+          <span style={{ fontWeight: 700, color: "var(--color-ink)" }}>{c.value}</span>
+        </span>
+      ))}
+      {brief.moodKeyword && (
+        <span
+          style={{
+            fontSize: 10.5,
+            fontWeight: 600,
+            padding: "3px 9px",
+            background: "rgba(0,44,95,0.06)",
+            border: "1px solid rgba(0,44,95,0.18)",
+            borderRadius: 9999,
+            color: "var(--color-primary)",
+            letterSpacing: 0.3,
+          }}
+        >
+          ✦ {brief.moodKeyword}
+        </span>
+      )}
     </div>
   );
 }
@@ -202,8 +268,20 @@ function Header({ step, onReset }: { step: StudioStep; onReset: () => void }) {
 /* ============================================================
  * STEP 1 — BRIEF
  * ============================================================ */
-function BriefStep({ onStart }: { onStart: () => void }) {
+function BriefStep({
+  brief,
+  setBrief,
+  onStart,
+}: {
+  brief: StudioBrief;
+  setBrief: (b: StudioBrief) => void;
+  onStart: () => void;
+}) {
   const { t } = useLang();
+
+  function update<K extends keyof StudioBrief>(key: K, value: StudioBrief[K]) {
+    setBrief({ ...brief, [key]: value });
+  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
@@ -222,18 +300,38 @@ function BriefStep({ onStart }: { onStart: () => void }) {
         </p>
 
         <div className="mt-6 grid gap-4 grid-cols-2">
-          <BriefField label={t.studio.brief_season} value={STUDIO_BRIEF.season} />
-          <BriefField
-            label={t.studio.brief_subcategory}
-            value={STUDIO_BRIEF.subcategory}
+          <BriefSelect
+            label={t.studio.brief_season}
+            value={brief.season}
+            options={STUDIO_OPTIONS.seasons as readonly string[]}
+            onChange={(v) => update("season", v as StudioBrief["season"])}
           />
-          <BriefField label={t.studio.brief_gender} value={STUDIO_BRIEF.gender} />
-          <BriefField
+          <BriefSelect
+            label={t.studio.brief_subcategory}
+            value={brief.item}
+            options={STUDIO_OPTIONS.items as readonly string[]}
+            onChange={(v) => update("item", v as StudioBrief["item"])}
+          />
+          <BriefSelect
+            label={t.studio.brief_gender}
+            value={brief.target}
+            options={STUDIO_OPTIONS.targets as readonly string[]}
+            onChange={(v) => update("target", v as StudioBrief["target"])}
+          />
+          <BriefSelect
             label={t.studio.brief_count}
-            value={`${STUDIO_BRIEF.referenceCount}`}
+            value={`${brief.referenceCount}`}
+            options={STUDIO_OPTIONS.counts.map((n) => `${n}`)}
+            onChange={(v) =>
+              update("referenceCount", Number(v) as StudioBrief["referenceCount"])
+            }
           />
           <div style={{ gridColumn: "1 / -1" }}>
-            <BriefField label={t.studio.brief_mood} value={STUDIO_BRIEF.moodKeyword} large />
+            <BriefInput
+              label={t.studio.brief_mood}
+              value={brief.moodKeyword}
+              onChange={(v) => update("moodKeyword", v)}
+            />
           </div>
         </div>
 
@@ -241,13 +339,13 @@ function BriefStep({ onStart }: { onStart: () => void }) {
         <div className="mt-6 space-y-5">
           <SliderField
             label={t.studio.brief_strictness}
-            value={STUDIO_BRIEF.dnaStrictness}
+            value={brief.dnaStrictness}
             leftLabel={t.studio.strictness_low}
             rightLabel={t.studio.strictness_high}
           />
           <SliderField
             label={t.studio.brief_boldness}
-            value={STUDIO_BRIEF.variantBoldness}
+            value={brief.variantBoldness}
             leftLabel={t.studio.boldness_low}
             rightLabel={t.studio.boldness_high}
           />
@@ -303,35 +401,96 @@ function BriefStep({ onStart }: { onStart: () => void }) {
   );
 }
 
-function BriefField({
+function BriefSelect({
   label,
   value,
-  large,
+  options,
+  onChange,
 }: {
   label: string;
   value: string;
-  large?: boolean;
+  options: readonly string[];
+  onChange: (v: string) => void;
 }) {
   return (
-    <div
-      className="card-flat"
-      style={{
-        padding: large ? 16 : 12,
-      }}
-    >
+    <div className="card-flat" style={{ padding: 12, position: "relative" }}>
       <div className="t-label">{label}</div>
-      <div
-        className="mt-1"
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         style={{
+          width: "100%",
+          marginTop: 4,
+          padding: "2px 0",
+          background: "transparent",
+          border: "none",
+          outline: "none",
           fontFamily: "var(--font-display)",
-          fontSize: large ? 18 : 15,
+          fontSize: 15,
+          fontWeight: 700,
+          letterSpacing: -0.2,
+          color: "var(--color-ink)",
+          cursor: "pointer",
+          appearance: "none",
+          WebkitAppearance: "none",
+          MozAppearance: "none",
+          paddingRight: 22,
+        }}
+      >
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+      <span
+        aria-hidden
+        style={{
+          position: "absolute",
+          right: 12,
+          top: "50%",
+          marginTop: 4,
+          color: "var(--color-ink-muted-48)",
+          fontSize: 12,
+          pointerEvents: "none",
+        }}
+      >
+        ▾
+      </span>
+    </div>
+  );
+}
+
+function BriefInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="card-flat" style={{ padding: 16 }}>
+      <div className="t-label">{label}</div>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          width: "100%",
+          marginTop: 4,
+          padding: 0,
+          background: "transparent",
+          border: "none",
+          outline: "none",
+          fontFamily: "var(--font-display)",
+          fontSize: 18,
           fontWeight: 700,
           letterSpacing: -0.2,
           color: "var(--color-ink)",
         }}
-      >
-        {value}
-      </div>
+      />
     </div>
   );
 }
@@ -401,11 +560,12 @@ function SliderField({
 /* ============================================================
  * STEP 2 — SOURCE (Mosaic-in)
  * ============================================================ */
-function SourceStep({ onDone }: { onDone: () => void }) {
+function SourceStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void }) {
   const { t } = useLang();
   const [visibleCount, setVisibleCount] = useState(0);
   const total = STUDIO_TREND_POOL.length;
   const sourcesCount = Object.keys(STUDIO_SOURCES).length;
+  void brief; /* 향후 실제 크롤링 파라미터로 사용 */
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -424,6 +584,7 @@ function SourceStep({ onDone }: { onDone: () => void }) {
   return (
     <div className="space-y-5">
       <div className="card" style={{ padding: 24 }}>
+        <BriefSummary brief={brief} />
         <div className="flex items-start justify-between">
           <div>
             <div className="t-label">{t.studio.step2_label}</div>
@@ -457,7 +618,7 @@ function SourceStep({ onDone }: { onDone: () => void }) {
 /* ============================================================
  * STEP 3 — DNA FILTER
  * ============================================================ */
-function FilterStep({ onDone }: { onDone: () => void }) {
+function FilterStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void }) {
   const { t } = useLang();
   const total = STUDIO_TREND_POOL.length;
   const passed = STUDIO_TREND_POOL.filter((t) => t.verdict === "A" || t.verdict === "B");
@@ -475,6 +636,7 @@ function FilterStep({ onDone }: { onDone: () => void }) {
   return (
     <div className="space-y-5">
       <div className="card" style={{ padding: 24 }}>
+        <BriefSummary brief={brief} />
         <div className="flex items-start justify-between">
           <div>
             <div className="t-label">{t.studio.step3_label}</div>
@@ -564,10 +726,12 @@ function FilterStep({ onDone }: { onDone: () => void }) {
  * STEP 4 — CURATE
  * ============================================================ */
 function CurateStep({
+  brief,
   selectedRefs,
   onToggle,
   onNext,
 }: {
+  brief: StudioBrief;
   selectedRefs: string[];
   onToggle: (id: string) => void;
   onNext: () => void;
@@ -596,6 +760,7 @@ function CurateStep({
   return (
     <div className="space-y-5">
       <div className="card" style={{ padding: 24 }}>
+        <BriefSummary brief={brief} />
         <div className="flex items-start justify-between">
           <div>
             <div className="t-label">{t.studio.step4_label}</div>
@@ -655,10 +820,11 @@ function CurateStep({
 /* ============================================================
  * STEP 5 — GENERATE
  * ============================================================ */
-function GenerateStep({ onDone }: { onDone: () => void }) {
+function GenerateStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void }) {
   const { t } = useLang();
   const [revealedCount, setRevealedCount] = useState(0);
   const total = STUDIO_GENERATED.length;
+  void brief;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -687,6 +853,7 @@ function GenerateStep({ onDone }: { onDone: () => void }) {
   return (
     <div className="space-y-5">
       <div className="card" style={{ padding: 24 }}>
+        <BriefSummary brief={brief} />
         <div className="flex items-start justify-between">
           <div>
             <div className="t-label">{t.studio.step5_label}</div>
@@ -795,7 +962,7 @@ function GenerateStep({ onDone }: { onDone: () => void }) {
 /* ============================================================
  * STEP 6 — LINEUP
  * ============================================================ */
-function LineupStep() {
+function LineupStep({ brief }: { brief: StudioBrief }) {
   const { t, lang } = useLang();
   const a = STUDIO_GENERATED.filter((d) => d.verdict === "A");
   const b = STUDIO_GENERATED.filter((d) => d.verdict === "B");
@@ -807,6 +974,13 @@ function LineupStep() {
     <div className="space-y-6">
       {/* Header card */}
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+        <div
+          style={{
+            padding: "16px 28px 0",
+          }}
+        >
+          <BriefSummary brief={brief} />
+        </div>
         <div
           style={{
             padding: "24px 28px",
