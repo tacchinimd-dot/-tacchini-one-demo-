@@ -401,6 +401,9 @@ function BriefStep({
   );
 }
 
+const CHEVRON_DOWN_BG =
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23002C5F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='4 6 8 10 12 6'/></svg>\")";
+
 function BriefSelect({
   label,
   value,
@@ -413,17 +416,20 @@ function BriefSelect({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="card-flat" style={{ padding: 12, position: "relative" }}>
+    <div className="card-flat" style={{ padding: 12 }}>
       <div className="t-label">{label}</div>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        className="brief-select"
         style={{
           width: "100%",
-          marginTop: 4,
-          padding: "2px 0",
-          background: "transparent",
-          border: "none",
+          marginTop: 6,
+          padding: "8px 32px 8px 10px",
+          background:
+            "var(--color-canvas-soft) " + CHEVRON_DOWN_BG + " no-repeat right 10px center / 14px",
+          border: "1px solid var(--color-hairline-strong)",
+          borderRadius: "var(--radius-sm)",
           outline: "none",
           fontFamily: "var(--font-display)",
           fontSize: 15,
@@ -434,7 +440,6 @@ function BriefSelect({
           appearance: "none",
           WebkitAppearance: "none",
           MozAppearance: "none",
-          paddingRight: 22,
         }}
       >
         {options.map((opt) => (
@@ -443,20 +448,6 @@ function BriefSelect({
           </option>
         ))}
       </select>
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          right: 12,
-          top: "50%",
-          marginTop: 4,
-          color: "var(--color-ink-muted-48)",
-          fontSize: 12,
-          pointerEvents: "none",
-        }}
-      >
-        ▾
-      </span>
     </div>
   );
 }
@@ -471,7 +462,7 @@ function BriefInput({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="card-flat" style={{ padding: 16 }}>
+    <div className="card-flat" style={{ padding: 12 }}>
       <div className="t-label">{label}</div>
       <input
         type="text"
@@ -479,13 +470,14 @@ function BriefInput({
         onChange={(e) => onChange(e.target.value)}
         style={{
           width: "100%",
-          marginTop: 4,
-          padding: 0,
-          background: "transparent",
-          border: "none",
+          marginTop: 6,
+          padding: "8px 10px",
+          background: "var(--color-canvas-soft)",
+          border: "1px solid var(--color-hairline-strong)",
+          borderRadius: "var(--radius-sm)",
           outline: "none",
           fontFamily: "var(--font-display)",
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: 700,
           letterSpacing: -0.2,
           color: "var(--color-ink)",
