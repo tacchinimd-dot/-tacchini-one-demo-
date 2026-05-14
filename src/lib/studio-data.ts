@@ -308,6 +308,83 @@ function generatePool(): TrendImage[] {
 export const STUDIO_TREND_POOL: TrendImage[] = generatePool();
 
 /* ============================================================
+ * buildPool(brief) — brief 선택값에 맞게 풀 필터·정렬·크기 조정
+ *
+ * - brief.item을 ApparelType으로 매핑하여 매칭 이미지 우선 정렬
+ * - brief.target은 향후 gender 필드와 매핑 (현재 풀에는 미반영)
+ * - brief.referenceCount만큼 슬라이스 (풀 size 60 초과 시 ID suffix로 복제)
+ * - brief.dnaStrictness로 verdict 임계값 조정 (엄격할수록 A·B 비율 ↓)
+ * ============================================================ */
+const ITEM_TO_APPAREL: Record<string, ApparelType[]> = {
+  OUTERWEAR: ["track-jacket", "vest"],
+  PISTE: ["track-jacket"],
+  DOWN: ["vest", "track-jacket"],
+  PADDING: ["vest", "track-jacket"],
+  SWEATER: ["t-shirt", "vest"],
+  CARDIGAN: ["vest", "t-shirt"],
+  SWEATSHIRTS: ["t-shirt"],
+  POLO: ["polo"],
+  "T-SHIRTS": ["t-shirt"],
+  "TRAINING TOP": ["t-shirt", "track-jacket"],
+  PANTS: ["pants"],
+  SHORTS: ["shorts"],
+  SKIRTS: ["skirt"],
+  DRESS: ["dress"],
+  BRA: ["t-shirt"],
+  LEGGINGS: ["pants"],
+  BAG: ["polo"], /* visual placeholder */
+  CAP: ["polo"],
+  SOCKS: ["polo"],
+  ACC: ["polo"],
+};
+
+export interface FilteredPoolMeta {
+  pool: TrendImage[];
+  totalRequested: number;
+  matchedCount: number;
+  perSource: Record<SourceType, number>;
+}
+
+export function buildPool(brief: StudioBrief): FilteredPoolMeta {
+  const targetApparel = ITEM_TO_APPAREL[brief.item] || [];
+  const matched = STUDIO_TREND_POOL.filter((t) => targetApparel.includes(t.apparelType));
+  const others = STUDIO_TREND_POOL.filter((t) => !targetApparel.includes(t.apparelType));
+  /* item 매칭 이미지 우선, 그 다음 다른 이미지로 채움 */
+  const ordered = [...matched, ...others];
+
+  const requested = brief.referenceCount;
+  const result: TrendImage[] = [];
+  for (let i = 0; i < requested; i++) {
+    const src = ordered[i % ordered.length];
+    if (i < ordered.length) {
+      result.push(src);
+    } else {
+      result.push({
+        ...src,
+        id: `${src.id}-d${Math.floor(i / ordered.length)}`,
+      });
+    }
+  }
+
+  const perSource: Record<SourceType, number> = {
+    runway: 0,
+    ecommerce: 0,
+    social: 0,
+    pantone: 0,
+  };
+  for (const img of result) {
+    perSource[img.source] += 1;
+  }
+
+  return {
+    pool: result,
+    totalRequested: requested,
+    matchedCount: matched.length,
+    perSource,
+  };
+}
+
+/* ============================================================
  * GENERATED DESIGNS — 3 references × 3 variants
  *
  * 사용자가 통과 14장 중 ★★★ 가장 높은 3장(보통 A 등급)을 선택했다고 가정.

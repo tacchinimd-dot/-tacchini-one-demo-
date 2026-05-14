@@ -28,6 +28,7 @@ import {
   STUDIO_SOURCES,
   STUDIO_CURATED_IDS,
   STUDIO_SUMMARY,
+  buildPool,
   type TrendImage,
   type GeneratedDesign,
   type Verdict,
@@ -51,50 +52,147 @@ export default function StudioRoute() {
   );
 }
 
+const STEP_ORDER: StudioStep[] = [
+  "brief",
+  "source",
+  "filter",
+  "curate",
+  "generate",
+  "lineup",
+];
+
 function Studio() {
   const [step, setStep] = useState<StudioStep>("brief");
   const [selectedRefs, setSelectedRefs] = useState<string[]>([]);
   const [brief, setBrief] = useState<StudioBrief>(STUDIO_BRIEF);
+  /* 각 step의 "done" 플래그 — Header tab 활성화 조건 */
+  const [done, setDone] = useState<Record<StudioStep, boolean>>({
+    brief: false,
+    source: false,
+    filter: false,
+    curate: false,
+    generate: false,
+    lineup: false,
+  });
 
-  /* Step 4 진입 시 AI 추천 자동 선택 */
+  /* brief 변경 시마다 풀 재계산 */
+  const filteredPool = useMemo(() => buildPool(brief), [brief]);
+
+  /* Step 4 진입 시 AI 추천 자동 선택 (사용자 첫 진입 시만) */
   useEffect(() => {
     if (step === "curate" && selectedRefs.length === 0) {
-      setSelectedRefs(STUDIO_CURATED_IDS);
+      /* AI 추천 ID 중 필터된 풀에 존재하는 것만 */
+      const baseIds = new Set(filteredPool.pool.map((p) => p.id));
+      const recs = STUDIO_CURATED_IDS.filter((id) => baseIds.has(id));
+      /* 추천이 풀에 없으면 풀의 A grade 상위 3장으로 fallback */
+      if (recs.length > 0) {
+        setSelectedRefs(recs);
+      } else {
+        const aGrade = filteredPool.pool
+          .filter((p) => p.verdict === "A" || p.verdict === "B")
+          .slice(0, 3);
+        setSelectedRefs(aGrade.map((p) => p.id));
+      }
     }
-  }, [step, selectedRefs.length]);
+  }, [step, selectedRefs.length, filteredPool.pool]);
+
+  function markDone(s: StudioStep) {
+    setDone((prev) => (prev[s] ? prev : { ...prev, [s]: true }));
+  }
+
+  function goNext() {
+    const idx = STEP_ORDER.indexOf(step);
+    if (idx >= 0 && idx < STEP_ORDER.length - 1) {
+      markDone(step);
+      setStep(STEP_ORDER[idx + 1]);
+    }
+  }
+
+  function tabClick(target: StudioStep) {
+    /* 현재 step 또는 done 된 step 또는 직전 step이 done이면 이동 가능 */
+    const idx = STEP_ORDER.indexOf(target);
+    if (idx <= 0) {
+      setStep(target);
+      return;
+    }
+    const prev = STEP_ORDER[idx - 1];
+    if (done[prev] || done[target]) {
+      setStep(target);
+    }
+  }
 
   function resetFlow() {
     setStep("brief");
     setSelectedRefs([]);
     setBrief(STUDIO_BRIEF);
+    setDone({
+      brief: false,
+      source: false,
+      filter: false,
+      curate: false,
+      generate: false,
+      lineup: false,
+    });
   }
 
   return (
     <div className="console-shell">
       <Sidebar active="studio" />
       <div className="console-main">
-        <Header step={step} onReset={resetFlow} />
+        <Header step={step} done={done} onTabClick={tabClick} onReset={resetFlow} />
         <div className="console-pad">
           <div className="animate-fade-in" key={step}>
             {step === "brief" && (
-              <BriefStep brief={brief} setBrief={setBrief} onStart={() => setStep("source")} />
+              <BriefStep
+                brief={brief}
+                setBrief={setBrief}
+                onStart={() => {
+                  markDone("brief");
+                  setStep("source");
+                }}
+              />
             )}
-            {step === "source" && <SourceStep brief={brief} onDone={() => setStep("filter")} />}
-            {step === "filter" && <FilterStep brief={brief} onDone={() => setStep("curate")} />}
+            {step === "source" && (
+              <SourceStep
+                brief={brief}
+                pool={filteredPool}
+                done={done.source}
+                onComplete={() => markDone("source")}
+                onNext={goNext}
+              />
+            )}
+            {step === "filter" && (
+              <FilterStep
+                brief={brief}
+                pool={filteredPool}
+                done={done.filter}
+                onComplete={() => markDone("filter")}
+                onNext={goNext}
+              />
+            )}
             {step === "curate" && (
               <CurateStep
                 brief={brief}
+                pool={filteredPool}
                 selectedRefs={selectedRefs}
                 onToggle={(id) =>
                   setSelectedRefs((prev) =>
                     prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
                   )
                 }
-                onNext={() => setStep("generate")}
+                onNext={() => {
+                  markDone("curate");
+                  setStep("generate");
+                }}
               />
             )}
             {step === "generate" && (
-              <GenerateStep brief={brief} onDone={() => setStep("lineup")} />
+              <GenerateStep
+                brief={brief}
+                done={done.generate}
+                onComplete={() => markDone("generate")}
+                onNext={goNext}
+              />
             )}
             {step === "lineup" && <LineupStep brief={brief} />}
           </div>
@@ -164,9 +262,19 @@ function BriefSummary({ brief }: { brief: StudioBrief }) {
 }
 
 /* ============================================================
- * Header — breadcrumb + step indicator
+ * Header — breadcrumb + clickable step rail
  * ============================================================ */
-function Header({ step, onReset }: { step: StudioStep; onReset: () => void }) {
+function Header({
+  step,
+  done,
+  onTabClick,
+  onReset,
+}: {
+  step: StudioStep;
+  done: Record<StudioStep, boolean>;
+  onTabClick: (s: StudioStep) => void;
+  onReset: () => void;
+}) {
   const { t } = useLang();
   const stepLabels: Record<StudioStep, string> = {
     brief: t.studio.step_brief,
@@ -176,6 +284,13 @@ function Header({ step, onReset }: { step: StudioStep; onReset: () => void }) {
     generate: t.studio.step_generate,
     lineup: t.studio.step_lineup,
   };
+
+  function isEnabled(target: StudioStep): boolean {
+    const idx = STEP_ORDER.indexOf(target);
+    if (idx <= 0) return true;
+    const prev = STEP_ORDER[idx - 1];
+    return done[prev] || done[target] || step === target;
+  }
 
   return (
     <header
@@ -207,20 +322,54 @@ function Header({ step, onReset }: { step: StudioStep; onReset: () => void }) {
           <span style={{ opacity: 0.4 }}>›</span>
           <span style={{ color: "var(--color-ink)" }}>{t.studio.breadcrumb}</span>
         </div>
-        <div className="flex items-center gap-3">
-          <span
-            className="t-mono"
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              color: "var(--color-primary)",
-              background: "rgba(0, 44, 95, 0.08)",
-              padding: "3px 9px",
-              borderRadius: 9999,
-            }}
-          >
-            {stepLabels[step]}
-          </span>
+        <div className="flex items-center flex-wrap gap-1">
+          {STEP_ORDER.map((s, i) => {
+            const enabled = isEnabled(s);
+            const isCurrent = step === s;
+            const isDone = done[s];
+            return (
+              <div key={s} className="flex items-center">
+                <button
+                  type="button"
+                  disabled={!enabled}
+                  onClick={() => enabled && onTabClick(s)}
+                  className="t-mono"
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    padding: "4px 10px",
+                    borderRadius: 9999,
+                    border: isCurrent
+                      ? "1px solid var(--color-primary)"
+                      : "1px solid transparent",
+                    background: isCurrent
+                      ? "rgba(0, 44, 95, 0.10)"
+                      : isDone
+                      ? "rgba(22,163,74,0.08)"
+                      : "transparent",
+                    color: isCurrent
+                      ? "var(--color-primary)"
+                      : isDone
+                      ? "var(--status-ok)"
+                      : enabled
+                      ? "var(--color-ink-muted-80)"
+                      : "var(--color-ink-muted-48)",
+                    cursor: enabled ? "pointer" : "not-allowed",
+                    opacity: enabled ? 1 : 0.55,
+                    transition: "all 120ms ease",
+                  }}
+                >
+                  {isDone && !isCurrent && (
+                    <span style={{ marginRight: 4, color: "var(--status-ok)" }}>✓</span>
+                  )}
+                  {stepLabels[s]}
+                </button>
+                {i < STEP_ORDER.length - 1 && (
+                  <span style={{ opacity: 0.35, margin: "0 2px" }}>›</span>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -552,32 +701,51 @@ function SliderField({
 /* ============================================================
  * STEP 2 — SOURCE (Mosaic-in)
  * ============================================================ */
-function SourceStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void }) {
+function SourceStep({
+  brief,
+  pool,
+  done,
+  onComplete,
+  onNext,
+}: {
+  brief: StudioBrief;
+  pool: ReturnType<typeof buildPool>;
+  done: boolean;
+  onComplete: () => void;
+  onNext: () => void;
+}) {
   const { t } = useLang();
-  const [visibleCount, setVisibleCount] = useState(0);
-  const total = STUDIO_TREND_POOL.length;
+  const total = pool.pool.length;
   const sourcesCount = Object.keys(STUDIO_SOURCES).length;
-  void brief; /* 향후 실제 크롤링 파라미터로 사용 */
+  const [visibleCount, setVisibleCount] = useState(done ? total : 0);
 
   useEffect(() => {
+    if (done) {
+      setVisibleCount(total);
+      return;
+    }
+    setVisibleCount(0);
     const interval = setInterval(() => {
       setVisibleCount((c) => {
         if (c >= total) {
           clearInterval(interval);
-          setTimeout(onDone, 800);
+          onComplete();
           return total;
         }
-        return Math.min(c + 3, total);
+        return Math.min(c + Math.max(3, Math.floor(total / 30)), total);
       });
     }, 60);
     return () => clearInterval(interval);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total]);
+
+  const finished = visibleCount >= total;
 
   return (
     <div className="space-y-5">
       <div className="card" style={{ padding: 24 }}>
         <BriefSummary brief={brief} />
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-4">
           <div>
             <div className="t-label">{t.studio.step2_label}</div>
             <h2 className="h-display-md mt-2">{t.studio.step2_title}</h2>
@@ -588,21 +756,44 @@ function SourceStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void 
               {t.studio.step2_body(total, sourcesCount)}
             </p>
           </div>
-          <div
-            className="t-mono"
-            style={{
-              fontSize: 28,
-              fontWeight: 800,
-              color: "var(--color-primary)",
-              fontFamily: "var(--font-display)",
-            }}
-          >
-            {visibleCount} / {total}
+          <div className="text-right">
+            <div
+              className="t-mono"
+              style={{
+                fontSize: 28,
+                fontWeight: 800,
+                color: "var(--color-primary)",
+                fontFamily: "var(--font-display)",
+              }}
+            >
+              {visibleCount} / {total}
+            </div>
+            {finished && (
+              <div
+                className="t-mono mt-1"
+                style={{
+                  fontSize: 10,
+                  fontWeight: 800,
+                  color: "var(--status-ok)",
+                  letterSpacing: 0.5,
+                }}
+              >
+                ✓ CRAWL COMPLETE
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <TrendGrid pool={STUDIO_TREND_POOL.slice(0, visibleCount)} mode="all" />
+      <TrendGrid pool={pool.pool.slice(0, visibleCount)} mode="all" />
+
+      {finished && (
+        <div className="flex justify-end">
+          <button onClick={onNext} className="btn btn-primary btn-lg">
+            {t.studio.next_dna}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -610,20 +801,37 @@ function SourceStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void 
 /* ============================================================
  * STEP 3 — DNA FILTER
  * ============================================================ */
-function FilterStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void }) {
+function FilterStep({
+  brief,
+  pool,
+  done,
+  onComplete,
+  onNext,
+}: {
+  brief: StudioBrief;
+  pool: ReturnType<typeof buildPool>;
+  done: boolean;
+  onComplete: () => void;
+  onNext: () => void;
+}) {
   const { t } = useLang();
-  const total = STUDIO_TREND_POOL.length;
-  const passed = STUDIO_TREND_POOL.filter((t) => t.verdict === "A" || t.verdict === "B");
-  const [phase, setPhase] = useState<"animating" | "settled">("animating");
+  const total = pool.pool.length;
+  const passed = pool.pool.filter((p) => p.verdict === "A" || p.verdict === "B");
+  const [phase, setPhase] = useState<"animating" | "settled">(done ? "settled" : "animating");
 
   useEffect(() => {
-    const timer = setTimeout(() => setPhase("settled"), 2200);
-    const next = setTimeout(() => onDone(), 4000);
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(next);
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (done) {
+      setPhase("settled");
+      return;
+    }
+    setPhase("animating");
+    const timer = setTimeout(() => {
+      setPhase("settled");
+      onComplete();
+    }, 2200);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total]);
 
   return (
     <div className="space-y-5">
@@ -701,15 +909,21 @@ function FilterStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void 
             }}
           />
           {t.studio.filter_rejected} ·{" "}
-          {STUDIO_TREND_POOL.length - passed.length}
+          {pool.pool.length - passed.length}
         </div>
         <TrendGrid
-          pool={STUDIO_TREND_POOL.filter(
-            (t) => t.verdict === "C" || t.verdict === "D",
-          )}
+          pool={pool.pool.filter((p) => p.verdict === "C" || p.verdict === "D")}
           mode="rejected"
         />
       </div>
+
+      {phase === "settled" && (
+        <div className="flex justify-end">
+          <button onClick={onNext} className="btn btn-primary btn-lg">
+            {t.studio.next_curate}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -719,19 +933,21 @@ function FilterStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void 
  * ============================================================ */
 function CurateStep({
   brief,
+  pool,
   selectedRefs,
   onToggle,
   onNext,
 }: {
   brief: StudioBrief;
+  pool: ReturnType<typeof buildPool>;
   selectedRefs: string[];
   onToggle: (id: string) => void;
   onNext: () => void;
 }) {
   const { t } = useLang();
   const passed = useMemo(
-    () => STUDIO_TREND_POOL.filter((tr) => tr.verdict === "A" || tr.verdict === "B"),
-    [],
+    () => pool.pool.filter((tr) => tr.verdict === "A" || tr.verdict === "B"),
+    [pool.pool],
   );
   /* AI 추천 (STUDIO_CURATED_IDS) 우선 정렬 */
   const sorted = useMemo(
@@ -812,25 +1028,41 @@ function CurateStep({
 /* ============================================================
  * STEP 5 — GENERATE
  * ============================================================ */
-function GenerateStep({ brief, onDone }: { brief: StudioBrief; onDone: () => void }) {
+function GenerateStep({
+  brief,
+  done,
+  onComplete,
+  onNext,
+}: {
+  brief: StudioBrief;
+  done: boolean;
+  onComplete: () => void;
+  onNext: () => void;
+}) {
   const { t } = useLang();
-  const [revealedCount, setRevealedCount] = useState(0);
   const total = STUDIO_GENERATED.length;
-  void brief;
+  const [revealedCount, setRevealedCount] = useState(done ? total : 0);
 
   useEffect(() => {
+    if (done) {
+      setRevealedCount(total);
+      return;
+    }
+    setRevealedCount(0);
     const interval = setInterval(() => {
       setRevealedCount((c) => {
         if (c >= total) {
           clearInterval(interval);
-          setTimeout(onDone, 1200);
+          onComplete();
           return total;
         }
         return c + 1;
       });
     }, 350);
     return () => clearInterval(interval);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total]);
+  void brief;
 
   /* reference별로 그룹 */
   const byRef = useMemo(() => {
@@ -947,6 +1179,14 @@ function GenerateStep({ brief, onDone }: { brief: StudioBrief; onDone: () => voi
           );
         })}
       </div>
+
+      {revealedCount >= total && (
+        <div className="flex justify-end">
+          <button onClick={onNext} className="btn btn-primary btn-lg">
+            {t.studio.next_lineup}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

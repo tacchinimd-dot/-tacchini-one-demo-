@@ -2,7 +2,7 @@
  * movin-data.ts — AUTO-GENERATED · DO NOT EDIT BY HAND
  *
  * Source: LIFESTYLE MAN / 6 CAD PDFs
- * Built:  2026-05-14T07:24:59.872Z
+ * Built:  2026-05-14T07:59:28.110Z
  * Lines:  6
  * Total SKUs: 28
  *
@@ -1795,7 +1795,7 @@ export const MOVIN_OVERALL = {
   "licenseeNote": "Apparel · G1 라이센시 · 27SS 시즌 패키지 (이전 MOVIN 명칭)",
   "season": "27SS",
   "category": "Lifestyle Man",
-  "generatedAt": "2026-05-14T07:24:59.872Z",
+  "generatedAt": "2026-05-14T07:59:28.111Z",
   "totalLines": 6,
   "totalSKU": 28,
   "grade": "B",
