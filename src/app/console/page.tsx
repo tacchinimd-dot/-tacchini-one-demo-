@@ -13,6 +13,7 @@ import TopBar from "@/components/console/TopBar";
 import KpiCard from "@/components/console/KpiCard";
 import LoginGate from "@/components/auth/LoginGate";
 import { useLang } from "@/lib/i18n/LanguageProvider";
+import { FLOW_CARDS } from "@/lib/flow-data";
 
 export default function OperationsConsoleRoute() {
   return (
@@ -47,6 +48,8 @@ function OperationsConsole() {
 
         <div className="console-pad space-y-6">
           <KpiRow />
+
+          <ActiveFlows />
 
           <div className="grid gap-6 lg:grid-cols-3">
             <SeasonProgress />
@@ -117,6 +120,149 @@ function KpiRow() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
         }
       />
+    </div>
+  );
+}
+
+/* ============================================================
+ * Active Flows — 4 End-to-End Operations Flows
+ * ============================================================ */
+function ActiveFlows() {
+  const { t } = useLang();
+  const cards = [
+    {
+      ...FLOW_CARDS[0],
+      title: t.flows.flow_a_title,
+      subtitle: t.flows.flow_a_subtitle,
+      status: t.flows.flow_a_status,
+      progressLabel: t.flows.flow_a_progress_label,
+    },
+    {
+      ...FLOW_CARDS[1],
+      title: t.flows.flow_b_title,
+      subtitle: t.flows.flow_b_subtitle,
+      status: t.flows.flow_b_status,
+      progressLabel: t.flows.flow_b_progress_label,
+    },
+    {
+      ...FLOW_CARDS[2],
+      title: t.flows.flow_c_title,
+      subtitle: t.flows.flow_c_subtitle,
+      status: t.flows.flow_c_status,
+      progressLabel: t.flows.flow_c_progress_label,
+    },
+    {
+      ...FLOW_CARDS[3],
+      title: t.flows.flow_d_title,
+      subtitle: t.flows.flow_d_subtitle,
+      status: t.flows.flow_d_status,
+      progressLabel: t.flows.flow_d_progress_label,
+    },
+  ];
+
+  return (
+    <div>
+      <div className="flex items-end justify-between mb-3">
+        <div>
+          <div className="t-label">{t.flows.section_label}</div>
+          <h2 className="h-tagline mt-1">{t.flows.section_title}</h2>
+          <p className="t-caption mt-0.5" style={{ color: "var(--color-ink-muted-48)" }}>
+            {t.flows.section_subtitle}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => (
+          <Link
+            key={c.id}
+            href={c.href}
+            className="card relative overflow-hidden block group"
+            style={{
+              padding: 18,
+              textDecoration: "none",
+              color: "inherit",
+              borderTop: `3px solid ${c.accent}`,
+            }}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 8,
+                  background: c.accent,
+                  color: "#fff",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 13,
+                  fontWeight: 800,
+                }}
+              >
+                {c.icon}
+              </div>
+              {c.live && (
+                <span
+                  className="t-mono"
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 800,
+                    color: "var(--color-accent-red)",
+                    background: "rgba(228, 0, 43, 0.10)",
+                    padding: "2px 7px",
+                    borderRadius: 9999,
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  ● {t.flows.already_live}
+                </span>
+              )}
+            </div>
+
+            <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.3, marginBottom: 4 }}>
+              {c.title}
+            </div>
+            <div
+              style={{
+                fontSize: 11.5,
+                color: "var(--color-ink-muted-80)",
+                lineHeight: 1.45,
+                marginBottom: 10,
+                minHeight: 32,
+              }}
+            >
+              {c.subtitle}
+            </div>
+
+            <div className="progress-track" style={{ marginBottom: 6 }}>
+              <div
+                className="progress-fill"
+                style={{ width: `${c.progress}%`, background: c.accent }}
+              />
+            </div>
+            <div
+              className="t-mono"
+              style={{ fontSize: 9.5, color: "var(--color-ink-muted-48)", marginBottom: 10 }}
+            >
+              {c.progressLabel}
+            </div>
+
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: c.accent,
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              {t.flows.open_flow}
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

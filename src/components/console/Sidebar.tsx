@@ -82,10 +82,10 @@ export default function Sidebar({ active = "dashboard" }: SidebarProps) {
       items: [
         { label: t.sidebar.nav_dashboard, href: "/console", icon: ICONS.dashboard, active: active === "dashboard" },
         { label: t.sidebar.nav_licensees, href: "/licensees", icon: ICONS.licensees, badge: 6 },
-        { label: t.sidebar.nav_royalty, href: "/royalty", icon: ICONS.royalty, badge: "3" },
+        { label: t.sidebar.nav_royalty, href: "/console/flows/royalty", icon: ICONS.royalty, badge: "3" },
         { label: t.sidebar.nav_calendar, href: "/calendar", icon: ICONS.calendar },
-        { label: t.sidebar.nav_plans, href: "/plans", icon: ICONS.plan },
-        { label: t.sidebar.nav_contracts, href: "/contracts", icon: ICONS.contract },
+        { label: t.sidebar.nav_plans, href: "/console/flows/plan", icon: ICONS.plan },
+        { label: t.sidebar.nav_contracts, href: "/console/flows/contract", icon: ICONS.contract },
       ],
     },
     {
