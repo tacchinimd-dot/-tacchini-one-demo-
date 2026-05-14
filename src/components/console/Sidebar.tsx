@@ -81,11 +81,11 @@ export default function Sidebar({ active = "dashboard" }: SidebarProps) {
       label: t.sidebar.group_operations,
       items: [
         { label: t.sidebar.nav_dashboard, href: "/console", icon: ICONS.dashboard, active: active === "dashboard" },
-        { label: t.sidebar.nav_licensees, href: "/licensees", icon: ICONS.licensees, badge: 6 },
-        { label: t.sidebar.nav_royalty, href: "/console/flows/royalty", icon: ICONS.royalty, badge: "3" },
-        { label: t.sidebar.nav_calendar, href: "/calendar", icon: ICONS.calendar },
-        { label: t.sidebar.nav_plans, href: "/console/flows/plan", icon: ICONS.plan },
-        { label: t.sidebar.nav_contracts, href: "/console/flows/contract", icon: ICONS.contract },
+        { label: t.sidebar.nav_licensees, href: "/licensees", icon: ICONS.licensees, badge: 6, active: active === "licensees" },
+        { label: t.sidebar.nav_royalty, href: "/console/flows/royalty", icon: ICONS.royalty, badge: "3", active: active === "royalty" },
+        { label: t.sidebar.nav_calendar, href: "/calendar", icon: ICONS.calendar, active: active === "calendar" },
+        { label: t.sidebar.nav_plans, href: "/console/flows/plan", icon: ICONS.plan, active: active === "plans" },
+        { label: t.sidebar.nav_contracts, href: "/console/flows/contract", icon: ICONS.contract, active: active === "contracts" },
       ],
     },
     {

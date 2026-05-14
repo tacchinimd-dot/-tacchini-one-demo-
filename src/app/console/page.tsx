@@ -14,6 +14,21 @@ import KpiCard from "@/components/console/KpiCard";
 import LoginGate from "@/components/auth/LoginGate";
 import { useLang } from "@/lib/i18n/LanguageProvider";
 import { FLOW_CARDS } from "@/lib/flow-data";
+import {
+  LICENSEES,
+  SEASON_MILESTONES,
+  PENDING_REVIEWS,
+  ACTIVITY_EVENTS,
+  GROUP_STYLE,
+  STATUS_STYLE,
+} from "@/lib/console-data";
+
+/* dictionary 키 동적 조회 헬퍼 — t.console에 추가된 키만 사용 */
+type ConsoleDict = Record<string, unknown>;
+function tk(t: { console: ConsoleDict }, key: string): string {
+  const v = t.console[key];
+  return typeof v === "string" ? v : key;
+}
 
 export default function OperationsConsoleRoute() {
   return (
@@ -272,17 +287,10 @@ function ActiveFlows() {
  * ============================================================ */
 function SeasonProgress() {
   const { t } = useLang();
-  const milestones = [
-    { d: -180, label: "F&F 시즌 디렉션 게시", status: "done" },
-    { d: -150, label: "라이센시 경쟁사 데이터·기획", status: "done" },
-    { d: -120, label: "디자인 산출물 제출 마감", status: "active" },
-    { d: -100, label: "F&F 디자인 승인", status: "pending" },
-    { d: -90, label: "차기 시즌 계획 제출", status: "pending" },
-    { d: -70, label: "실물 샘플 송부", status: "pending" },
-    { d: -60, label: "샘플 검수 + 시즌 계획 승인", status: "pending" },
-    { d: 0, label: "시즌 출시", status: "pending" },
-    { d: 30, label: "분기 로열티 정산", status: "pending" },
-  ];
+  const milestones = SEASON_MILESTONES.map((m) => ({
+    ...m,
+    label: tk(t, `milestone_${m.id}`),
+  }));
 
   const today = -180; /* Demo state: D-180 */
   const progress = Math.max(0, Math.min(100, ((180 + today) / 210) * 100));
@@ -371,38 +379,15 @@ function SeasonProgress() {
  * ============================================================ */
 function PendingReviews() {
   const { t } = useLang();
-  const reviews = [
-    {
-      id: "SF-27SS-LM-NET",
-      licensee: "Sugi France",
-      group: "G1",
-      item: "27SS Lifestyle Man · NET line (5 SKU)",
-      verdict: "B",
-      time: "방금",
-      severity: "low",
-      href: "/atelier/inspector/movin",
-    },
-    {
-      id: "SF-27SS-LM-FULL",
-      licensee: "Sugi France",
-      group: "G1",
-      item: "27SS Lifestyle Man · 전체 28 SKU 자동검수 완료",
-      verdict: "B",
-      time: "5분 전",
-      severity: "mid",
-      href: "/atelier/inspector/movin",
-    },
-    {
-      id: "SF-26FW-AP-0042",
-      licensee: "Sugi France",
-      group: "G1",
-      item: "Heritage Hooded Jacket (이전 시즌 demo)",
-      verdict: "C",
-      time: "30분 전",
-      severity: "high",
-      href: "/atelier/inspector",
-    },
-  ];
+  const reviews = PENDING_REVIEWS.map((r) => {
+    const lic = LICENSEES.find((l) => l.id === r.licensee_id);
+    return {
+      ...r,
+      licensee: lic?.name ?? r.licensee_id,
+      item: tk(t, r.item_key),
+      time: tk(t, r.time_key),
+    };
+  });
 
   return (
     <div className="card" style={{ padding: 24 }}>
@@ -596,88 +581,6 @@ function AtelierCallout() {
 /* ============================================================
  * 6 Licensees Matrix
  * ============================================================ */
-const LICENSEES = [
-  {
-    name: "BBUK",
-    region: "UK · Ireland",
-    category: "Apparel + Acc",
-    group: "G3" as const,
-    revenue: "€ 412k",
-    minimum: 191,
-    compliance: 88,
-    status: "갱신 협상 중",
-    statusKind: "active" as const,
-  },
-  {
-    name: "Sugi Footwear",
-    region: "FR · IT · UK · DACH · ME",
-    category: "Footwear",
-    group: "G2" as const,
-    revenue: "€ 286k",
-    minimum: 32,
-    compliance: 71,
-    status: "Brand Elevation",
-    statusKind: "warn" as const,
-  },
-  {
-    name: "Sugi France",
-    region: "FR · DACH · Benelux · 북아프리카",
-    category: "Apparel",
-    group: "G1" as const,
-    revenue: "€ 0 (런칭 전)",
-    minimum: 0,
-    compliance: 92,
-    status: "26FW 런칭",
-    statusKind: "info" as const,
-  },
-  {
-    name: "Benjamin",
-    region: "Europe · ME · 북아프리카",
-    category: "Socks · UW · Sleepwear",
-    group: "G3" as const,
-    revenue: "€ 318k",
-    minimum: 142,
-    compliance: 90,
-    status: "5+5년 연장 요청",
-    statusKind: "active" as const,
-  },
-  {
-    name: "BDS",
-    region: "동유럽 16개국 · CIS",
-    category: "Apparel",
-    group: "G1" as const,
-    revenue: "€ 92k",
-    minimum: 14,
-    compliance: 84,
-    status: "신계약 원년",
-    statusKind: "info" as const,
-  },
-  {
-    name: "SILVER",
-    region: "Italy",
-    category: "Apparel",
-    group: "G2" as const,
-    revenue: "€ 28k",
-    minimum: 18,
-    compliance: 62,
-    status: "사실상 종료",
-    statusKind: "danger" as const,
-  },
-];
-
-const STATUS_STYLE: Record<string, { color: string; bg: string }> = {
-  active: { color: "var(--status-ok)", bg: "rgba(22,163,74,0.10)" },
-  warn: { color: "var(--status-warn)", bg: "rgba(217,119,6,0.10)" },
-  info: { color: "var(--status-info)", bg: "rgba(37,99,235,0.10)" },
-  danger: { color: "var(--status-bad)", bg: "rgba(220,38,38,0.10)" },
-};
-
-const GROUP_STYLE = {
-  G1: { color: "var(--color-primary)", bg: "rgba(0,44,95,0.10)" },
-  G2: { color: "var(--color-brick-red)", bg: "rgba(176,58,46,0.10)" },
-  G3: { color: "var(--color-court-green)", bg: "rgba(31,77,58,0.10)" },
-};
-
 function LicenseesMatrix() {
   const { t } = useLang();
   return (
@@ -708,88 +611,99 @@ function LicenseesMatrix() {
             </tr>
           </thead>
           <tbody>
-            {LICENSEES.map((l) => (
-              <tr key={l.name} style={{ borderTop: "1px solid var(--color-divider-soft)" }}>
-                <td style={{ padding: "14px 24px" }}>
-                  <div className="flex items-center gap-3">
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 8,
-                        background: GROUP_STYLE[l.group].bg,
-                        color: GROUP_STYLE[l.group].color,
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 11,
-                        fontWeight: 800,
-                      }}
-                    >
-                      {l.name.slice(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600 }}>{l.name}</div>
-                      <div className="t-mono" style={{ fontSize: 10, color: "var(--color-ink-muted-48)" }}>
-                        STE-{l.name.slice(0, 3).toUpperCase()}-26
+            {LICENSEES.map((l) => {
+              const region = tk(t, `lic_${l.id}_region`);
+              const category = tk(t, `lic_${l.id}_category`);
+              const statusLabel = tk(t, `lic_${l.id}_status`);
+              const revenueDisplay =
+                l.revenue_eur === null
+                  ? "—"
+                  : l.revenue_eur === 0
+                  ? `€ 0 ${tk(t, "revenue_launching")}`
+                  : `€ ${(l.revenue_eur / 1000).toFixed(0)}k`;
+              return (
+                <tr key={l.id} style={{ borderTop: "1px solid var(--color-divider-soft)" }}>
+                  <td style={{ padding: "14px 24px" }}>
+                    <div className="flex items-center gap-3">
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 8,
+                          background: GROUP_STYLE[l.group].bg,
+                          color: GROUP_STYLE[l.group].color,
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          fontWeight: 800,
+                        }}
+                      >
+                        {l.name.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 600 }}>{l.name}</div>
+                        <div className="t-mono" style={{ fontSize: 10, color: "var(--color-ink-muted-48)" }}>
+                          STE-{l.name.slice(0, 3).toUpperCase()}-26
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <Td>
-                  <span
-                    className="pill"
-                    style={{
-                      color: GROUP_STYLE[l.group].color,
-                      background: GROUP_STYLE[l.group].bg,
-                      borderColor: "transparent",
-                    }}
-                  >
-                    {l.group}
-                  </span>
-                </Td>
-                <Td>
-                  <div style={{ fontSize: 12, color: "var(--color-ink-muted-80)" }}>{l.region}</div>
-                  <div className="t-mono" style={{ fontSize: 10, color: "var(--color-ink-muted-48)" }}>
-                    {l.category}
-                  </div>
-                </Td>
-                <Td align="right">
-                  <span className="t-tabular" style={{ fontSize: 13, fontWeight: 600 }}>{l.revenue}</span>
-                </Td>
-                <Td align="right">
-                  <span
-                    className="t-tabular"
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: l.minimum >= 100 ? "var(--status-ok)" : l.minimum >= 50 ? "var(--status-warn)" : l.minimum > 0 ? "var(--status-bad)" : "var(--color-ink-muted-48)",
-                    }}
-                  >
-                    {l.minimum > 0 ? `${l.minimum}%` : "—"}
-                  </span>
-                </Td>
-                <Td align="right">
-                  <ComplianceBar value={l.compliance} />
-                </Td>
-                <Td>
-                  <span
-                    className="pill"
-                    style={{
-                      color: STATUS_STYLE[l.statusKind].color,
-                      background: STATUS_STYLE[l.statusKind].bg,
-                      borderColor: "transparent",
-                    }}
-                  >
-                    <span className="pill-dot" />
-                    {l.status}
-                  </span>
-                </Td>
-                <Td align="right">
-                  <button className="btn btn-ghost btn-sm">{t.common.open}</button>
-                </Td>
-              </tr>
-            ))}
+                  </td>
+                  <Td>
+                    <span
+                      className="pill"
+                      style={{
+                        color: GROUP_STYLE[l.group].color,
+                        background: GROUP_STYLE[l.group].bg,
+                        borderColor: "transparent",
+                      }}
+                    >
+                      {l.group}
+                    </span>
+                  </Td>
+                  <Td>
+                    <div style={{ fontSize: 12, color: "var(--color-ink-muted-80)" }}>{region}</div>
+                    <div className="t-mono" style={{ fontSize: 10, color: "var(--color-ink-muted-48)" }}>
+                      {category}
+                    </div>
+                  </Td>
+                  <Td align="right">
+                    <span className="t-tabular" style={{ fontSize: 13, fontWeight: 600 }}>{revenueDisplay}</span>
+                  </Td>
+                  <Td align="right">
+                    <span
+                      className="t-tabular"
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: l.minimum >= 100 ? "var(--status-ok)" : l.minimum >= 50 ? "var(--status-warn)" : l.minimum > 0 ? "var(--status-bad)" : "var(--color-ink-muted-48)",
+                      }}
+                    >
+                      {l.minimum > 0 ? `${l.minimum}%` : "—"}
+                    </span>
+                  </Td>
+                  <Td align="right">
+                    <ComplianceBar value={l.compliance} />
+                  </Td>
+                  <Td>
+                    <span
+                      className="pill"
+                      style={{
+                        color: STATUS_STYLE[l.statusKind].color,
+                        background: STATUS_STYLE[l.statusKind].bg,
+                        borderColor: "transparent",
+                      }}
+                    >
+                      <span className="pill-dot" />
+                      {statusLabel}
+                    </span>
+                  </Td>
+                  <Td align="right">
+                    <button className="btn btn-ghost btn-sm">{t.common.open}</button>
+                  </Td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -952,13 +866,12 @@ function RevenueChart() {
  * ============================================================ */
 function ActivityFeed() {
   const { t } = useLang();
-  const events = [
-    { type: "review", icon: "AI", actor: "ATELIER ONE", verb: "completed inspection", target: "SF-26FW-AP-0042", verdict: "C", time: "2분 전", color: "var(--color-primary)" },
-    { type: "royalty", icon: "$", actor: "Benjamin", verb: "submitted Q1 royalty", target: "€ 14,200", time: "47분 전", color: "var(--color-accent-gold)" },
-    { type: "design", icon: "✎", actor: "BDS", verb: "uploaded 12 designs", target: "26FW Apparel", time: "2시간 전", color: "var(--color-court-green)" },
-    { type: "contract", icon: "§", actor: "권은희 차장", verb: "renewed contract draft", target: "Benjamin · 5+5y", time: "어제", color: "var(--color-accent-red)" },
-    { type: "review", icon: "AI", actor: "ATELIER ONE", verb: "flagged P5 violation", target: "BD-26FW-AP-0011", time: "어제", color: "var(--color-primary)" },
-  ];
+  const events = ACTIVITY_EVENTS.map((e) => ({
+    ...e,
+    actor: tk(t, e.actor_key),
+    verb: tk(t, e.verb_key),
+    time: tk(t, e.time_key),
+  }));
 
   return (
     <div className="card" style={{ padding: 24 }}>
@@ -971,8 +884,8 @@ function ActivityFeed() {
       </div>
 
       <ul className="space-y-3">
-        {events.map((e, i) => (
-          <li key={i} className="flex items-start gap-3">
+        {events.map((e) => (
+          <li key={e.id} className="flex items-start gap-3">
             <div
               style={{
                 width: 28,

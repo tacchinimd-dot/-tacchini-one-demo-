@@ -44,7 +44,7 @@ function FlowC() {
 
   return (
     <div className="console-shell">
-      <Sidebar active="dashboard" />
+      <Sidebar active="plans" />
       <div className="console-main">
         <FlowHeader
           breadcrumb={t.flows.c.breadcrumb}

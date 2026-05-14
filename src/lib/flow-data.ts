@@ -215,7 +215,7 @@ export const CONTRACT_DEMO = {
     royalty_pct: 5.4,
     annual_minimum_eur: 530_000,
     signed_date: "2026-04-30",
-    signed_by: "권은희 차장 (F&F · ST사업부) · James Whitfield (BBUK · CEO)",
+    /* signed_by 라벨은 dictionary flows.d.s5_signed_by_value로 처리 */
     history_count: { messages: 12, versions: 3 },
   },
 };

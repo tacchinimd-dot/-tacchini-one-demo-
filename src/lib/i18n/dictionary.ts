@@ -204,6 +204,98 @@ export const dictionary = {
       activity_label: "Activity",
       activity_title: "최근 이벤트",
       activity_all: "전체",
+
+      /* Season Calendar — 9 milestones (id: m1~m9) */
+      milestone_m1_direction:   "F&F 시즌 디렉션 게시",
+      milestone_m2_competitor:  "라이센시 경쟁사 데이터·기획",
+      milestone_m3_design:      "디자인 산출물 제출 마감",
+      milestone_m4_design_appr: "F&F 디자인 승인",
+      milestone_m5_plan:        "차기 시즌 계획 제출",
+      milestone_m6_sample:      "실물 샘플 송부",
+      milestone_m7_sample_appr: "샘플 검수 + 시즌 계획 승인",
+      milestone_m8_launch:      "시즌 출시",
+      milestone_m9_royalty:     "분기 로열티 정산",
+
+      /* Pending Review items */
+      review_movin_net:        "27SS Lifestyle Man · NET line (5 SKU)",
+      review_movin_full:       "27SS Lifestyle Man · 전체 28 SKU 자동검수 완료",
+      review_heritage_demo:    "Heritage Hooded Jacket (이전 시즌 demo)",
+
+      /* Time-ago labels */
+      time_now:        "방금",
+      time_2m:         "2분 전",
+      time_5m:         "5분 전",
+      time_30m:        "30분 전",
+      time_47m:        "47분 전",
+      time_2h:         "2시간 전",
+      time_yesterday:  "어제",
+
+      /* Activity actors + verbs */
+      actor_atelier:   "ATELIER ONE",
+      actor_benjamin:  "Benjamin",
+      actor_bds:       "BDS",
+      actor_kwon:      "권은희 차장",
+      verb_completed_inspection: "검수 완료",
+      verb_submitted_royalty:    "Q1 로열티 제출",
+      verb_uploaded_designs:     "디자인 12건 업로드",
+      verb_renewed_draft:        "계약 갱신안 작성",
+      verb_flagged_p5:           "P5 위반 플래그",
+
+      /* Licensee table — region · category · launching label */
+      lic_bbuk_region:           "UK · Ireland",
+      lic_bbuk_category:         "Apparel + Acc",
+      lic_sugi_footwear_region:  "FR · IT · UK · DACH · ME",
+      lic_sugi_footwear_category:"Footwear",
+      lic_sugi_france_region:    "FR · DACH · Benelux · 북아프리카",
+      lic_sugi_france_category:  "Apparel",
+      lic_benjamin_region:       "Europe · ME · 북아프리카",
+      lic_benjamin_category:     "Socks · UW · Sleepwear",
+      lic_bds_region:            "동유럽 16개국 · CIS",
+      lic_bds_category:          "Apparel",
+      lic_silver_region:         "Italy",
+      lic_silver_category:       "Apparel",
+      revenue_launching:         "(런칭 전)",
+
+      /* Licensee status pills (statusKind와 별개로 라이센시별 문구) */
+      lic_bbuk_status:           "갱신 협상 중",
+      lic_sugi_footwear_status:  "Brand Elevation",
+      lic_sugi_france_status:    "26FW 런칭",
+      lic_benjamin_status:       "5+5년 연장 요청",
+      lic_bds_status:            "신계약 원년",
+      lic_silver_status:         "사실상 종료",
+    },
+
+    /* ===== Licensees full page ===== */
+    licensees_page: {
+      breadcrumb: "Licensees",
+      title: "라이센시 디렉토리",
+      subtitle: "6개 STE 라이센시 통합 현황 · 그룹별 임계값 적용",
+      search_placeholder: "라이센시 / 지역 / 카테고리 검색…",
+      filter_all: "전체",
+      filter_g1: "G1 신규",
+      filter_g2: "G2 격상/종료",
+      filter_g3: "G3 장기 운영",
+      card_revenue: "Q1 매출",
+      card_minimum: "누적 Min %",
+      card_compliance: "컴플라이언스",
+      card_open: "라이센시 열기",
+      summary_total: "총 6개 라이센시",
+    },
+
+    /* ===== Calendar full page ===== */
+    calendar_page: {
+      breadcrumb: "Season Calendar",
+      title: "26FW 시즌 캘린더",
+      subtitle: "마스터 시간축 · D-180 ~ D+30 · 마일스톤 9개",
+      legend_done: "완료",
+      legend_active: "진행 중",
+      legend_pending: "예정",
+      today: "오늘",
+      summary_done: (n: number) => `완료 ${n}`,
+      summary_active: (n: number) => `진행 ${n}`,
+      summary_pending: (n: number) => `예정 ${n}`,
+      view_table: "리스트",
+      view_timeline: "타임라인",
     },
 
     /* ===== Inspector ===== */
@@ -706,6 +798,7 @@ export const dictionary = {
         s5_new_min: "Annual Minimum",
         s5_new_signed: "체결일",
         s5_signed_by: "체결 주체",
+        s5_signed_by_value: "권은희 차장 (F&F · ST사업부) · James Whitfield (BBUK · CEO)",
         s5_history_preserved: "협상 이력 영구 보존 (12 messages · 3 versions)",
         s5_audit_trail: "감사 추적 가능",
         s5_done: "갱신 완료 ✓",
@@ -1072,6 +1165,98 @@ export const dictionary = {
       activity_label: "Activity",
       activity_title: "Recent Events",
       activity_all: "All",
+
+      /* Season Calendar — 9 milestones */
+      milestone_m1_direction:   "F&F season direction published",
+      milestone_m2_competitor:  "Licensee competitor data + planning",
+      milestone_m3_design:      "Design artifact submission deadline",
+      milestone_m4_design_appr: "F&F design approval",
+      milestone_m5_plan:        "Next season plan submission",
+      milestone_m6_sample:      "Physical sample dispatch",
+      milestone_m7_sample_appr: "Sample review + season plan approval",
+      milestone_m8_launch:      "Season launch",
+      milestone_m9_royalty:     "Quarterly royalty settlement",
+
+      /* Pending Review items */
+      review_movin_net:        "27SS Lifestyle Man · NET line (5 SKU)",
+      review_movin_full:       "27SS Lifestyle Man · all 28 SKUs auto-inspected",
+      review_heritage_demo:    "Heritage Hooded Jacket (prior season demo)",
+
+      /* Time-ago labels */
+      time_now:        "just now",
+      time_2m:         "2 min ago",
+      time_5m:         "5 min ago",
+      time_30m:        "30 min ago",
+      time_47m:        "47 min ago",
+      time_2h:         "2 hrs ago",
+      time_yesterday:  "yesterday",
+
+      /* Activity actors + verbs */
+      actor_atelier:   "ATELIER ONE",
+      actor_benjamin:  "Benjamin",
+      actor_bds:       "BDS",
+      actor_kwon:      "Eunhee Kwon (F&F)",
+      verb_completed_inspection: "completed inspection",
+      verb_submitted_royalty:    "submitted Q1 royalty",
+      verb_uploaded_designs:     "uploaded 12 designs",
+      verb_renewed_draft:        "drafted renewal terms",
+      verb_flagged_p5:           "flagged P5 violation",
+
+      /* Licensee table */
+      lic_bbuk_region:           "UK · Ireland",
+      lic_bbuk_category:         "Apparel + Acc",
+      lic_sugi_footwear_region:  "FR · IT · UK · DACH · ME",
+      lic_sugi_footwear_category:"Footwear",
+      lic_sugi_france_region:    "FR · DACH · Benelux · N. Africa",
+      lic_sugi_france_category:  "Apparel",
+      lic_benjamin_region:       "Europe · ME · N. Africa",
+      lic_benjamin_category:     "Socks · UW · Sleepwear",
+      lic_bds_region:            "16 Eastern EU · CIS",
+      lic_bds_category:          "Apparel",
+      lic_silver_region:         "Italy",
+      lic_silver_category:       "Apparel",
+      revenue_launching:         "(pre-launch)",
+
+      /* Licensee status pills */
+      lic_bbuk_status:           "Renewal in progress",
+      lic_sugi_footwear_status:  "Brand Elevation",
+      lic_sugi_france_status:    "26FW launch",
+      lic_benjamin_status:       "5+5y extension requested",
+      lic_bds_status:            "First contract year",
+      lic_silver_status:         "Wind-down",
+    },
+
+    /* ===== Licensees full page ===== */
+    licensees_page: {
+      breadcrumb: "Licensees",
+      title: "Licensee Directory",
+      subtitle: "Unified view of 6 STE licensees · Per-group thresholds applied",
+      search_placeholder: "Search licensee / region / category…",
+      filter_all: "All",
+      filter_g1: "G1 New",
+      filter_g2: "G2 Elevate/Exit",
+      filter_g3: "G3 Long-running",
+      card_revenue: "Q1 Revenue",
+      card_minimum: "Cum. Min %",
+      card_compliance: "Compliance",
+      card_open: "Open Licensee",
+      summary_total: "6 licensees total",
+    },
+
+    /* ===== Calendar full page ===== */
+    calendar_page: {
+      breadcrumb: "Season Calendar",
+      title: "26FW Season Calendar",
+      subtitle: "Master time axis · D-180 to D+30 · 9 milestones",
+      legend_done: "Done",
+      legend_active: "Active",
+      legend_pending: "Pending",
+      today: "Today",
+      summary_done: (n: number) => `${n} done`,
+      summary_active: (n: number) => `${n} active`,
+      summary_pending: (n: number) => `${n} pending`,
+      view_table: "List",
+      view_timeline: "Timeline",
     },
 
     inspector: {
@@ -1554,6 +1739,7 @@ export const dictionary = {
         s5_new_min: "Annual Minimum",
         s5_new_signed: "Signed Date",
         s5_signed_by: "Signed By",
+        s5_signed_by_value: "Eunhee Kwon (F&F · ST Business Div.) · James Whitfield (BBUK · CEO)",
         s5_history_preserved: "Negotiation history preserved (12 messages · 3 versions)",
         s5_audit_trail: "Audit trail available",
         s5_done: "Renewal Complete ✓",

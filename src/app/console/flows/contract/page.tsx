@@ -44,7 +44,7 @@ function FlowD() {
 
   return (
     <div className="console-shell">
-      <Sidebar active="dashboard" />
+      <Sidebar active="contracts" />
       <div className="console-main">
         <FlowHeader
           breadcrumb={t.flows.d.breadcrumb}
@@ -478,7 +478,7 @@ function Step5Renewed() {
           <MetaField label={t.flows.d.s5_new_royalty} value={`${nc.royalty_pct}%`} accent="var(--color-accent-gold)" />
           <MetaField label={t.flows.d.s5_new_min} value={`€ ${nc.annual_minimum_eur.toLocaleString()}`} accent="var(--color-accent-gold)" />
           <MetaField label={t.flows.d.s5_new_signed} value={nc.signed_date} />
-          <MetaField label={t.flows.d.s5_signed_by} value={nc.signed_by} />
+          <MetaField label={t.flows.d.s5_signed_by} value={t.flows.d.s5_signed_by_value} />
         </div>
       </div>
 
