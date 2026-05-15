@@ -35,6 +35,7 @@ export default function CodexRoute() {
 }
 
 function PillarsGuide() {
+  const [brandbookOpen, setBrandbookOpen] = useState(false);
   return (
     <div
       className="relative min-h-screen overflow-x-hidden"
@@ -44,13 +45,16 @@ function PillarsGuide() {
         color: "#fff",
       }}
     >
-      <GuideHeader />
+      <GuideHeader onOpenBrandbook={() => setBrandbookOpen(true)} />
       <Hero />
       <WhySection />
       <PillarsGallery />
       <ProcessFlow />
       <ObjectivitySection />
       <DirectionCTA />
+      {brandbookOpen && (
+        <BrandBookViewer onClose={() => setBrandbookOpen(false)} />
+      )}
     </div>
   );
 }
@@ -58,7 +62,7 @@ function PillarsGuide() {
 /* ============================================================
  * Header — sticky transparent
  * ============================================================ */
-function GuideHeader() {
+function GuideHeader({ onOpenBrandbook }: { onOpenBrandbook: () => void }) {
   const { t } = useLang();
   return (
     <header
@@ -101,6 +105,26 @@ function GuideHeader() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={onOpenBrandbook}
+            className="inline-flex items-center gap-1.5 transition-colors"
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: "var(--color-accent-gold)",
+              padding: "6px 12px",
+              background: "rgba(212,175,90,0.10)",
+              border: "1px solid rgba(212,175,90,0.38)",
+              borderRadius: 8,
+              cursor: "pointer",
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            {t.guide.brandbook_tab}
+          </button>
           <LanguageToggle variant="dark" />
           <Link
             href="/atelier/inspector/movin"
@@ -924,6 +948,247 @@ function DirectionCTA() {
         </div>
       </section>
     </Reveal>
+  );
+}
+
+/* ============================================================
+ * Brand Book 2026 — fullscreen slide viewer
+ *   · 10 page captures (public/brandbook/1..10.png)
+ *   · prev/next · keyboard ← → Esc · thumbnail strip · 원본 PDF
+ * ============================================================ */
+const BRANDBOOK_TOTAL = 10;
+const BRANDBOOK_BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+function BrandBookViewer({ onClose }: { onClose: () => void }) {
+  const { t } = useLang();
+  const [page, setPage] = useState(1); /* 1-indexed */
+
+  const go = (next: number) => {
+    setPage((p) => {
+      const v = typeof next === "number" ? next : p;
+      return Math.min(BRANDBOOK_TOTAL, Math.max(1, v));
+    });
+  };
+
+  /* 키보드 네비게이션 + body 스크롤 잠금 */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowRight") setPage((p) => Math.min(BRANDBOOK_TOTAL, p + 1));
+      else if (e.key === "ArrowLeft") setPage((p) => Math.max(1, p - 1));
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
+  const atFirst = page <= 1;
+  const atLast = page >= BRANDBOOK_TOTAL;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex flex-col animate-fade-in"
+      style={{ background: "rgba(0, 6, 16, 0.94)", backdropFilter: "blur(10px)" }}
+    >
+      {/* Top bar */}
+      <div
+        className="flex items-center justify-between gap-4 px-6"
+        style={{ height: 60, borderBottom: "1px solid rgba(255,255,255,0.08)", flexShrink: 0 }}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <span
+            className="inline-flex items-center justify-center"
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 8,
+              background: "rgba(212,175,90,0.12)",
+              border: "1px solid rgba(212,175,90,0.36)",
+              color: "var(--color-accent-gold)",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+          </span>
+          <div className="min-w-0">
+            <div
+              className="truncate"
+              style={{ fontSize: 13, fontWeight: 700, color: "#fff", letterSpacing: 0.2 }}
+            >
+              {t.guide.brandbook_title}
+            </div>
+            <div
+              style={{ fontSize: 10.5, color: "rgba(255,255,255,0.45)", letterSpacing: 0.4 }}
+            >
+              {t.guide.brandbook_subtitle}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5" style={{ flexShrink: 0 }}>
+          <span
+            className="t-mono"
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: "rgba(255,255,255,0.78)",
+              padding: "5px 12px",
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.10)",
+              borderRadius: 9999,
+            }}
+          >
+            {t.guide.brandbook_page(page, BRANDBOOK_TOTAL)}
+          </span>
+          <a
+            href={`${BRANDBOOK_BASE}/brandbook/brandbook-2026.pdf`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              color: "rgba(255,255,255,0.82)",
+              padding: "6px 12px",
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: 8,
+              textDecoration: "none",
+            }}
+          >
+            {t.guide.brandbook_open_pdf}
+          </a>
+          <button
+            onClick={onClose}
+            aria-label={t.guide.brandbook_close}
+            className="inline-flex items-center justify-center"
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 8,
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+              <line x1="6" y1="6" x2="18" y2="18" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Slide stage */}
+      <div className="relative flex-1 flex items-center justify-center px-4 py-6" style={{ minHeight: 0 }}>
+        {/* Prev */}
+        <button
+          onClick={() => go(page - 1)}
+          disabled={atFirst}
+          aria-label={t.guide.brandbook_prev}
+          className="absolute left-4 z-10 inline-flex items-center justify-center"
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 9999,
+            background: "rgba(255,255,255,0.07)",
+            border: "1px solid rgba(255,255,255,0.14)",
+            color: "#fff",
+            cursor: atFirst ? "not-allowed" : "pointer",
+            opacity: atFirst ? 0.3 : 1,
+          }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          key={page}
+          src={`${BRANDBOOK_BASE}/brandbook/${page}.png`}
+          alt={`${t.guide.brandbook_title} — ${page}`}
+          className="animate-fade-in"
+          style={{
+            maxWidth: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+            borderRadius: 10,
+            boxShadow: "0 24px 64px rgba(0,0,0,0.55)",
+          }}
+        />
+
+        {/* Next */}
+        <button
+          onClick={() => go(page + 1)}
+          disabled={atLast}
+          aria-label={t.guide.brandbook_next}
+          className="absolute right-4 z-10 inline-flex items-center justify-center"
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 9999,
+            background: "rgba(255,255,255,0.07)",
+            border: "1px solid rgba(255,255,255,0.14)",
+            color: "#fff",
+            cursor: atLast ? "not-allowed" : "pointer",
+            opacity: atLast ? 0.3 : 1,
+          }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Thumbnail strip */}
+      <div
+        className="flex items-center gap-2 overflow-x-auto px-6 py-3"
+        style={{ borderTop: "1px solid rgba(255,255,255,0.08)", flexShrink: 0 }}
+      >
+        {Array.from({ length: BRANDBOOK_TOTAL }, (_, i) => i + 1).map((n) => {
+          const active = n === page;
+          return (
+            <button
+              key={n}
+              onClick={() => go(n)}
+              aria-label={`${n}`}
+              style={{
+                flexShrink: 0,
+                width: 96,
+                height: 54,
+                borderRadius: 6,
+                overflow: "hidden",
+                padding: 0,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.04)",
+                border: active
+                  ? "2px solid var(--color-accent-gold)"
+                  : "1px solid rgba(255,255,255,0.12)",
+                opacity: active ? 1 : 0.58,
+                transition: "opacity 160ms ease, border-color 160ms ease",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`${BRANDBOOK_BASE}/brandbook/${n}.png`}
+                alt={`thumbnail ${n}`}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 

@@ -921,6 +921,14 @@ export const dictionary = {
     guide: {
       breadcrumb_guide: "Brand Codex · 검수 가이드",
       back_to_inspector: "← Inspector로 돌아가기",
+      brandbook_tab: "Brand Book 2026",
+      brandbook_title: "Sergio Tacchini Brand Book 2026",
+      brandbook_subtitle: "공식 브랜드북 · 10페이지",
+      brandbook_open_pdf: "원본 PDF 열기",
+      brandbook_close: "닫기",
+      brandbook_prev: "이전",
+      brandbook_next: "다음",
+      brandbook_page: (cur: number, total: number) => `${cur} / ${total}`,
       hero_eyebrow: "AI INSPECTION CRITERIA",
       hero_title: "5 Universal Pillars",
       hero_subtitle:
@@ -1869,6 +1877,14 @@ export const dictionary = {
     guide: {
       breadcrumb_guide: "Brand Codex · Inspection Guide",
       back_to_inspector: "← Back to Inspector",
+      brandbook_tab: "Brand Book 2026",
+      brandbook_title: "Sergio Tacchini Brand Book 2026",
+      brandbook_subtitle: "Official Brand Book · 10 pages",
+      brandbook_open_pdf: "Open Original PDF",
+      brandbook_close: "Close",
+      brandbook_prev: "Prev",
+      brandbook_next: "Next",
+      brandbook_page: (cur: number, total: number) => `${cur} / ${total}`,
       hero_eyebrow: "AI INSPECTION CRITERIA",
       hero_title: "5 Universal Pillars",
       hero_subtitle:
