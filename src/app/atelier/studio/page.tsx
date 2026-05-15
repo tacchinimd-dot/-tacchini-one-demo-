@@ -88,17 +88,15 @@ function Studio() {
     });
   }, [filteredPool.pool]);
 
-  /* selectedRefs 변경 시 checkedRefs 동기화:
-     - 새로 픽된 ref → 자동 체크
-     - 픽 해제된 ref → 체크 목록에서도 제거 */
+  /* selectedRefs 변경 시 checkedRefs 정리:
+     - 픽 해제된 ref만 체크 목록에서 제거
+     - 새 픽은 자동 체크하지 않음 (사용자가 Step 4에서 직접 체크) */
   useEffect(() => {
     setCheckedRefs((prev) => {
       const selectedSet = new Set(selectedRefs);
-      const prevSet = new Set(prev);
       const kept = prev.filter((id) => selectedSet.has(id));
-      const added = selectedRefs.filter((id) => !prevSet.has(id));
-      if (kept.length === prev.length && added.length === 0) return prev;
-      return [...kept, ...added];
+      if (kept.length === prev.length) return prev;
+      return kept;
     });
   }, [selectedRefs]);
 
