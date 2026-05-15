@@ -416,21 +416,21 @@ export const STUDIO_CURATED_IDS = TOP_REFERENCES.map((r) => r.id);
 
 const VARIANT_LABELS = ["Conservative", "Balanced", "Experimental"];
 
-/* ST 표준 변형 — 각 reference에서 3개씩 생성 */
-function generateDesigns(): GeneratedDesign[] {
+/* ST Quiet Luxury 컬러 (P5.1 매핑) */
+const ST_COLORS = [
+  { name: "ECRU", bg: "#e6d9c2", accent: "#0d2c54", text: "#0d2c54" },
+  { name: "DEEP NAVY", bg: "#0d2c54", accent: "#f4ecd8", text: "#f4ecd8" },
+  { name: "FOREST GREEN", bg: "#1f4d3a", accent: "#f4ecd8", text: "#f4ecd8" },
+  { name: "MUTED BURGUNDY", bg: "#7a0019", accent: "#f4ecd8", text: "#f4ecd8" },
+  { name: "BROWN", bg: "#3a2a1a", accent: "#e6d5b8", text: "#e6d5b8" },
+  { name: "QUIET LIGHT BLUE", bg: "#7a9bc2", accent: "#fff", text: "#fff" },
+];
+
+/* ST 표준 변형 — 임의 reference 목록에 대해 각 ref별 3변형 생성 */
+export function generateDesignsFor(refs: TrendImage[]): GeneratedDesign[] {
   const designs: GeneratedDesign[] = [];
 
-  /* ST Quiet Luxury 컬러 (P5.1 매핑) */
-  const ST_COLORS = [
-    { name: "ECRU", bg: "#e6d9c2", accent: "#0d2c54", text: "#0d2c54" },
-    { name: "DEEP NAVY", bg: "#0d2c54", accent: "#f4ecd8", text: "#f4ecd8" },
-    { name: "FOREST GREEN", bg: "#1f4d3a", accent: "#f4ecd8", text: "#f4ecd8" },
-    { name: "MUTED BURGUNDY", bg: "#7a0019", accent: "#f4ecd8", text: "#f4ecd8" },
-    { name: "BROWN", bg: "#3a2a1a", accent: "#e6d5b8", text: "#e6d5b8" },
-    { name: "QUIET LIGHT BLUE", bg: "#7a9bc2", accent: "#fff", text: "#fff" },
-  ];
-
-  TOP_REFERENCES.forEach((ref, refIdx) => {
+  refs.forEach((ref, refIdx) => {
     for (let v = 0; v < 3; v++) {
       const stColor = ST_COLORS[(refIdx * 3 + v) % ST_COLORS.length];
       const variantLabel = VARIANT_LABELS[v];
@@ -525,7 +525,7 @@ function getColorName(hex: string): string {
   return map[hex] || "Mixed";
 }
 
-export const STUDIO_GENERATED: GeneratedDesign[] = generateDesigns();
+export const STUDIO_GENERATED: GeneratedDesign[] = generateDesignsFor(TOP_REFERENCES);
 
 /* ============================================================
  * SUMMARY — 단계별 카운트 (UI 표시용)

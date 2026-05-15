@@ -871,9 +871,12 @@ export const dictionary = {
       step4_label: "Step 4 · Pick References",
       step4_title: "픽한 레퍼런스 확정",
       step4_body:
-        "Step 3에서 픽한 이미지를 검토하고 변형 생성으로 넘어갑니다. 카드를 다시 클릭하면 제외할 수 있습니다.",
+        "카드를 클릭해 자동 디자인 생성에 사용할 이미지를 체크하세요. 체크된 이미지만 다음 단계에서 변형 생성됩니다.",
       curate_empty:
         "픽된 레퍼런스가 없습니다. Step 3 · DNA Filter로 돌아가 이미지를 픽하세요.",
+      curate_check_required: "최소 1장 이상 체크하면 변형 생성으로 넘어갈 수 있습니다",
+      checked_of_picked: (checked: number, picked: number) =>
+        `체크 ${checked} / 픽 ${picked}장`,
       selected_count: (n: number, max: number) => `선택 ${n} / ${max}장`,
       ai_recommended: "AI 추천",
       pillar_radar: "Pillar Profile",
@@ -1817,9 +1820,12 @@ export const dictionary = {
       step4_label: "Step 4 · Pick References",
       step4_title: "Confirm Picked References",
       step4_body:
-        "Review the references you picked in Step 3 and proceed to variant generation. Click a card to remove it.",
+        "Click cards to check the images you want to use for auto design generation. Only checked images will be sent to the next step.",
       curate_empty:
         "No references picked yet. Go back to Step 3 · DNA Filter to pick images.",
+      curate_check_required: "Check at least one image to proceed to variant generation",
+      checked_of_picked: (checked: number, picked: number) =>
+        `${checked} checked / ${picked} picked`,
       selected_count: (n: number, max: number) => `Selected ${n} / ${max}`,
       ai_recommended: "AI Recommended",
       pillar_radar: "Pillar Profile",

@@ -22,13 +22,13 @@ import ApparelIcon from "@/components/atelier/ApparelIcon";
 import { useLang } from "@/lib/i18n/LanguageProvider";
 import {
   STUDIO_TREND_POOL,
-  STUDIO_GENERATED,
   STUDIO_BRIEF,
   STUDIO_OPTIONS,
   STUDIO_SOURCES,
   STUDIO_CURATED_IDS,
   STUDIO_SUMMARY,
   buildPool,
+  generateDesignsFor,
   type TrendImage,
   type GeneratedDesign,
   type Verdict,
@@ -64,6 +64,8 @@ const STEP_ORDER: StudioStep[] = [
 function Studio() {
   const [step, setStep] = useState<StudioStep>("brief");
   const [selectedRefs, setSelectedRefs] = useState<string[]>([]);
+  /* Step 4에서 체크된 ref만 generate 대상이 됨 (selectedRefs의 부분집합) */
+  const [checkedRefs, setCheckedRefs] = useState<string[]>([]);
   const [brief, setBrief] = useState<StudioBrief>(STUDIO_BRIEF);
   /* 각 step의 "done" 플래그 — Header tab 활성화 조건 */
   const [done, setDone] = useState<Record<StudioStep, boolean>>({
@@ -85,6 +87,28 @@ function Studio() {
       return prev.filter((id) => validIds.has(id));
     });
   }, [filteredPool.pool]);
+
+  /* selectedRefs 변경 시 checkedRefs 동기화:
+     - 새로 픽된 ref → 자동 체크
+     - 픽 해제된 ref → 체크 목록에서도 제거 */
+  useEffect(() => {
+    setCheckedRefs((prev) => {
+      const selectedSet = new Set(selectedRefs);
+      const prevSet = new Set(prev);
+      const kept = prev.filter((id) => selectedSet.has(id));
+      const added = selectedRefs.filter((id) => !prevSet.has(id));
+      if (kept.length === prev.length && added.length === 0) return prev;
+      return [...kept, ...added];
+    });
+  }, [selectedRefs]);
+
+  /* generate 대상 디자인 — 체크된 ref만 변형 생성 */
+  const confirmedDesigns = useMemo<GeneratedDesign[]>(() => {
+    const refs = checkedRefs
+      .map((id) => filteredPool.pool.find((p) => p.id === id))
+      .filter((r): r is TrendImage => !!r);
+    return generateDesignsFor(refs);
+  }, [checkedRefs, filteredPool.pool]);
 
   function markDone(s: StudioStep) {
     setDone((prev) => (prev[s] ? prev : { ...prev, [s]: true }));
@@ -114,6 +138,7 @@ function Studio() {
   function resetFlow() {
     setStep("brief");
     setSelectedRefs([]);
+    setCheckedRefs([]);
     setBrief(STUDIO_BRIEF);
     setDone({
       brief: false,
@@ -171,8 +196,9 @@ function Studio() {
                 brief={brief}
                 pool={filteredPool}
                 selectedRefs={selectedRefs}
-                onToggle={(id) =>
-                  setSelectedRefs((prev) =>
+                checkedRefs={checkedRefs}
+                onToggleCheck={(id) =>
+                  setCheckedRefs((prev) =>
                     prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
                   )
                 }
@@ -185,12 +211,13 @@ function Studio() {
             {step === "generate" && (
               <GenerateStep
                 brief={brief}
+                designs={confirmedDesigns}
                 done={done.generate}
                 onComplete={() => markDone("generate")}
                 onNext={goNext}
               />
             )}
-            {step === "lineup" && <LineupStep brief={brief} />}
+            {step === "lineup" && <LineupStep brief={brief} designs={confirmedDesigns} />}
           </div>
         </div>
       </div>
@@ -997,17 +1024,19 @@ function CurateStep({
   brief,
   pool,
   selectedRefs,
-  onToggle,
+  checkedRefs,
+  onToggleCheck,
   onNext,
 }: {
   brief: StudioBrief;
   pool: ReturnType<typeof buildPool>;
   selectedRefs: string[];
-  onToggle: (id: string) => void;
+  checkedRefs: string[];
+  onToggleCheck: (id: string) => void;
   onNext: () => void;
 }) {
   const { t } = useLang();
-  /* Step 3에서 사용자가 직접 픽한 레퍼런스만 노출 (verdict A 우선 정렬) */
+  /* Step 3에서 사용자가 직접 픽한 레퍼런스 (verdict A 우선 정렬) */
   const picked = useMemo(
     () =>
       pool.pool
@@ -1015,8 +1044,9 @@ function CurateStep({
         .sort((a, b) => (a.verdict === b.verdict ? 0 : a.verdict === "A" ? -1 : 1)),
     [pool.pool, selectedRefs],
   );
-  const max = brief.referenceCount || 5;
+  const checkedCount = picked.filter((p) => checkedRefs.includes(p.id)).length;
   const empty = picked.length === 0;
+  const noneChecked = !empty && checkedCount === 0;
   return (
     <div className="space-y-5">
       <div className="card" style={{ padding: 24 }}>
@@ -1042,7 +1072,7 @@ function CurateStep({
                 fontFamily: "var(--font-display)",
               }}
             >
-              {t.studio.selected_count(picked.length, max)}
+              {t.studio.checked_of_picked(checkedCount, picked.length)}
             </div>
           </div>
         </div>
@@ -1066,22 +1096,30 @@ function CurateStep({
             <CurateCard
               key={trend.id}
               trend={trend}
-              selected
+              selected={checkedRefs.includes(trend.id)}
               recommended={false}
-              onClick={() => onToggle(trend.id)}
+              onClick={() => onToggleCheck(trend.id)}
             />
           ))}
         </div>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-3">
+        {noneChecked && (
+          <span
+            className="t-caption"
+            style={{ color: "var(--color-ink-muted-48)" }}
+          >
+            {t.studio.curate_check_required}
+          </span>
+        )}
         <button
           onClick={onNext}
-          disabled={empty}
+          disabled={empty || checkedCount === 0}
           className="btn btn-primary btn-lg"
           style={{
-            opacity: empty ? 0.5 : 1,
-            cursor: empty ? "not-allowed" : "pointer",
+            opacity: empty || checkedCount === 0 ? 0.5 : 1,
+            cursor: empty || checkedCount === 0 ? "not-allowed" : "pointer",
           }}
         >
           {t.studio.generate_variants}
@@ -1096,17 +1134,19 @@ function CurateStep({
  * ============================================================ */
 function GenerateStep({
   brief,
+  designs,
   done,
   onComplete,
   onNext,
 }: {
   brief: StudioBrief;
+  designs: GeneratedDesign[];
   done: boolean;
   onComplete: () => void;
   onNext: () => void;
 }) {
   const { t } = useLang();
-  const total = STUDIO_GENERATED.length;
+  const total = designs.length;
   const [revealedCount, setRevealedCount] = useState(done ? total : 0);
 
   useEffect(() => {
@@ -1115,6 +1155,10 @@ function GenerateStep({
       return;
     }
     setRevealedCount(0);
+    if (total === 0) {
+      onComplete();
+      return;
+    }
     const interval = setInterval(() => {
       setRevealedCount((c) => {
         if (c >= total) {
@@ -1133,12 +1177,12 @@ function GenerateStep({
   /* reference별로 그룹 */
   const byRef = useMemo(() => {
     const groups: Record<string, GeneratedDesign[]> = {};
-    for (const d of STUDIO_GENERATED) {
+    for (const d of designs) {
       if (!groups[d.referenceId]) groups[d.referenceId] = [];
       groups[d.referenceId].push(d);
     }
     return groups;
-  }, []);
+  }, [designs]);
 
   return (
     <div className="space-y-5">
@@ -1183,7 +1227,7 @@ function GenerateStep({
       </div>
 
       <div className="space-y-6">
-        {Object.entries(byRef).map(([refId, designs]) => {
+        {Object.entries(byRef).map(([refId, refDesigns]) => {
           const ref = STUDIO_TREND_POOL.find((tr) => tr.id === refId);
           if (!ref) return null;
           return (
@@ -1225,10 +1269,8 @@ function GenerateStep({
 
                 {/* Variants */}
                 <div className="flex-1 grid grid-cols-3 gap-3">
-                  {designs.map((d, i) => {
-                    const idx = STUDIO_GENERATED.findIndex(
-                      (g) => g.id === d.id,
-                    );
+                  {refDesigns.map((d, i) => {
+                    const idx = designs.findIndex((g) => g.id === d.id);
                     const visible = idx < revealedCount;
                     return (
                       <GeneratedCard
@@ -1260,13 +1302,20 @@ function GenerateStep({
 /* ============================================================
  * STEP 6 — LINEUP
  * ============================================================ */
-function LineupStep({ brief }: { brief: StudioBrief }) {
+function LineupStep({
+  brief,
+  designs,
+}: {
+  brief: StudioBrief;
+  designs: GeneratedDesign[];
+}) {
   const { t, lang } = useLang();
-  const a = STUDIO_GENERATED.filter((d) => d.verdict === "A");
-  const b = STUDIO_GENERATED.filter((d) => d.verdict === "B");
-  const c = STUDIO_GENERATED.filter((d) => d.verdict === "C");
-  const d = STUDIO_GENERATED.filter((d) => d.verdict === "D");
+  const a = designs.filter((d) => d.verdict === "A");
+  const b = designs.filter((d) => d.verdict === "B");
+  const c = designs.filter((d) => d.verdict === "C");
+  const d = designs.filter((d) => d.verdict === "D");
   const recommended = [...a, ...b];
+  const totalDesigns = designs.length;
 
   return (
     <div className="space-y-6">
@@ -1305,7 +1354,7 @@ function LineupStep({ brief }: { brief: StudioBrief }) {
               }}
             >
               <div style={{ fontSize: 32, fontWeight: 800, lineHeight: 1 }}>
-                {STUDIO_GENERATED.length}
+                {totalDesigns}
               </div>
               <div
                 style={{
@@ -1369,14 +1418,14 @@ function LineupStep({ brief }: { brief: StudioBrief }) {
             style={{ height: 12, borderRadius: 6 }}
           >
             {(["A", "B", "C", "D"] as const).map((g) => {
-              const cnt = STUDIO_GENERATED.filter((x) => x.verdict === g).length;
-              if (cnt === 0) return null;
+              const cnt = designs.filter((x) => x.verdict === g).length;
+              if (cnt === 0 || totalDesigns === 0) return null;
               return (
                 <div
                   key={g}
                   title={`${g}: ${cnt}`}
                   style={{
-                    width: `${(cnt / STUDIO_GENERATED.length) * 100}%`,
+                    width: `${(cnt / totalDesigns) * 100}%`,
                     background: VERDICT_COLOR[g].bg,
                   }}
                 />
