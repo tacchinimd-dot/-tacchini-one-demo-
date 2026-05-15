@@ -59,6 +59,15 @@ export const dictionary = {
       back_to_platform: "TACCHINI ONE 플랫폼으로",
     },
 
+    /* ===== Mirror — 샘플 검수 대시보드 ===== */
+    mirror: {
+      label: "Atelier · Mirror",
+      title: "샘플 검수 대시보드",
+      subtitle: "26FW · Sugi France 실물 샘플 검수",
+      open_new_tab: "새 탭에서 열기",
+      loading: "대시보드 불러오는 중…",
+    },
+
     /* ===== 도어 (/) ===== */
     door: {
       header_brand_subtitle: "GLOBAL LICENSEE PLATFORM",
@@ -1037,6 +1046,14 @@ export const dictionary = {
       user_role: "ST Business · License",
       version_label: "v0.4 · CONFERENCE PREVIEW",
       back_to_platform: "Back to TACCHINI ONE Platform",
+    },
+
+    mirror: {
+      label: "Atelier · Mirror",
+      title: "Sample Inspection Dashboard",
+      subtitle: "26FW · Sugi France physical sample inspection",
+      open_new_tab: "Open in new tab",
+      loading: "Loading dashboard…",
     },
 
     door: {

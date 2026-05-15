@@ -92,9 +92,9 @@ export default function Sidebar({ active = "dashboard" }: SidebarProps) {
       label: t.sidebar.group_atelier,
       items: [
         { label: t.sidebar.nav_inspector, href: "/atelier/inspector/movin", icon: ICONS.inspector, active: active === "inspector" },
-        { label: t.sidebar.nav_studio, href: "/atelier/studio", icon: ICONS.studio },
-        { label: t.sidebar.nav_mirror, href: "/atelier/mirror", icon: ICONS.mirror },
-        { label: t.sidebar.nav_codex, href: "/atelier/codex", icon: ICONS.codex },
+        { label: t.sidebar.nav_studio, href: "/atelier/studio", icon: ICONS.studio, active: active === "studio" },
+        { label: t.sidebar.nav_mirror, href: "/atelier/mirror", icon: ICONS.mirror, active: active === "mirror" },
+        { label: t.sidebar.nav_codex, href: "/atelier/codex", icon: ICONS.codex, active: active === "codex" },
       ],
     },
   ];
