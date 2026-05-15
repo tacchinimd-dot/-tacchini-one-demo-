@@ -820,7 +820,7 @@ export const dictionary = {
       step_brief: "1 · Brief",
       step_source: "2 · Source",
       step_filter: "3 · DNA Filter",
-      step_curate: "4 · Curate",
+      step_curate: "4 · Pick References",
       step_generate: "5 · Generate",
       step_lineup: "6 · Lineup",
 
@@ -862,12 +862,18 @@ export const dictionary = {
       filter_rejected: "ST 미달",
       filter_summary: (passed: number, total: number) =>
         `${total}장 중 ${passed}장이 ST DNA 통과 (${Math.round((passed / total) * 100)}%)`,
-      next_curate: "레퍼런스 선택 →",
+      filter_pick_hint: "이미지를 클릭해 레퍼런스로 픽하세요",
+      filter_picked_count: (n: number) => `픽 ${n}장`,
+      filter_pick_required: "최소 1장 이상 픽하면 다음 단계로 이동할 수 있습니다",
+      next_curate: "Pick References →",
 
       /* Step 4 — Curate */
-      step4_label: "Step 4 · Curate",
-      step4_title: "레퍼런스 선택 (3장 권장)",
-      step4_body: "AI ★ 추천 우선 정렬. 디자이너가 변형 생성에 사용할 레퍼런스를 선택합니다.",
+      step4_label: "Step 4 · Pick References",
+      step4_title: "픽한 레퍼런스 확정",
+      step4_body:
+        "Step 3에서 픽한 이미지를 검토하고 변형 생성으로 넘어갑니다. 카드를 다시 클릭하면 제외할 수 있습니다.",
+      curate_empty:
+        "픽된 레퍼런스가 없습니다. Step 3 · DNA Filter로 돌아가 이미지를 픽하세요.",
       selected_count: (n: number, max: number) => `선택 ${n} / ${max}장`,
       ai_recommended: "AI 추천",
       pillar_radar: "Pillar Profile",
@@ -1760,7 +1766,7 @@ export const dictionary = {
       step_brief: "1 · Brief",
       step_source: "2 · Source",
       step_filter: "3 · DNA Filter",
-      step_curate: "4 · Curate",
+      step_curate: "4 · Pick References",
       step_generate: "5 · Generate",
       step_lineup: "6 · Lineup",
 
@@ -1802,13 +1808,18 @@ export const dictionary = {
       filter_rejected: "ST Rejected",
       filter_summary: (passed: number, total: number) =>
         `${passed} of ${total} passed ST DNA filter (${Math.round((passed / total) * 100)}%)`,
+      filter_pick_hint: "Click images to pick as references",
+      filter_picked_count: (n: number) => `${n} picked`,
+      filter_pick_required: "Pick at least one image to continue",
       next_curate: "Pick References →",
 
       /* Step 4 */
-      step4_label: "Step 4 · Curate",
-      step4_title: "Pick References (3 recommended)",
+      step4_label: "Step 4 · Pick References",
+      step4_title: "Confirm Picked References",
       step4_body:
-        "Sorted by AI ★ recommendation. Choose references the designer wants to use for variant generation.",
+        "Review the references you picked in Step 3 and proceed to variant generation. Click a card to remove it.",
+      curate_empty:
+        "No references picked yet. Go back to Step 3 · DNA Filter to pick images.",
       selected_count: (n: number, max: number) => `Selected ${n} / ${max}`,
       ai_recommended: "AI Recommended",
       pillar_radar: "Pillar Profile",

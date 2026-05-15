@@ -78,23 +78,13 @@ function Studio() {
   /* brief 변경 시마다 풀 재계산 */
   const filteredPool = useMemo(() => buildPool(brief), [brief]);
 
-  /* Step 4 진입 시 AI 추천 자동 선택 (사용자 첫 진입 시만) */
+  /* brief 변경 시 이전 선택 초기화 (다른 풀의 ID가 남아있지 않도록) */
   useEffect(() => {
-    if (step === "curate" && selectedRefs.length === 0) {
-      /* AI 추천 ID 중 필터된 풀에 존재하는 것만 */
-      const baseIds = new Set(filteredPool.pool.map((p) => p.id));
-      const recs = STUDIO_CURATED_IDS.filter((id) => baseIds.has(id));
-      /* 추천이 풀에 없으면 풀의 A grade 상위 3장으로 fallback */
-      if (recs.length > 0) {
-        setSelectedRefs(recs);
-      } else {
-        const aGrade = filteredPool.pool
-          .filter((p) => p.verdict === "A" || p.verdict === "B")
-          .slice(0, 3);
-        setSelectedRefs(aGrade.map((p) => p.id));
-      }
-    }
-  }, [step, selectedRefs.length, filteredPool.pool]);
+    setSelectedRefs((prev) => {
+      const validIds = new Set(filteredPool.pool.map((p) => p.id));
+      return prev.filter((id) => validIds.has(id));
+    });
+  }, [filteredPool.pool]);
 
   function markDone(s: StudioStep) {
     setDone((prev) => (prev[s] ? prev : { ...prev, [s]: true }));
@@ -168,6 +158,12 @@ function Studio() {
                 done={done.filter}
                 onComplete={() => markDone("filter")}
                 onNext={goNext}
+                selectedRefs={selectedRefs}
+                onToggle={(id) =>
+                  setSelectedRefs((prev) =>
+                    prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+                  )
+                }
               />
             )}
             {step === "curate" && (
@@ -807,17 +803,25 @@ function FilterStep({
   done,
   onComplete,
   onNext,
+  selectedRefs,
+  onToggle,
 }: {
   brief: StudioBrief;
   pool: ReturnType<typeof buildPool>;
   done: boolean;
   onComplete: () => void;
   onNext: () => void;
+  selectedRefs: string[];
+  onToggle: (id: string) => void;
 }) {
   const { t } = useLang();
   const total = pool.pool.length;
   const passed = pool.pool.filter((p) => p.verdict === "A" || p.verdict === "B");
   const [phase, setPhase] = useState<"animating" | "settled">(done ? "settled" : "animating");
+  const pickedCount = selectedRefs.filter((id) =>
+    passed.some((p) => p.id === id),
+  ).length;
+  const canProceed = phase === "settled" && pickedCount > 0;
 
   useEffect(() => {
     if (done) {
@@ -878,20 +882,62 @@ function FilterStep({
       {/* 통과 그룹 */}
       <div>
         <div
-          className="t-label mb-3 flex items-center gap-2"
-          style={{ color: "var(--status-ok)" }}
+          className="mb-3 flex items-center justify-between gap-2"
         >
-          <span
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 9999,
-              background: "var(--status-ok)",
-            }}
-          />
-          {t.studio.filter_passed} · {passed.length}
+          <div
+            className="t-label flex items-center gap-2"
+            style={{ color: "var(--status-ok)" }}
+          >
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 9999,
+                background: "var(--status-ok)",
+              }}
+            />
+            {t.studio.filter_passed} · {passed.length}
+            {phase === "settled" && (
+              <span
+                style={{
+                  marginLeft: 6,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "var(--color-ink-muted-80)",
+                  letterSpacing: 0.2,
+                  textTransform: "none",
+                }}
+              >
+                — {t.studio.filter_pick_hint}
+              </span>
+            )}
+          </div>
+          {phase === "settled" && (
+            <span
+              className="t-mono"
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                padding: "4px 10px",
+                background:
+                  pickedCount > 0 ? "rgba(0,44,95,0.08)" : "var(--color-canvas-soft)",
+                color:
+                  pickedCount > 0 ? "var(--color-primary)" : "var(--color-ink-muted-48)",
+                border: "1px solid var(--color-hairline)",
+                borderRadius: 9999,
+              }}
+            >
+              {t.studio.filter_picked_count(pickedCount)}
+            </span>
+          )}
         </div>
-        <TrendGrid pool={passed} mode="passed" />
+        <TrendGrid
+          pool={passed}
+          mode="passed"
+          selectable={phase === "settled"}
+          selectedIds={selectedRefs}
+          onToggle={onToggle}
+        />
       </div>
 
       {/* 미달 그룹 */}
@@ -918,8 +964,24 @@ function FilterStep({
       </div>
 
       {phase === "settled" && (
-        <div className="flex justify-end">
-          <button onClick={onNext} className="btn btn-primary btn-lg">
+        <div className="flex items-center justify-end gap-3">
+          {pickedCount === 0 && (
+            <span
+              className="t-caption"
+              style={{ color: "var(--color-ink-muted-48)" }}
+            >
+              {t.studio.filter_pick_required}
+            </span>
+          )}
+          <button
+            onClick={onNext}
+            disabled={!canProceed}
+            className="btn btn-primary btn-lg"
+            style={{
+              opacity: canProceed ? 1 : 0.5,
+              cursor: canProceed ? "pointer" : "not-allowed",
+            }}
+          >
             {t.studio.next_curate}
           </button>
         </div>
@@ -945,26 +1007,16 @@ function CurateStep({
   onNext: () => void;
 }) {
   const { t } = useLang();
-  const passed = useMemo(
-    () => pool.pool.filter((tr) => tr.verdict === "A" || tr.verdict === "B"),
-    [pool.pool],
-  );
-  /* AI 추천 (STUDIO_CURATED_IDS) 우선 정렬 */
-  const sorted = useMemo(
+  /* Step 3에서 사용자가 직접 픽한 레퍼런스만 노출 (verdict A 우선 정렬) */
+  const picked = useMemo(
     () =>
-      [...passed].sort((a, b) => {
-        const aRec = STUDIO_CURATED_IDS.includes(a.id) ? 0 : 1;
-        const bRec = STUDIO_CURATED_IDS.includes(b.id) ? 0 : 1;
-        if (aRec !== bRec) return aRec - bRec;
-        /* 그 다음 verdict A 우선 */
-        if (a.verdict !== b.verdict) {
-          return a.verdict === "A" ? -1 : 1;
-        }
-        return 0;
-      }),
-    [passed],
+      pool.pool
+        .filter((tr) => selectedRefs.includes(tr.id))
+        .sort((a, b) => (a.verdict === b.verdict ? 0 : a.verdict === "A" ? -1 : 1)),
+    [pool.pool, selectedRefs],
   );
-  const max = 5;
+  const max = brief.referenceCount || 5;
+  const empty = picked.length === 0;
   return (
     <div className="space-y-5">
       <div className="card" style={{ padding: 24 }}>
@@ -990,32 +1042,46 @@ function CurateStep({
                 fontFamily: "var(--font-display)",
               }}
             >
-              {t.studio.selected_count(selectedRefs.length, max)}
+              {t.studio.selected_count(picked.length, max)}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-        {sorted.map((trend) => (
-          <CurateCard
-            key={trend.id}
-            trend={trend}
-            selected={selectedRefs.includes(trend.id)}
-            recommended={STUDIO_CURATED_IDS.includes(trend.id)}
-            onClick={() => onToggle(trend.id)}
-          />
-        ))}
-      </div>
+      {empty ? (
+        <div
+          className="card flex items-center justify-center text-center"
+          style={{
+            padding: "48px 24px",
+            color: "var(--color-ink-muted-80)",
+            fontSize: 14,
+            lineHeight: 1.55,
+          }}
+        >
+          {t.studio.curate_empty}
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+          {picked.map((trend) => (
+            <CurateCard
+              key={trend.id}
+              trend={trend}
+              selected
+              recommended={false}
+              onClick={() => onToggle(trend.id)}
+            />
+          ))}
+        </div>
+      )}
 
       <div className="flex justify-end">
         <button
           onClick={onNext}
-          disabled={selectedRefs.length === 0}
+          disabled={empty}
           className="btn btn-primary btn-lg"
           style={{
-            opacity: selectedRefs.length === 0 ? 0.5 : 1,
-            cursor: selectedRefs.length === 0 ? "not-allowed" : "pointer",
+            opacity: empty ? 0.5 : 1,
+            cursor: empty ? "not-allowed" : "pointer",
           }}
         >
           {t.studio.generate_variants}
@@ -1388,9 +1454,15 @@ function LineupStep({ brief }: { brief: StudioBrief }) {
 function TrendGrid({
   pool,
   mode,
+  selectable = false,
+  selectedIds,
+  onToggle,
 }: {
   pool: TrendImage[];
   mode: "all" | "passed" | "rejected";
+  selectable?: boolean;
+  selectedIds?: string[];
+  onToggle?: (id: string) => void;
 }) {
   return (
     <div
@@ -1406,6 +1478,11 @@ function TrendGrid({
           mode={mode}
           delay={i * 18}
           showBadge
+          selectable={selectable}
+          selected={selectedIds?.includes(trend.id) ?? false}
+          onClick={
+            selectable && onToggle ? () => onToggle(trend.id) : undefined
+          }
         />
       ))}
     </div>
@@ -1418,18 +1495,27 @@ function ImageCard({
   size,
   delay = 0,
   showBadge,
+  selectable = false,
+  selected = false,
+  onClick,
 }: {
   trend: TrendImage;
   mode?: "all" | "passed" | "rejected";
   size?: number;
   delay?: number;
   showBadge?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onClick?: () => void;
 }) {
   const muted = mode === "rejected";
   const verdict = trend.verdict;
+  const Wrapper: React.ElementType = onClick ? "button" : "div";
 
   return (
-    <div
+    <Wrapper
+      onClick={onClick}
+      type={onClick ? "button" : undefined}
       className="animate-fade-in"
       style={{
         animationDelay: `${delay}ms`,
@@ -1439,12 +1525,24 @@ function ImageCard({
         borderRadius: 10,
         overflow: "hidden",
         aspectRatio: size ? undefined : "3 / 4",
-        width: size,
+        width: size ?? "100%",
         height: size ? size : undefined,
         opacity: muted ? 0.4 : 1,
         filter: muted ? "grayscale(0.6)" : "none",
-        transition: "opacity 400ms ease, filter 400ms ease",
+        transition: "opacity 400ms ease, filter 400ms ease, transform 160ms ease, box-shadow 200ms ease, outline-color 200ms ease",
         border: muted ? "1px solid var(--color-hairline)" : "none",
+        cursor: onClick ? "pointer" : "default",
+        padding: 0,
+        outline: selected
+          ? "3px solid var(--color-primary)"
+          : selectable
+            ? "1px solid var(--color-hairline)"
+            : "none",
+        outlineOffset: selected ? -3 : -1,
+        boxShadow: selected
+          ? "0 8px 20px rgba(0, 44, 95, 0.22)"
+          : "none",
+        transform: selected ? "translateY(-1px)" : "none",
       }}
     >
       <div
@@ -1504,7 +1602,31 @@ function ImageCard({
           {verdict}
         </span>
       )}
-    </div>
+
+      {/* Selection check (selectable mode) */}
+      {selected && (
+        <span
+          style={{
+            position: "absolute",
+            bottom: 6,
+            right: 6,
+            width: 24,
+            height: 24,
+            borderRadius: 9999,
+            background: "var(--color-primary)",
+            color: "#fff",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 13,
+            fontWeight: 800,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.18)",
+          }}
+        >
+          ✓
+        </span>
+      )}
+    </Wrapper>
   );
 }
 
