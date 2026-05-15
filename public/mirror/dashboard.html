@@ -200,76 +200,85 @@
   .pill.green { background: #DCFCE7; color: var(--green); }
   .pill.red { background: #FEE2E2; color: var(--red); }
   .pill.amber { background: #FEF3C7; color: var(--amber); }
+  .lang-toggle {
+    margin-left: auto; cursor: pointer;
+    font-size: 12px; font-weight: 600;
+    padding: 6px 13px; border-radius: 8px;
+    border: 1px solid var(--border); background: #fff; color: var(--text);
+    min-width: 64px;
+  }
+  .lang-toggle:hover { background: var(--bg-soft); }
 </style>
 </head>
 <body>
 <header class="top">
-  <h1>🧵 샘플 검수 대시보드</h1>
-  <span class="sub">시즌 진행 중인 검수 이력 + 차수별 요약</span>
+  <h1 data-i18n="title">🧵 샘플 검수 대시보드</h1>
+  <span class="sub" data-i18n="sub">시즌 진행 중인 검수 이력 + 차수별 요약</span>
+  <button id="lang-toggle" class="lang-toggle" type="button">EN</button>
 </header>
 
 <div class="layout">
   <aside class="sidebar">
-    <h2>시즌</h2>
+    <h2 data-i18n="sb_season">시즌</h2>
     <div id="filter-season"></div>
 
-    <h2>결과 (마지막 차수)</h2>
+    <h2 data-i18n="sb_result">결과 (마지막 차수)</h2>
     <div id="filter-result"></div>
 
-    <h2>유형 (CARRYOVER)</h2>
+    <h2 data-i18n="sb_carryover">유형 (CARRYOVER)</h2>
     <div id="filter-carryover"></div>
 
-    <h2>최종 상태</h2>
+    <h2 data-i18n="sb_final">최종 상태</h2>
     <select id="filter-final">
-      <option value="all">전체</option>
-      <option value="approved">완료 (APPROVED)</option>
-      <option value="disapproved">진행중 (DISAPPROVED)</option>
+      <option value="all" data-i18n="opt_all">전체</option>
+      <option value="approved" data-i18n="opt_approved">완료 (APPROVED)</option>
+      <option value="disapproved" data-i18n="opt_disapproved">진행중 (DISAPPROVED)</option>
     </select>
 
-    <h2>BOX NUM</h2>
-    <select id="filter-box"><option value="">전체</option></select>
+    <h2 data-i18n="sb_box">BOX NUM</h2>
+    <select id="filter-box"><option value="" data-i18n="opt_all">전체</option></select>
 
-    <h2>품번/품명 검색</h2>
-    <input id="filter-q" placeholder="예: 40817, ISTRICE..." />
+    <h2 data-i18n="sb_search">품번/품명 검색</h2>
+    <input id="filter-q" data-i18n-ph="ph_search" placeholder="예: 40817, ISTRICE..." />
   </aside>
 
   <main class="content">
     <div class="tabs">
-      <div class="tab active" data-tab="dash">📊 대시보드</div>
-      <div class="tab" data-tab="summary">📈 검수율 요약</div>
-      <div class="tab" data-tab="rounds">📋 차수별 결과</div>
-      <div class="tab" data-tab="raw">🗂 원본 데이터</div>
+      <div class="tab active" data-tab="dash" data-i18n="tab_dash">📊 대시보드</div>
+      <div class="tab" data-tab="summary" data-i18n="tab_summary">📈 검수율 요약</div>
+      <div class="tab" data-tab="rounds" data-i18n="tab_rounds">📋 차수별 결과</div>
+      <div class="tab" data-tab="raw" data-i18n="tab_raw">🗂 원본 데이터</div>
     </div>
 
     <!-- 대시보드 -->
     <div class="tab-panel active" data-panel="dash">
       <div class="kpis">
-        <div class="kpi"><div class="label">전체 스타일</div><div class="value" id="kpi-total">0</div></div>
-        <div class="kpi"><div class="label">✅ APPROVED</div><div class="value" id="kpi-approved">0</div></div>
-        <div class="kpi"><div class="label">🔁 진행중 (DISAPPROVED)</div><div class="value" id="kpi-disapproved">0</div></div>
-        <div class="kpi"><div class="label">REMADE 발생 스타일</div><div class="value" id="kpi-remade">0</div></div>
-        <div class="kpi"><div class="label">총 검수 기록</div><div class="value" id="kpi-records">0</div></div>
+        <div class="kpi"><div class="label" data-i18n="kpi_total">전체 스타일</div><div class="value" id="kpi-total">0</div></div>
+        <div class="kpi"><div class="label" data-i18n="kpi_approved">✅ APPROVED</div><div class="value" id="kpi-approved">0</div></div>
+        <div class="kpi"><div class="label" data-i18n="kpi_disapproved">🔁 진행중 (DISAPPROVED)</div><div class="value" id="kpi-disapproved">0</div></div>
+        <div class="kpi"><div class="label" data-i18n="kpi_remade">REMADE 발생 스타일</div><div class="value" id="kpi-remade">0</div></div>
+        <div class="kpi"><div class="label" data-i18n="kpi_records">총 검수 기록</div><div class="value" id="kpi-records">0</div></div>
       </div>
       <div class="two-col">
         <div>
           <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:8px;">
-            <h3 style="margin:0;">품번 리스트</h3>
-            <span class="pill" id="list-count">0건</span>
+            <h3 style="margin:0;" data-i18n="h_stylelist">품번 리스트</h3>
+            <span class="pill" id="list-count">0</span>
           </div>
           <div class="style-list">
             <div class="head">
-              <div>품번</div>
-              <div>품명</div>
-              <div>차수</div>
-              <div>결과</div>
+              <div data-i18n="col_code">품번</div>
+              <div data-i18n="col_name">품명</div>
+              <div data-i18n="col_round">차수</div>
+              <div data-i18n="col_result">결과</div>
             </div>
             <div id="style-list-body"></div>
           </div>
         </div>
         <div>
-          <h3 style="margin:0 0 8px 0;">검수 이력 타임라인</h3>
+          <h3 style="margin:0 0 8px 0;" data-i18n="h_timeline">검수 이력 타임라인</h3>
           <div class="timeline" id="timeline">
-            <div class="empty-state">좌측에서 품번을 선택하면 이력이 표시됩니다.</div>
+            <div class="empty-state" data-i18n="empty_pick">좌측에서 품번을 선택하면 이력이 표시됩니다.</div>
           </div>
         </div>
       </div>
@@ -277,28 +286,28 @@
 
     <!-- 검수율 요약 -->
     <div class="tab-panel" data-panel="summary">
-      <h2 style="margin-top:0;">검수율 요약</h2>
-      <p style="color:var(--text-soft); margin-top:0;">시즌 누적 + 차수별 검수율 (CARRYOVER 4종 기준)</p>
+      <h2 style="margin-top:0;" data-i18n="h_summary">검수율 요약</h2>
+      <p style="color:var(--text-soft); margin-top:0;" data-i18n="p_summary">시즌 누적 + 차수별 검수율 (CARRYOVER 4종 기준)</p>
       <div id="summary-body"></div>
     </div>
 
     <!-- 차수별 결과 -->
     <div class="tab-panel" data-panel="rounds">
-      <h2 style="margin-top:0;">차수별 결과</h2>
-      <p style="color:var(--text-soft); margin-top:0;">시즌별 차수마다의 검수 결과 카드 (이미지 + 코멘트 포함)</p>
-      <div id="rounds-body"><div class="empty-state">검수 기록이 없습니다.</div></div>
+      <h2 style="margin-top:0;" data-i18n="h_rounds">차수별 결과</h2>
+      <p style="color:var(--text-soft); margin-top:0;" data-i18n="p_rounds">시즌별 차수마다의 검수 결과 카드 (이미지 + 코멘트 포함)</p>
+      <div id="rounds-body"><div class="empty-state" data-i18n="empty_norecords">검수 기록이 없습니다.</div></div>
     </div>
 
     <!-- 원본 데이터 -->
     <div class="tab-panel" data-panel="raw">
-      <h2 style="margin-top:0;">원본 데이터</h2>
+      <h2 style="margin-top:0;" data-i18n="h_raw">원본 데이터</h2>
 
-      <h3 style="margin: 16px 0 8px;">📦 마스터 리스트</h3>
-      <p style="color:var(--text-soft); margin-top:0;">시즌별 품번 마스터. 총 <span id="master-count">0</span>건.</p>
-      <div id="master-body"><div class="empty-state">마스터에 등록된 품번이 없습니다.</div></div>
+      <h3 style="margin: 16px 0 8px;" data-i18n="h_master">📦 마스터 리스트</h3>
+      <p id="master-desc" style="color:var(--text-soft); margin-top:0;"></p>
+      <div id="master-body"><div class="empty-state" data-i18n="empty_master">마스터에 등록된 품번이 없습니다.</div></div>
 
-      <h3 style="margin: 24px 0 8px;">📝 검수 기록 로그</h3>
-      <p style="color:var(--text-soft); margin-top:0;">총 <span id="raw-count">0</span>건</p>
+      <h3 style="margin: 24px 0 8px;" data-i18n="h_rawlog">📝 검수 기록 로그</h3>
+      <p id="raw-desc" style="color:var(--text-soft); margin-top:0;"></p>
       <div class="raw-wrap">
         <table class="raw" id="raw-table"></table>
       </div>
@@ -329,6 +338,150 @@
     return e;
   };
   const uniq = a => Array.from(new Set(a)).filter(x => x !== null && x !== undefined && x !== '');
+
+  // -------- i18n --------
+  const I18N = {
+    ko: {
+      title: "🧵 샘플 검수 대시보드",
+      sub: "시즌 진행 중인 검수 이력 + 차수별 요약",
+      sb_season: "시즌", sb_result: "결과 (마지막 차수)", sb_carryover: "유형 (CARRYOVER)",
+      sb_final: "최종 상태", sb_box: "BOX NUM", sb_search: "품번/품명 검색",
+      opt_all: "전체", opt_approved: "완료 (APPROVED)", opt_disapproved: "진행중 (DISAPPROVED)",
+      ph_search: "예: 40817, ISTRICE...",
+      tab_dash: "📊 대시보드", tab_summary: "📈 검수율 요약",
+      tab_rounds: "📋 차수별 결과", tab_raw: "🗂 원본 데이터",
+      kpi_total: "전체 스타일", kpi_approved: "✅ APPROVED",
+      kpi_disapproved: "🔁 진행중 (DISAPPROVED)", kpi_remade: "REMADE 발생 스타일",
+      kpi_records: "총 검수 기록",
+      h_stylelist: "품번 리스트", col_code: "품번", col_name: "품명",
+      col_round: "차수", col_result: "결과", h_timeline: "검수 이력 타임라인",
+      empty_pick: "좌측에서 품번을 선택하면 이력이 표시됩니다.",
+      h_summary: "검수율 요약",
+      p_summary: "시즌 누적 + 차수별 검수율 (CARRYOVER 4종 기준)",
+      h_rounds: "차수별 결과",
+      p_rounds: "시즌별 차수마다의 검수 결과 카드 (이미지 + 코멘트 포함)",
+      h_raw: "원본 데이터", h_master: "📦 마스터 리스트", h_rawlog: "📝 검수 기록 로그",
+      empty_filter: "필터 결과가 없습니다.", empty_nostyles: "품번이 없습니다.",
+      empty_selectstyle: "품번을 선택해주세요.", empty_norecords: "검수 기록이 없습니다.",
+      empty_master: "마스터에 등록된 품번이 없습니다.",
+      sum_empty: "아직 검수 데이터가 없습니다. 데이터가 입력되면 여기에 자동으로 표시됩니다.",
+      sum_total: "📊 TOTAL (시즌 누적)", sum_byround: "차수별 상세",
+      m_code: "품번", m_name: "품명", m_rounds: "총 차수",
+      img_none: "(이미지 없음)", cmt_label: "🇰🇷 코멘트",
+      cmt_movin: "Movin 피드백", cmt_none: "(코멘트 없음)", raw_nodata: "데이터 없음",
+      rc_season: "시즌", rc_code: "품번", rc_name: "품명", rc_round: "차수",
+      rc_type: "유형", rc_date: "검수일", rc_result: "결과",
+      rc_cmt_kr: "코멘트 (KR)", rc_cmt_en: "Comment (EN)", mc_color_desc: "색상명",
+    },
+    en: {
+      title: "🧵 Sample Inspection Dashboard",
+      sub: "In-season inspection history + round summary",
+      sb_season: "Season", sb_result: "Result (last round)", sb_carryover: "Type (CARRYOVER)",
+      sb_final: "Final status", sb_box: "BOX NUM", sb_search: "Search code / name",
+      opt_all: "All", opt_approved: "Completed (APPROVED)", opt_disapproved: "In progress (DISAPPROVED)",
+      ph_search: "e.g. 40817, ISTRICE...",
+      tab_dash: "📊 Dashboard", tab_summary: "📈 Inspection Rate",
+      tab_rounds: "📋 Results by Round", tab_raw: "🗂 Raw Data",
+      kpi_total: "Total styles", kpi_approved: "✅ APPROVED",
+      kpi_disapproved: "🔁 In progress (DISAPPROVED)", kpi_remade: "Styles with REMADE",
+      kpi_records: "Total inspection records",
+      h_stylelist: "Style list", col_code: "Code", col_name: "Name",
+      col_round: "Round", col_result: "Result", h_timeline: "Inspection timeline",
+      empty_pick: "Select a style on the left to see its history.",
+      h_summary: "Inspection Rate Summary",
+      p_summary: "Season cumulative + by-round inspection rate (4 CARRYOVER types)",
+      h_rounds: "Results by Round",
+      p_rounds: "Per-round inspection result cards (with images + comments)",
+      h_raw: "Raw Data", h_master: "📦 Master List", h_rawlog: "📝 Inspection Record Log",
+      empty_filter: "No results match the filters.", empty_nostyles: "No styles.",
+      empty_selectstyle: "Please select a style.", empty_norecords: "No inspection records.",
+      empty_master: "No styles registered in the master.",
+      sum_empty: "No inspection data yet. It will appear here automatically once data is entered.",
+      sum_total: "📊 TOTAL (season cumulative)", sum_byround: "By-round detail",
+      m_code: "Code", m_name: "Name", m_rounds: "Total rounds",
+      img_none: "(no image)", cmt_label: "🇬🇧 Comment",
+      cmt_movin: "Movin Feedback", cmt_none: "(no comment)", raw_nodata: "No data",
+      rc_season: "Season", rc_code: "Code", rc_name: "Name", rc_round: "Round",
+      rc_type: "Type", rc_date: "Date", rc_result: "Result",
+      rc_cmt_kr: "Comment (KR)", rc_cmt_en: "Comment (EN)", mc_color_desc: "Color name",
+    },
+  };
+  const FMT = {
+    ko: {
+      master_desc: n => `시즌별 품번 마스터. 총 ${n}건.`,
+      raw_desc: n => `총 ${n}건`,
+      list_count: n => `${n}건`,
+      round: n => `${n}차`,
+      sum_nodata: t => `${t} — 데이터 없음`,
+      sum_round: (rn, ord, n) => `${rn}차  ·  ${ord} review  ·  ${n}건`,
+      rounds_sum: (rn, range, n, app, dis) => `${rn}차  ·  ${range}  ·  ${n}건  ·  ✅ ${app}  ·  🔴 ${dis}`,
+    },
+    en: {
+      master_desc: n => `Style master per season. ${n} total.`,
+      raw_desc: n => `${n} records`,
+      list_count: n => `${n}`,
+      round: n => `R${n}`,
+      sum_nodata: t => `${t} — no data`,
+      sum_round: (rn, ord, n) => `Round ${rn}  ·  ${ord} review  ·  ${n}`,
+      rounds_sum: (rn, range, n, app, dis) => `Round ${rn}  ·  ${range}  ·  ${n}  ·  ✅ ${app}  ·  🔴 ${dis}`,
+    },
+  };
+  const LANG_KEY = 'tacchini-one-lang';
+  let LANG = 'ko';
+  try { const s = localStorage.getItem(LANG_KEY); if (s === 'ko' || s === 'en') LANG = s; } catch (e) {}
+  const T = () => I18N[LANG];
+  const F = () => FMT[LANG];
+
+  function applyI18n() {
+    const d = I18N[LANG];
+    document.querySelectorAll('[data-i18n]').forEach(e => {
+      const k = e.getAttribute('data-i18n');
+      if (d[k] != null) e.textContent = d[k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(e => {
+      const k = e.getAttribute('data-i18n-ph');
+      if (d[k] != null) e.placeholder = d[k];
+    });
+    document.documentElement.lang = LANG;
+    const btn = $('#lang-toggle');
+    if (btn) btn.textContent = LANG === 'ko' ? 'EN' : '한국어';
+  }
+
+  function setLang(l) {
+    if (l !== 'ko' && l !== 'en') return;
+    LANG = l;
+    try { localStorage.setItem(LANG_KEY, l); } catch (e) {}
+    applyI18n();
+    renderMaster();
+    render();
+  }
+
+  /* "nan"·빈 문자열은 값 없음으로 취급 */
+  function realText(v) {
+    if (v == null) return '';
+    const s = String(v).trim();
+    return (s === '' || s.toLowerCase() === 'nan') ? '' : s;
+  }
+
+  /* 선택 언어 코멘트 + Movin 피드백 블록 */
+  function buildComment(it) {
+    const cmt = el('div', {class: 'comment-block'});
+    const t = T();
+    const main = LANG === 'ko' ? realText(it.comment_kr) : realText(it.comment_en);
+    if (main) {
+      cmt.appendChild(el('div', {class: 'lbl'}, t.cmt_label));
+      cmt.appendChild(el('div', {class: 'text'}, main));
+    }
+    const fb = realText(it.feedback_movin);
+    if (fb) {
+      cmt.appendChild(el('div', {class: 'lbl'}, t.cmt_movin));
+      cmt.appendChild(el('div', {class: 'text'}, fb));
+    }
+    if (!main && !fb) {
+      cmt.appendChild(el('div', {class: 'text', style: 'color: var(--text-soft);'}, t.cmt_none));
+    }
+    return cmt;
+  }
 
   // -------- state --------
   const state = {
@@ -429,16 +582,16 @@
     $('#kpi-disapproved').textContent = sm.filter(s => s.last_result === 'DISAPPROVED').length;
     $('#kpi-remade').textContent = sm.filter(s => s.has_remade).length;
     $('#kpi-records').textContent = rows.length;
-    $('#list-count').textContent = `${sm.length}건`;
+    $('#list-count').textContent = F().list_count(sm.length);
   }
 
   function renderList(sm) {
     const body = $('#style-list-body'); body.innerHTML = '';
     if (sm.length === 0) {
       body.appendChild(el('div', {class: 'empty-state', style: 'margin:16px;'},
-        '필터 결과가 없습니다.'));
+        T().empty_filter));
       $('#timeline').innerHTML = '';
-      $('#timeline').appendChild(el('div', {class: 'empty-state'}, '품번이 없습니다.'));
+      $('#timeline').appendChild(el('div', {class: 'empty-state'}, T().empty_nostyles));
       return;
     }
     if (!state.selected || !sm.find(s => s.style_key === state.selected)) {
@@ -453,7 +606,7 @@
       },
         el('div', {class: 'code'}, s.code || '-'),
         el('div', {class: 'name'}, s.style_name || ''),
-        el('div', {class: 'rounds'}, `${s.rounds}차`),
+        el('div', {class: 'rounds'}, F().round(s.rounds)),
         el('div', {}, dot),
       );
       body.appendChild(row);
@@ -466,18 +619,18 @@
     const sel = sm.find(s => s.style_key === state.selected);
     const tl = $('#timeline'); tl.innerHTML = '';
     if (!sel) {
-      tl.appendChild(el('div', {class: 'empty-state'}, '품번을 선택해주세요.'));
+      tl.appendChild(el('div', {class: 'empty-state'}, T().empty_selectstyle));
       return;
     }
     const head = sel.items[sel.items.length - 1];
 
     const meta = el('div', {class: 'meta-grid'},
-      metaItem('품번', head.code, true),
-      metaItem('품명', head.style_name),
+      metaItem(T().m_code, head.code, true),
+      metaItem(T().m_name, head.style_name),
       metaItem('LINE', head.line),
       metaItem('TYPE', head.type),
       metaItem('TIER', head.tier),
-      metaItem('총 차수', `${sel.rounds}차`),
+      metaItem(T().m_rounds, F().round(sel.rounds)),
     );
     tl.appendChild(meta);
 
@@ -492,7 +645,7 @@
         ? el('span', {class: 'badge remade'}, '🔁 REMADE') : null;
 
       const head = el('div', {class: 'head'},
-        el('span', {class: 'round-no'}, `${it.round_no}차`),
+        el('span', {class: 'round-no'}, F().round(it.round_no)),
         el('span', {class: 'date'}, it.inspect_date || '-'),
         badge,
         remadeBadge,
@@ -503,25 +656,9 @@
       const imgs = (it.image_path || '').split(';').filter(Boolean);
       const imgWrap = imgs.length
         ? el('div', {class: 'img-wrap'}, ...imgs.map(p => el('img', {src: p, alt: '', loading: 'lazy'})))
-        : el('div', {class: 'img-wrap empty'}, '(이미지 없음)');
+        : el('div', {class: 'img-wrap empty'}, T().img_none);
 
-      const cmt = el('div', {class: 'comment-block'});
-      if (it.comment_kr) {
-        cmt.appendChild(el('div', {class: 'lbl'}, '🇰🇷 코멘트 (KR)'));
-        cmt.appendChild(el('div', {class: 'text'}, it.comment_kr));
-      }
-      if (it.comment_en) {
-        cmt.appendChild(el('div', {class: 'lbl'}, '🇬🇧 Comment (EN)'));
-        cmt.appendChild(el('div', {class: 'text'}, it.comment_en));
-      }
-      if (it.feedback_movin) {
-        cmt.appendChild(el('div', {class: 'lbl'}, 'Movin Feedback'));
-        cmt.appendChild(el('div', {class: 'text'}, it.feedback_movin));
-      }
-      if (!it.comment_kr && !it.comment_en && !it.feedback_movin) {
-        cmt.appendChild(el('div', {class: 'text', style: 'color: var(--text-soft);'},
-          '(코멘트 없음)'));
-      }
+      const cmt = buildComment(it);
 
       tl.appendChild(el('div', {class: 'round-card'},
         head,
@@ -542,7 +679,7 @@
   function buildSummaryTable(rows, title) {
     if (!rows.length) {
       return el('div', {class: 'empty-state', style: 'margin-bottom:12px;'},
-        `${title} — 데이터 없음`);
+        F().sum_nodata(title));
     }
     const totalSty = new Set(rows.map(r => r.style_key)).size;
     const tbl = el('table', {class: 'sum'});
@@ -588,22 +725,21 @@
     const wrap = $('#summary-body'); wrap.innerHTML = '';
     const rows = applyFilters();
     if (!rows.length) {
-      wrap.appendChild(el('div', {class: 'empty-state'},
-        '아직 검수 데이터가 없습니다. 데이터가 입력되면 여기에 자동으로 표시됩니다.'));
+      wrap.appendChild(el('div', {class: 'empty-state'}, T().sum_empty));
       return;
     }
 
-    wrap.appendChild(el('h3', {style: 'margin: 4px 0 8px;'}, '📊 TOTAL (시즌 누적)'));
+    wrap.appendChild(el('h3', {style: 'margin: 4px 0 8px;'}, T().sum_total));
     wrap.appendChild(buildSummaryTable(rows, 'TOTAL'));
 
-    wrap.appendChild(el('h3', {style: 'margin: 20px 0 8px;'}, '차수별 상세'));
+    wrap.appendChild(el('h3', {style: 'margin: 20px 0 8px;'}, T().sum_byround));
     const rounds = Array.from(new Set(rows.map(r => r.round_no))).sort((a,b) => a-b);
     rounds.forEach(rn => {
       const sub = rows.filter(r => r.round_no === rn);
       const ord = ({1:'1st',2:'2nd',3:'3rd'})[rn] || `${rn}th`;
       const det = el('details', {class: 'round-block', open: rn <= 2 ? '' : null});
-      det.appendChild(el('summary', {}, `${rn}차  ·  ${ord} review  ·  ${sub.length}건`));
-      det.appendChild(el('div', {class: 'inner'}, buildSummaryTable(sub, `${rn}차`)));
+      det.appendChild(el('summary', {}, F().sum_round(rn, ord, sub.length)));
+      det.appendChild(el('div', {class: 'inner'}, buildSummaryTable(sub, F().round(rn))));
       wrap.appendChild(det);
     });
   }
@@ -611,18 +747,19 @@
   // -------- raw tab --------
   function renderRaw() {
     const rows = applyFilters();
-    $('#raw-count').textContent = rows.length;
+    $('#raw-desc').textContent = F().raw_desc(rows.length);
     const tbl = $('#raw-table'); tbl.innerHTML = '';
     if (!rows.length) {
       tbl.appendChild(el('tbody', {}, el('tr', {},
         el('td', {colspan: 99, style: 'text-align:center; padding: 30px; color: var(--text-soft);'},
-          '데이터 없음'))));
+          T().raw_nodata))));
       return;
     }
+    const t = T();
     const cols = [
-      ['season', '시즌'], ['code', '품번'], ['style_name', '품명'],
-      ['round_no', '차수'], ['carryover_kind', '유형'], ['inspect_date', '검수일'],
-      ['result', '결과'], ['comment_kr', '코멘트 (KR)'], ['comment_en', 'Comment (EN)'],
+      ['season', t.rc_season], ['code', t.rc_code], ['style_name', t.rc_name],
+      ['round_no', t.rc_round], ['carryover_kind', t.rc_type], ['inspect_date', t.rc_date],
+      ['result', t.rc_result], ['comment_kr', t.rc_cmt_kr], ['comment_en', t.rc_cmt_en],
       ['box_num', 'BOX'], ['line', 'LINE'], ['type', 'TYPE'], ['gender', 'GENDER'],
       ['tier', 'TIER'], ['color_code', 'COLOR'], ['fabric', 'FABRIC'],
     ];
@@ -644,7 +781,7 @@
     const wrap = $('#rounds-body'); wrap.innerHTML = '';
     const rows = applyFilters();
     if (!rows.length) {
-      wrap.appendChild(el('div', {class: 'empty-state'}, '검수 기록이 없습니다.'));
+      wrap.appendChild(el('div', {class: 'empty-state'}, T().empty_norecords));
       return;
     }
     const rounds = Array.from(new Set(rows.map(r => r.round_no))).sort((a,b) => a-b);
@@ -659,7 +796,7 @@
 
       const det = el('details', {class: 'round-block', open: rn <= 2 ? '' : null});
       det.appendChild(el('summary', {},
-        `${rn}차  ·  ${dateRange}  ·  ${sub.length}건  ·  ✅ ${nApp}  ·  🔴 ${nDis}`));
+        F().rounds_sum(rn, dateRange, sub.length, nApp, nDis)));
       const inner = el('div', {class: 'inner'});
 
       sub.forEach(it => {
@@ -679,20 +816,8 @@
         const imgs = (it.image_path || '').split(';').filter(Boolean);
         const imgWrap = imgs.length
           ? el('div', {class: 'img-wrap'}, el('img', {src: imgs[0], alt: '', loading: 'lazy'}))
-          : el('div', {class: 'img-wrap empty'}, '(이미지 없음)');
-        const cmt = el('div', {class: 'comment-block'});
-        if (it.comment_kr) {
-          cmt.appendChild(el('div', {class: 'lbl'}, '🇰🇷 코멘트 (KR)'));
-          cmt.appendChild(el('div', {class: 'text'}, it.comment_kr));
-        }
-        if (it.comment_en) {
-          cmt.appendChild(el('div', {class: 'lbl'}, '🇬🇧 Comment (EN)'));
-          cmt.appendChild(el('div', {class: 'text'}, it.comment_en));
-        }
-        if (!it.comment_kr && !it.comment_en) {
-          cmt.appendChild(el('div', {class: 'text', style: 'color:var(--text-soft);'},
-            '(코멘트 없음)'));
-        }
+          : el('div', {class: 'img-wrap empty'}, T().img_none);
+        const cmt = buildComment(it);
         inner.appendChild(el('div', {class: 'round-card'},
           head,
           el('div', {class: 'body'}, imgWrap, cmt),
@@ -706,15 +831,15 @@
   // -------- master tab --------
   function renderMaster() {
     const wrap = $('#master-body'); wrap.innerHTML = '';
-    $('#master-count').textContent = MASTER.length;
+    $('#master-desc').textContent = F().master_desc(MASTER.length);
     if (!MASTER.length) {
-      wrap.appendChild(el('div', {class: 'empty-state'},
-        '마스터에 등록된 품번이 없습니다.'));
+      wrap.appendChild(el('div', {class: 'empty-state'}, T().empty_master));
       return;
     }
+    const t = T();
     const cols = [
-      ['season','시즌'], ['style_cod','품번'], ['style_name','품명'],
-      ['color_code','COLOR'], ['color_desc','색상명'], ['carryover_kind','유형'],
+      ['season', t.rc_season], ['style_cod', t.rc_code], ['style_name', t.rc_name],
+      ['color_code','COLOR'], ['color_desc', t.mc_color_desc], ['carryover_kind', t.rc_type],
       ['gender','G'], ['type','TYPE'], ['tier','TIER'], ['line','LINE'], ['fabric','FABRIC'],
     ];
     const tbl = el('table', {class: 'raw'});
@@ -753,7 +878,17 @@
     });
   });
 
+  // -------- language toggle --------
+  $('#lang-toggle').addEventListener('click', () => setLang(LANG === 'ko' ? 'en' : 'ko'));
+  /* 앱(부모 창)의 KO/EN 토글과 동기화 — 같은 origin localStorage 공유 */
+  window.addEventListener('storage', e => {
+    if (e.key === LANG_KEY && (e.newValue === 'ko' || e.newValue === 'en') && e.newValue !== LANG) {
+      setLang(e.newValue);
+    }
+  });
+
   // -------- init --------
+  applyI18n();
   buildFilters();
   renderMaster();
   render();
